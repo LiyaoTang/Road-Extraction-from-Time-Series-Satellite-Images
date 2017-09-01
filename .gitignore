@@ -1,0 +1,9 @@
+################################
+# jupyter notebook check point #
+################################
+*/.ipynb_checkpoints/
+
+##############
+# Large Data #
+##############
+Data/
