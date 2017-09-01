@@ -1,0 +1,2 @@
+1. use 1x1 conv first => image * a + b => increase contrast ratio or sth 
+						(seen in ploting the image)
