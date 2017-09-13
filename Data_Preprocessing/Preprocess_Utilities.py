@@ -23,10 +23,6 @@ def create_labelled_patches(raw_image, road_img,
                 road_existence.append(not cur_road_patch.sum() == 0)
             j += step
         i += step
-
-    image_patch = np.array(image_patch)
-    road_patch = np.array(road_patch)
-    road_existence = np.array(road_existence)
     
     return image_patch, road_patch, road_existence
 
