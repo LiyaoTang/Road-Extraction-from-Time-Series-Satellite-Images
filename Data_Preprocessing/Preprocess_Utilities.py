@@ -29,7 +29,7 @@ def create_labelled_patches(raw_image, road_img,
 
 # pass in whole image (raw & road) => display a subset of it
 def show_image_against_road(image, road, x = 0,y = 0, light=3.0, size=500, figsize=(20,20),
-                            show_raw=True, save_path=None):
+                            show_plot = True, show_raw=True, save_path=None):
 
     if size > 0:
         sub_road = road[x:x+size,y:y+size]
@@ -46,7 +46,7 @@ def show_image_against_road(image, road, x = 0,y = 0, light=3.0, size=500, figsi
         img[np.where(img>1)] = 1
     
     patch = np.array([sub_image[2].T, sub_image[1].T, sub_image[0].T]).T
-    if show_raw:
+    if show_plot and show_raw:
         plt.figure(figsize=figsize)
         plt.imshow(patch)
         plt.show()
@@ -60,5 +60,6 @@ def show_image_against_road(image, road, x = 0,y = 0, light=3.0, size=500, figsi
     plt.imshow(patch)
     if not save_path is None:
         plt.savefig(save_path, bbox_inches='tight')
-    plt.show()
+    if show_plot:
+        plt.show()
     plt.clf()
