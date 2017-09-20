@@ -26,14 +26,21 @@ def create_labelled_patches(raw_image, road_img,
     
     return image_patch, road_patch, road_existence
 
-# pass in whole image (raw & road) => display a subset of it
-def show_image_against_road(x,y,image, road, light=3.0, size=500, figsize=(20,20),
-                            show_raw=True, save_path=None):
-    sub_road = road[x:x+size,y:y+size]
-    sub_road[np.where(sub_road == 255)] = 1
 
-    sub_image = image[[1,2,3],x:x+size,y:y+size]
-    sub_image = sub_image/10000*light
+# pass in whole image (raw & road) => display a subset of it
+def show_image_against_road(image, road, x = 0,y = 0, light=3.0, size=500, figsize=(20,20),
+                            show_raw=True, save_path=None):
+
+    if size > 0:
+        sub_road = road[x:x+size,y:y+size]
+        sub_image = image[[1,2,3],x:x+size,y:y+size]
+    else:
+        sub_road = road
+        sub_image = image[[1,2,3]]
+
+    sub_road[np.where(sub_road == 255)] = 1        
+    sub_image = sub_image/10000*light        
+    
     for img in sub_image:
         img[np.where(img<0)] = 0
         img[np.where(img>1)] = 1
