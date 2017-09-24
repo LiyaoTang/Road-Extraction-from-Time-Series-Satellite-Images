@@ -1,0 +1,2 @@
+model_checkpoint_path: "res_serv_road_livi"
+all_model_checkpoint_paths: "res_serv_road_livi"
