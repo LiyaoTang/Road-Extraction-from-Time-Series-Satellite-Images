@@ -1,8 +1,10 @@
 
 # coding: utf-8
 
-# In[ ]:
+# In[24]:
 
+
+import numpy as np
 
 class Metric:
     true_pos = 0
@@ -39,14 +41,14 @@ class Metric:
             print("Error in F1 score for Positive")            
         
         try: # metric for negative
-            result['neg_precision'] = neg_precision
             neg_precision = true_neg / (true_neg + false_neg)
+            result['neg_precision'] = neg_precision
             
-            result['neg_recall'] = neg_recall
             neg_recall = true_neg / (true_neg + false_pos)
+            result['neg_recall'] = neg_recall
 
-            result['neg_F1'] = neg_F1
             neg_F1 = 2*(neg_recall*neg_precision) / (neg_recall+neg_precision)
+            result['neg_F1'] = neg_F1
         except:
             print("Error in F1 score for Negative") 
             
@@ -57,6 +59,15 @@ class Metric:
             print("Error in accuracy")
             
         return result
+    
+    def print_info(self):
+        print("%-9s = %d\n%-9s = %d\n%-9s = %d\n%-9s = %d\nsize = %d"
+                         % ('true_pos', self.true_pos, 'false_pos', self.false_pos,
+                            'true_neg', self.true_neg, 'false_neg', self.false_neg, self.size))
+        
+        result = self.cal_metric()
+        for key in result.keys():
+            print("%-13s = %s" % (key, result[key]))
 
 
 # In[ ]:
