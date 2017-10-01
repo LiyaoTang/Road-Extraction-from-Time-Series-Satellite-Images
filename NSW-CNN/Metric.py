@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[24]:
+# In[1]:
 
 
 import numpy as np
@@ -13,13 +13,31 @@ class Metric:
     false_neg = 0
     size = 0
     
-    def accumulate(self,pred, Y):
-        self.true_neg  += np.logical_and(pred == Y, np.logical_not(Y)).sum()
-        self.false_neg += np.logical_and(pred != Y, np.logical_not(Y)).sum()
-        self.true_pos  += np.logical_and(pred == Y, Y).sum()
-        self.false_pos += np.logical_and(pred != Y, Y).sum()
-        self.size += Y.size
+    __index = {'TP':[], 'FP':[], 'TN':[], 'FN':[]}
+    __record_index = False
+
+    def __init__(self, record_index = False):
+        self.__index = {'TP':[], 'FP':[], 'TN':[], 'FN':[]}
+        self.__record_index = record_index
         
+    def accumulate(self, pred, Y):        
+        TP_arr = np.logical_and(pred == Y, Y)
+        FP_arr = np.logical_and(pred != Y, Y)
+        TN_arr = np.logical_and(pred == Y, np.logical_not(Y))
+        FN_arr = np.logical_and(pred != Y, np.logical_not(Y))
+        
+        if self.__record_index:            
+            self.__index['TP'].extend(self.size + np.where(TP_arr)[0])
+            self.__index['FP'].extend(self.size + np.where(FP_arr)[0])
+            self.__index['TN'].extend(self.size + np.where(TN_arr)[0])
+            self.__index['FN'].extend(self.size + np.where(FN_arr)[0])
+        
+        self.true_pos  += TP_arr.sum()
+        self.false_pos += FP_arr.sum()
+        self.true_neg  += TN_arr.sum()
+        self.false_neg += FN_arr.sum()
+        self.size += Y.size
+            
     def cal_metric(self):
         true_pos  = self.true_pos
         false_pos = self.false_pos
@@ -68,6 +86,12 @@ class Metric:
         result = self.cal_metric()
         for key in result.keys():
             print("%-13s = %s" % (key, result[key]))
+            
+    def get_index(self, key):
+        if self.__record_index:
+            return np.array(self.__index[key])
+        else:
+            print("Index for TP/FP/TN/FN not recorded")
 
 
 # In[ ]:
