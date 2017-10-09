@@ -21,10 +21,10 @@ class Metric:
         self.__record_index = record_index
         
     def accumulate(self, pred, Y):        
-        TP_arr = np.logical_and(pred == Y, Y)
-        FP_arr = np.logical_and(pred != Y, Y)
-        TN_arr = np.logical_and(pred == Y, np.logical_not(Y))
-        FN_arr = np.logical_and(pred != Y, np.logical_not(Y))
+        TP_arr = np.logical_and(pred, Y)
+        FP_arr = np.logical_and(pred, np.logical_not(Y))
+        TN_arr = np.logical_and(np.logical_not(pred), np.logical_not(Y))
+        FN_arr = np.logical_and(np.logical_not(pred), Y)
         
         if self.__record_index:            
             self.__index['TP'].extend(self.size + np.where(TP_arr)[0])
