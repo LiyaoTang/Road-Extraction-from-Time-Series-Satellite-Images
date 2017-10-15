@@ -59,11 +59,11 @@ class Metric:
             print("Error in F1 score for Positive")            
         
         try: # metric for negative
-            neg_precision = true_neg / (true_neg + false_neg)
-            result['neg_precision'] = neg_precision
-            
             neg_recall = true_neg / (true_neg + false_pos)
             result['neg_recall'] = neg_recall
+            
+            neg_precision = true_neg / (true_neg + false_neg)
+            result['neg_precision'] = neg_precision
 
             neg_F1 = 2*(neg_recall*neg_precision) / (neg_recall+neg_precision)
             result['neg_F1'] = neg_F1
