@@ -37,7 +37,8 @@ class Data_Extractor:
             
         self.neg_topleft_coord = np.array(neg_topleft_coord)
         np.random.shuffle (self.neg_topleft_coord)
-            
+        
+        self.topleft_coordinate = []
         self.topleft_coordinate.extend (pos_topleft_coord)
         self.topleft_coordinate.extend (neg_topleft_coord)
         self.topleft_coordinate = np.array(self.topleft_coordinate)
@@ -48,19 +49,20 @@ class Data_Extractor:
         self.pos_size = pos_topleft_coord.shape[0]
         self.neg_size = neg_topleft_coord.shape[0]
         self.size = self.topleft_coordinate.shape[0]
-        
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        if self.index == self.topleft_coordinate.shape[0]:
-            self.index = 0
-            raise StopIteration
-        
-        coord = self.topleft_coordinate [self.index]        
-        self.index = self.index + 1
-        
-        return self.raw_image[:, coord[0]:coord[0]+self.step, coord[1]:coord[1]+self.step].flatten()
+    
+    def iterate_raw_image_patches (self):
+        for coord in self.topleft_coordinate:
+            yield self.raw_image[:, coord[0]:coord[0]+self.step, coord[1]:coord[1]+self.step].flatten()
+            
+    def iterate_data (self):
+        for coord in self.topleft_coordinate:
+            x = self.raw_image[:, coord[0]:coord[0]+self.step, coord[1]:coord[1]+self.step].flatten()
+            y = self.road_mask[int(coord[0]+self.step/2), int(coord[1]+self.step/2)]
+            yield x, y
+    
+    def iterate_raw_image_with_coord (self):
+        for coord in self.topleft_coordinate:
+            yield corrd, self.raw_image[:, coord[0]:coord[0]+self.step, coord[1]:coord[1]+self.step].flatten()
     
     def __get_patches_from_topleft_coord (self, corrd_arr, num_of_patches, start_index):
         X = []
