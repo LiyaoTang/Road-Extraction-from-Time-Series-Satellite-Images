@@ -29,7 +29,7 @@ def create_labelled_patches(raw_image, road_img,
 
 # pass in whole image (raw & road) => display a subset of it
 def show_image_against_road(image, road, x = 0,y = 0, light=3.0, size=500, figsize=(20,20),
-                            show_plot = True, show_raw=True, save_path=None):
+                            show_plot = True, show_raw=True, threshold = 0, save_path=None):
 
     if size > 0:
         sub_road = road[x:x+size,y:y+size]
@@ -45,16 +45,58 @@ def show_image_against_road(image, road, x = 0,y = 0, light=3.0, size=500, figsi
         img[np.where(img<0)] = 0
         img[np.where(img>1)] = 1
     
-    patch = np.array([sub_image[2].T, sub_image[1].T, sub_image[0].T]).T
     if show_plot and show_raw:
+        patch = np.array([sub_image[2].T, sub_image[1].T, sub_image[0].T]).T
         plt.figure(figsize=figsize)
         plt.imshow(patch)
         plt.show()
         plt.clf()
 
-    sub_image[2][np.where(sub_road == 1)] = 1
-    sub_image[1][np.where(sub_road == 1)] = 0
-    sub_image[0][np.where(sub_road == 1)] = 0
+    sub_image[2][np.where(sub_road > threshold)] = 1
+    sub_image[1][np.where(sub_road > threshold)] = 0
+    sub_image[0][np.where(sub_road > threshold)] = 0
+
+    patch = np.array([sub_image[2].T, sub_image[1].T, sub_image[0].T]).T
+    plt.figure(figsize=figsize)
+    plt.imshow(patch)
+    if not save_path is None:
+        plt.savefig(save_path, bbox_inches='tight')
+    if show_plot:
+        plt.show()
+    plt.clf()
+    
+# pass in whole image (raw & road) => display a subset of it
+def show_pred_road_against_raw(image, pred_road, true_road=None, light=3.0,
+                               figsize=(20,20), show_plot=True, show_raw=False, threshold = 0, save_path=None):
+
+    sub_road = pred_road
+    sub_image = image[[1,2,3]]
+
+    sub_road[np.where(sub_road == 255)] = 1        
+    sub_image = sub_image/10000*light        
+    
+    for img in sub_image:
+        img[np.where(img<0)] = 0
+        img[np.where(img>1)] = 1
+    
+    if show_plot and show_raw:
+        patch = np.array([sub_image[2].T, sub_image[1].T, sub_image[0].T]).T
+        plt.figure(figsize=figsize)
+        plt.imshow(patch)
+        plt.show()
+        plt.clf()
+
+    pred_road_index = np.where(sub_road > threshold)
+    sub_image[2][pred_road_index] = 1
+    sub_image[1][pred_road_index] = 0
+    sub_image[0][pred_road_index] = 0
+        
+    if not (true_road is None):
+        true_road_index = np.where(true_road == 1)
+        sub_image[2][true_road_index] = 0
+        sub_image[1][true_road_index] = 0
+        sub_image[0][true_road_index] = 1
+
     patch = np.array([sub_image[2].T, sub_image[1].T, sub_image[0].T]).T
     plt.figure(figsize=figsize)
     plt.imshow(patch)
