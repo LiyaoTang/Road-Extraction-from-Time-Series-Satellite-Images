@@ -87,14 +87,12 @@ def show_pred_road_against_raw(image, pred_road, true_road=None, light=3.0,
         plt.clf()
 
     pred_road_index = np.where(sub_road > threshold)
-    sub_image[2][pred_road_index] = 1
+    sub_image[2][pred_road_index] = sub_road[pred_road_index]
     sub_image[1][pred_road_index] = 0
     sub_image[0][pred_road_index] = 0
         
     if not (true_road is None):
         true_road_index = np.where(true_road == 1)
-        sub_image[2][true_road_index] = 0
-        sub_image[1][true_road_index] = 0
         sub_image[0][true_road_index] = 1
 
     patch = np.array([sub_image[2].T, sub_image[1].T, sub_image[0].T]).T
