@@ -7,10 +7,5 @@
 # Large Data
 Data/
 
-<<<<<<< HEAD
-# Result
-**/Result/
-=======
 # Large Result
 **/Result/**/*.h5
->>>>>>> f1c0bd459c1d6bee6354ae5aad939f626ddaf52b
