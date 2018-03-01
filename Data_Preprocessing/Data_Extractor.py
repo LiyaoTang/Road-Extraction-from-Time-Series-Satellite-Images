@@ -35,7 +35,6 @@ class Data_Extractor:
         
         self.band = raw_image.shape[0]
 
-
         self.pos_topleft_coord = np.array(pos_topleft_coord)
         np.random.shuffle (self.pos_topleft_coord)
             
@@ -168,10 +167,3 @@ class Data_Extractor:
         X = np.array(X)
         Y = np.array(Y)
         return X, Y
-    
-
-# In[ ]:
-
-
-
-

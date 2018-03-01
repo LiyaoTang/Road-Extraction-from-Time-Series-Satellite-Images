@@ -30,7 +30,7 @@ def show_raw_image(image, x = 0, y = 0, light=3.0, size=500, x_size=0, y_size=0,
 
 # pass in whole image (raw & road) => display a subset of it (size = -1 to show the whole)
 def show_image_against_road(image, road, x = 0,y = 0, light=3.0, size=500, figsize=(20,20),
-                            show_plot = True, show_raw=True, threshold = 0, save_path=None):
+                            show_plot = True, show_raw=True, threshold = 0, save_path=None, close_plot=True):
 
     if size > 0:
         sub_road = road[x:x+size,y:y+size]
@@ -64,7 +64,8 @@ def show_image_against_road(image, road, x = 0,y = 0, light=3.0, size=500, figsi
         plt.savefig(save_path, bbox_inches='tight')
     if show_plot:
         plt.show()
-    plt.close()
+    if close_plot:
+        plt.close()
     
 # pass in whole image (raw & road) => display a subset of it
 def show_pred_road_against_raw(image, pred_road, true_road=None, light=3.0,
