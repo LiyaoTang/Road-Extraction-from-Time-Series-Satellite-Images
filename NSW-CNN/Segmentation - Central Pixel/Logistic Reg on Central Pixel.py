@@ -51,9 +51,9 @@ if not os.path.exists(save_path+'Analysis'):
     os.makedirs(save_path+'Analysis')
 
 if not path_train_set:
-	path_train_set = "../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_train"
+	path_train_set = "/localdata/u6142160/Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_train"
 if not path_cv_set:
-	path_cv_set = "../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_cv"
+	path_cv_set = "/localdata/u6142160/Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_cv"
 if not step:
 	step = 8
 if not epoch:
