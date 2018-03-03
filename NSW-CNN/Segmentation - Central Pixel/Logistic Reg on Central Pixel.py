@@ -47,9 +47,9 @@ if not save_path:
 	sys.exit()
 save_path = save_path.strip('/') + '/'
 if not os.path.exists(save_path):
-    os.makedirs(save_path)
+	os.makedirs(save_path)
 if not os.path.exists(save_path+'Analysis'):
-    os.makedirs(save_path+'Analysis')
+	os.makedirs(save_path+'Analysis')
 
 if not path_train_set:
 	path_train_set = "/localdata/u6142160/Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_train"
@@ -95,8 +95,8 @@ CV_road_mask = np.array(CV_set['road_mask'])
 CV_set.close()
 
 Train_Data = Data_Extractor (train_raw_image, train_road_mask, step,
-                             pos_topleft_coord = train_pos_topleft_coord,
-                             neg_topleft_coord = train_neg_topleft_coord)
+							 pos_topleft_coord = train_pos_topleft_coord,
+							 neg_topleft_coord = train_neg_topleft_coord)
 CV_Data = Data_Extractor (CV_raw_image, CV_road_mask, step,
 						  pos_topleft_coord = CV_pos_topleft_coord,
 						  neg_topleft_coord = CV_neg_topleft_coord)
@@ -124,8 +124,8 @@ iteration = int(Train_Data.size / batch_size) + 1
 # create SGD classifier
 if use_weight:
 	log_classifier = sklm.SGDClassifier(loss='log', max_iter=1, 
-	                                    class_weight={0:Train_Data.pos_size/Train_Data.size,
-	                                                  1:Train_Data.neg_size/Train_Data.size})
+										class_weight={0:Train_Data.pos_size/Train_Data.size,
+													  1:Train_Data.neg_size/Train_Data.size})
 else:
 	log_classifier = sklm.SGDClassifier(loss='log', max_iter=1)
 
@@ -141,34 +141,34 @@ balanced_acc_curve = []
 AUC_curve = []
 avg_precision_curve = []
 for epoch_num in range(epoch):
-    for iter_num in range(iteration):
+	for iter_num in range(iteration):
 
-        batch_x, batch_y = Train_Data.get_patches(batch_size=batch_size, positive_num=pos_num, norm=True)
-        batch_x = batch_x.reshape((batch_size, -1))
-        
-        log_classifier.partial_fit(batch_x, batch_y, all_classes)
+		batch_x, batch_y = Train_Data.get_patches(batch_size=batch_size, positive_num=pos_num, norm=True)
+		batch_x = batch_x.reshape((batch_size, -1))
+		
+		log_classifier.partial_fit(batch_x, batch_y, all_classes)
 
-    # snap shot on CV set
+	# snap shot on CV set
 	cv_metric = Metric_Record()
 	# record info
 	for x, y in CV_Data.iterate_data(norm=True):
-	    x = x.reshape((1, -1))
+		x = x.reshape((1, -1))
 
-	    pred = log_classifier.predict(x)
-	    pred_prob = log_classifier.predict_proba(x)
-	    cv_metric.accumulate(Y=y, pred=pred, pred_prob=pred_prob)
+		pred = log_classifier.predict(x)
+		pred_prob = log_classifier.predict_proba(x)
+		cv_metric.accumulate(Y=y, pred=pred, pred_prob=pred_prob)
 
-    # calculate value
+	# calculate value
 	balanced_acc = cv_metric.get_balanced_acc()
-    AUC_score = skmt.roc_auc_score(cv_metric.y_true, cv_metric.pred_prob)
-    avg_precision_score = skmt.average_precision_score(cv_metric.y_true, cv_metric.pred_prob)
+	AUC_score = skmt.roc_auc_score(cv_metric.y_true, cv_metric.pred_prob)
+	avg_precision_score = skmt.average_precision_score(cv_metric.y_true, cv_metric.pred_prob)
 
-    balanced_acc_curve.append(balanced_acc)
-    AUC_curve.append(AUC_score)
+	balanced_acc_curve.append(balanced_acc)
+	AUC_curve.append(AUC_score)
 	avg_precision_curve.append(avg_precision_score)
 
-    print(" balanced_acc = ", balanced_acc, "AUC = ", AUC_score, "avg_precision = ", avg_precision_score)
-    sys.stdout.flush()
+	print(" balanced_acc = ", balanced_acc, "AUC = ", AUC_score, "avg_precision = ", avg_precision_score)
+	sys.stdout.flush()
 
 print("finish")
 
@@ -198,11 +198,11 @@ print(log_classifier.coef_.max(), log_classifier.coef_.min(), log_classifier.coe
 # train set eva
 train_metric = Metric_Record()
 for x, y in Train_Data.iterate_data(norm=True):
-    x = x.reshape((1, -1))
+	x = x.reshape((1, -1))
 
-    pred = log_classifier.predict(x)
-    pred_prob = log_classifier.predict_proba(x)
-    train_metric.accumulate(Y=y, pred=pred, pred_prob=pred_prob)    
+	pred = log_classifier.predict(x)
+	pred_prob = log_classifier.predict_proba(x)
+	train_metric.accumulate(Y=y, pred=pred, pred_prob=pred_prob)    
 train_metric.print_info()
 
 # cross validation eva
@@ -217,14 +217,14 @@ print(log_classifier.classes_, index)
 # Predict road prob masks on train
 train_pred_road = np.zeros(train_road_mask.shape)
 for coord, patch in Train_Data.iterate_raw_image_patches_with_coord(norm=True):
-    patch = patch.reshape([1,-1])
-    train_pred_road[int(coord[0]+width/2), int(coord[1]+width/2)] = log_classifier.predict_proba(patch)[0, index]
+	patch = patch.reshape([1,-1])
+	train_pred_road[int(coord[0]+width/2), int(coord[1]+width/2)] = log_classifier.predict_proba(patch)[0, index]
 
 # Predict road prob on CV
 CV_pred_road = np.zeros(CV_road_mask.shape)
 for coord, patch in CV_Data.iterate_raw_image_patches_with_coord(norm=True):
-    patch = patch.reshape([1,-1])
-    CV_pred_road[int(coord[0]+width/2), int(coord[1]+width/2)] = log_classifier.predict_proba(patch)[0, index]
+	patch = patch.reshape([1,-1])
+	CV_pred_road[int(coord[0]+width/2), int(coord[1]+width/2)] = log_classifier.predict_proba(patch)[0, index]
 
 # save prediction
 prediction_name = model_name + '_pred.h5'
@@ -235,7 +235,7 @@ h5f_file.close()
 
 # Analyze pred in plot
 show_pred_prob_with_raw(train_raw_image, pred_road, train_road_mask, pred_weight=0.2, figsize=(150,150), 
-                        show_plot=False, save_path=save_path + 'Analysis/' + model_name + 'prob_road_on_raw - 0_2.png')
+						show_plot=False, save_path=save_path + 'Analysis/' + model_name + 'prob_road_on_raw - 0_2.png')
 
 
 # Analyze log pred
@@ -248,5 +248,5 @@ norm_log_pred = (log_pred - log_pred.min()) / (log_pred.max()-log_pred.min())
 print(norm_log_pred.min(), norm_log_pred.max(), norm_log_pred.mean())
 
 show_pred_prob_with_raw(raw_image, norm_log_pred,
-                        true_road=road_mask, pred_weight=0.2, figsize=(150,150), show_plot=False,
-                        save_path=save_path + 'Analysis/' + model_name + 'log_prob_on_raw - 0_2.png')
+						true_road=road_mask, pred_weight=0.2, figsize=(150,150), show_plot=False,
+						save_path=save_path + 'Analysis/' + model_name + 'log_prob_on_raw - 0_2.png')
