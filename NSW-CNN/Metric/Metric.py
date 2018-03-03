@@ -2,11 +2,9 @@
 # coding: utf-8
 
 # In[1]:
-
-
 import numpy as np
 
-class Metric:    
+class Metric:
 
     def __init__(self, record_index = False):
         self.true_pos = 0
@@ -24,7 +22,7 @@ class Metric:
         TN_arr = np.logical_and(np.logical_not(pred), np.logical_not(Y))
         FN_arr = np.logical_and(np.logical_not(pred), Y)
         
-        if self.__record_index:            
+        if self.__record_index:
             self.__index['TP'].extend(self.size + np.where(TP_arr)[0])
             self.__index['FP'].extend(self.size + np.where(FP_arr)[0])
             self.__index['TN'].extend(self.size + np.where(TN_arr)[0])
@@ -43,12 +41,14 @@ class Metric:
         false_neg = self.false_neg
 
         return ( (true_pos/(true_pos + false_pos)) + (true_neg/(true_neg+false_neg)) ) / 2
-        
-    def cal_metric(self):
-        true_pos  = self.true_pos
-        false_pos = self.false_pos
-        true_neg  = self.true_neg
-        false_neg = self.false_neg
+
+    def cal_metric(self, true_pos=None, false_pos=None, true_neg=None, false_neg=None, size = None):
+        if true_pos is None:
+            true_pos  = self.true_pos
+            false_pos = self.false_pos
+            true_neg  = self.true_neg
+            false_neg = self.false_neg
+            size = self.size
         
         result = {}
         
@@ -77,7 +77,7 @@ class Metric:
             print("Error in F1 score for Negative") 
             
         try: # accuracy
-            accuracy = (true_pos + true_neg) / self.size
+            accuracy = (true_pos + true_neg) / size
             balanced_acc = ( (true_pos/(true_pos + false_pos)) + (true_neg/(true_neg+false_neg)) ) / 2
 
             result['accuracy'] = accuracy
@@ -105,6 +105,43 @@ class Metric:
 
 # In[ ]:
 
+class Metric_Record:
+    """docstring for Metric_Info"""
+    def __init__(self):
+        super(Metric_Info, self).__init__(self, record_index = False)
 
+        self.y_true = []
+        self.pred_prob = []
+        self.pred_label = []
+    
+    def _get_base_metric(self):
+        y_true = np.array(self.y_true)
+        pred_prob = np.array(self.pred_prob)
+        pred_label = np.array(self.pred_label)
 
+        true_pos = np.logical_and(pred_label, Y).sum()
+        false_pos = np.logical_and(pred_label, np.logical_not(Y)).sum()
+        true_neg = np.logical_and(np.logical_not(pred_label), np.logical_not(Y)).sum()
+        false_neg = np.logical_and(np.logical_not(pred_label), Y).sum()
 
+        return true_pos, false_pos, true_neg, false_neg
+
+    def accumulate(self, pred, Y, pred_prob):
+        
+        self.pred_label.append(pred)
+        self.y_true.append(Y)
+        self.pred_prob.append(pred_prob)
+    
+    def print_info(self):
+        size = len(self.y_true)
+        
+        true_pos, false_pos, true_neg, false_neg = self._get_base_metric()
+        print("%-9s = %d\n%-9s = %d\n%-9s = %d\n%-9s = %d\nsize = %d"
+                         % ('true_pos', true_pos, 'false_pos', false_pos,
+                            'true_neg', true_neg, 'false_neg', false_neg, size))
+
+        self.cal_metric(true_pos, false_pos, true_neg, false_neg, size)
+
+    def get_balanced_acc(self):
+        true_pos, false_pos, true_neg, false_neg = self._get_base_metric()
+        return ( (true_pos/(true_pos + false_pos)) + (true_neg/(true_neg+false_neg)) ) / 2

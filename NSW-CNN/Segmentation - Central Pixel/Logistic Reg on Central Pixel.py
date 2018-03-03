@@ -3,7 +3,7 @@
 import numpy as np
 import sklearn as sk
 import sklearn.linear_model as sklm
-import sklearn.ensemble as sken
+import sklearn.metrics as skmt
 import matplotlib.pyplot as plt
 import scipy.io as sio
 import skimage.io
@@ -132,7 +132,9 @@ sys.stdout.flush()
 ''' Train & monitor '''
 
 
-learning_curve = []
+balanced_acc_curve = []
+AUC_curve = []
+avg_precision_curve = []
 for epoch_num in range(epoch):
     for iter_num in range(iteration):
 
@@ -142,22 +144,35 @@ for epoch_num in range(epoch):
         log_classifier.partial_fit(batch_x, batch_y, all_classes)
 
     # snap shot on CV set
-	cv_metric = Metric()
+	cv_metric = Metric_Record()
+	# record info
 	for x, y in CV_Data.iterate_data(norm=True):
 	    x = x.reshape((1, -1))
+
 	    pred = log_classifier.predict(x)
-	    cv_metric.accumulate(np.array([pred]), np.array([y]))
+	    pred_prob = log_classifier.predict_proba(x)
+	    cv_metric.accumulate(Y=y, pred=pred, pred_prob=pred_prob)
+
+    # calculate value
 	balanced_acc = cv_metric.get_balanced_acc()
-    
-    learning_curve.append(balanced_acc)
-    print(" balanced_acc = ", balanced_acc)
+    AUC_score = skmt.roc_auc_score(cv_metric.y_true, cv_metric.pred_prob)
+    avg_precision_score = skmt.average_precision_score(cv_metric.y_true, cv_metric.pred_prob)
+
+    balanced_acc_curve.append(balanced_acc)
+    AUC_curve.append(AUC_score)
+	avg_precision_curve.append(avg_precision_score)
+
+    print(" balanced_acc = ", balanced_acc, "AUC = ", AUC_score, "avg_precision = ", avg_precision_score)
     sys.stdout.flush()
 
 print("finish")
 
 # plot training curve
 plt.figsize=(9,5)
-plt.plot(learning_curve)
+plt.plot(balanced_acc_curve, label='balanced_acc')
+plt.plot(AUC_curve, label='AUC')
+plt.plot(avg_precision_curve, label='avg_precision')
+plt.legend()
 plt.title('learning_curve_on_cross_validation')
 plt.savefig(save_path+'Analysis/'+model_name+'learning_curve.png', bbox_inches='tight')
 plt.close()
@@ -176,12 +191,13 @@ print(log_classifier.coef_.shape)
 print(log_classifier.coef_.max(), log_classifier.coef_.min(), log_classifier.coef_.mean())
 
 # train set eva
-train_metric = Metric()
+train_metric = Metric_Record()
 for x, y in Train_Data.iterate_data(norm=True):
     x = x.reshape((1, -1))
+
     pred = log_classifier.predict(x)
-    train_metric.accumulate(np.array([pred]), np.array([y]))
-    
+    pred_prob = log_classifier.predict_proba(x)
+    train_metric.accumulate(Y=y, pred=pred, pred_prob=pred_prob)    
 train_metric.print_info()
 
 # cross validation eva
