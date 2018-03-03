@@ -30,7 +30,7 @@ parser.add_option("--not_weight", action="store_false", dest="use_weight")
 parser.add_option("--pos", type="int", dest="pos_num")
 parser.add_option("--step", type="int", dest="step")
 parser.add_option("-e", "--epoch", type="int", dest="epoch")
-
+parser.add_option("--rand", type="int", dest="rand_seed")
 (options, args) = parser.parse_args()
 
 path_train_set = options.path_train_set
@@ -40,6 +40,7 @@ model_name = options.model_name
 use_weight = options.use_weight
 pos_num = options.pos_num
 step = options.step
+rand_seed = options.rand_seed
 
 if not save_path:
 	print("no save path provided")
@@ -69,6 +70,10 @@ if not model_name:
 	print("will be saved as ", model_name)
 	print("will be saved into ", save_path)
 
+if not rand_seed:
+	rand_seed = 0
+
+np.random.seed(rand_seed)
 
 ''' Data preparation '''
 
