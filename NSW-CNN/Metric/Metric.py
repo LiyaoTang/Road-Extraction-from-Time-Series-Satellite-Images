@@ -6,21 +6,19 @@
 
 import numpy as np
 
-class Metric:
-    true_pos = 0
-    false_pos = 0
-    true_neg = 0
-    false_neg = 0
-    size = 0
-    
-    __index = {'TP':[], 'FP':[], 'TN':[], 'FN':[]}
-    __record_index = False
+class Metric:    
 
     def __init__(self, record_index = False):
+        self.true_pos = 0
+        self.false_pos = 0
+        self.true_neg = 0
+        self.false_neg = 0
+        self.size = 0
+
         self.__index = {'TP':[], 'FP':[], 'TN':[], 'FN':[]}
         self.__record_index = record_index
         
-    def accumulate(self, pred, Y):        
+    def accumulate(self, pred, Y):
         TP_arr = np.logical_and(pred, Y)
         FP_arr = np.logical_and(pred, np.logical_not(Y))
         TN_arr = np.logical_and(np.logical_not(pred), np.logical_not(Y))
@@ -37,7 +35,15 @@ class Metric:
         self.true_neg  += TN_arr.sum()
         self.false_neg += FN_arr.sum()
         self.size += Y.size
-            
+    
+    def get_balanced_acc(self):
+        true_pos  = self.true_pos
+        false_pos = self.false_pos
+        true_neg  = self.true_neg
+        false_neg = self.false_neg
+
+        return ( (true_pos/(true_pos + false_pos)) + (true_neg/(true_neg+false_neg)) ) / 2
+        
     def cal_metric(self):
         true_pos  = self.true_pos
         false_pos = self.false_pos
@@ -72,7 +78,10 @@ class Metric:
             
         try: # accuracy
             accuracy = (true_pos + true_neg) / self.size
+            balanced_acc = ( (true_pos/(true_pos + false_pos)) + (true_neg/(true_neg+false_neg)) ) / 2
+
             result['accuracy'] = accuracy
+            result['balanced_accuracy'] = balanced_acc
         except:
             print("Error in accuracy")
             

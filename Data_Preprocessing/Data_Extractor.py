@@ -30,17 +30,30 @@ class Data_Extractor:
     normalization = 'mean'
     
     def __init__(self, raw_image, road_mask, step, pos_topleft_coord, neg_topleft_coord, normalization='mean', encoding='binary'):
+
+        # original image info
         self.raw_image = raw_image.copy()
         self.road_mask = road_mask.copy()
         
         self.band = raw_image.shape[0]
+    
+        # patch info        
+        self.step = step
 
+        # batch info
+        self.encoding = encoding # ground truth encoding
+        self.normalization = normalization # if need norm
+
+        # pos-neg coordinate info
         self.pos_topleft_coord = np.array(pos_topleft_coord)
         np.random.shuffle (self.pos_topleft_coord)
             
         self.neg_topleft_coord = np.array(neg_topleft_coord)
         np.random.shuffle (self.neg_topleft_coord)
         
+        self.pos_size = pos_topleft_coord.shape[0]
+        self.neg_size = neg_topleft_coord.shape[0]
+
         # create topleft_coordinate using both pos & neg
         self.topleft_coordinate = []
         self.topleft_coordinate.extend (pos_topleft_coord)
@@ -48,16 +61,9 @@ class Data_Extractor:
         self.topleft_coordinate = np.array(self.topleft_coordinate)
         np.random.shuffle (self.topleft_coordinate)
         
-        self.step = step
-        
-        self.pos_size = pos_topleft_coord.shape[0]
-        self.neg_size = neg_topleft_coord.shape[0]
         self.size = self.topleft_coordinate.shape[0]
         
-        self.normalization = normalization
         if normalization: self._cal_norm_param()
-
-        self.encoding = encoding
 
     def _cal_norm_param(self):
         if self.normalization == 'mean':
@@ -99,7 +105,7 @@ class Data_Extractor:
             y = self._get_patch_label(coord)
             yield x, y
 
-    def _get_patches_from_topleft_coord (self, coord_arr, num_of_patches, start_index, norm):
+    def _get_patches_from_topleft_coord (self, coord_arr, num_of_patches, start_index, norm, wrap_around):
         X = []
         Y = []
         
@@ -119,23 +125,29 @@ class Data_Extractor:
             X.append(self._get_raw_patch(coord, norm))
             Y.append(self._get_patch_label(coord))
 
+        start_index = end
+
         # wrap around
         if compensation > 0:
             np.random.shuffle (coord_arr)
 
-            end = compensation
-            for idx in range(0, end):
-                coord = coord_arr [idx]
-                
-                X.append(self._get_raw_patch(coord, norm))
-                Y.append(self._get_patch_label(coord))
+            if wrap_around:
+                end = compensation
+                for idx in range(0, end):
+                    coord = coord_arr [idx]
+                    
+                    X.append(self._get_raw_patch(coord, norm))
+                    Y.append(self._get_patch_label(coord))
 
-        start_index = end
+                start_index = end
+
+            else:
+                start_index = 0            
 
         return X, Y, start_index
     
     # top-left coordinate should be of shape (n, 2)
-    def get_patches(self, batch_size, positive_num = 0, norm = True):
+    def get_patches(self, batch_size, positive_num = 0, norm = True, wrap_around=True):
         X = []
         Y = []
         
@@ -144,13 +156,15 @@ class Data_Extractor:
             X_pos, Y_pos, self.pos_index = self._get_patches_from_topleft_coord (self.pos_topleft_coord,
                                                                      num_of_patches = positive_num,
                                                                      start_index = self.pos_index,
-                                                                     norm = norm)
+                                                                     norm = norm, 
+                                                                     wrap_around=wrap_around)
             
             negative_num = batch_size - positive_num
             X_neg, Y_neg, self.neg_index = self._get_patches_from_topleft_coord (self.neg_topleft_coord,
                                                                      num_of_patches = negative_num,
                                                                      start_index = self.neg_index,
-                                                                     norm = norm)
+                                                                     norm = norm, 
+                                                                     wrap_around=wrap_around)
             
             X.extend (X_pos)
             Y.extend (Y_pos)
@@ -162,8 +176,37 @@ class Data_Extractor:
             X, Y, self.index = self._get_patches_from_topleft_coord (self.topleft_coordinate,
                                                                       num_of_patches = batch_size,
                                                                       start_index = self.index,
-                                                                      norm = norm)
+                                                                      norm = norm,
+                                                                      wrap_around=wrap_around)
 
         X = np.array(X)
         Y = np.array(Y)
         return X, Y
+
+
+# class Cross_Val_Data(Data_Extractor):
+
+#     def __init__(self, raw_image, road_mask, step, pos_topleft_coord, neg_topleft_coord, normalization='mean', encoding='binary'):
+
+#         # not storing coordinates
+#         super(Cross_Val_Data, self).__init__(raw_image, road_mask, step, None, None, normalization, encoding)
+
+#         # iter through pos
+#         for coord in pos_topleft_coord:
+
+#     def _cal_norm_param(self):
+#         if self.normalization == 'mean':
+#             mu = 0
+#             step = self.step
+#             # Careful! norm params not yet calculated
+#             for patch in self.iterate_raw_image_patches(norm = False):
+#                 mu += patch
+#                 assert (patch != -9999).all()
+#             mu = mu / self.size
+#             self.mu = mu.mean(axis=(1,2))
+
+#     def get_cv_set(self, norm=True):
+
+
+#     def iterate_raw_image_patches(self, norm=False):
+#         

@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import h5py
 
 # given raw_image & road_img (road mask), return: raw_img patches, road mask, road existence
 def create_labelled_patches(raw_image, road_img, 
