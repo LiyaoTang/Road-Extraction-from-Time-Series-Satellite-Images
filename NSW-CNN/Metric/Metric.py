@@ -113,14 +113,14 @@ class Metric_Record:
         self.pred_label = []
     
     def _get_base_metric(self):
-        y_true = np.array(self.y_true)
+        y_true = np.array(self.y_true, dtype=int)
         pred_prob = np.array(self.pred_prob)
-        pred_label = np.array(self.pred_label)
+        pred_label = np.array(self.pred_label, dtype=int)
 
-        true_pos = np.logical_and(pred_label, Y).sum()
-        false_pos = np.logical_and(pred_label, np.logical_not(Y)).sum()
-        true_neg = np.logical_and(np.logical_not(pred_label), np.logical_not(Y)).sum()
-        false_neg = np.logical_and(np.logical_not(pred_label), Y).sum()
+        true_pos = np.logical_and(pred_label, y_true).sum()
+        false_pos = np.logical_and(pred_label, np.logical_not(y_true)).sum()
+        true_neg = np.logical_and(np.logical_not(pred_label), np.logical_not(y_true)).sum()
+        false_neg = np.logical_and(np.logical_not(pred_label), y_true).sum()
 
         return true_pos, false_pos, true_neg, false_neg
 
