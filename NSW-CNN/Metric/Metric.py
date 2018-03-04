@@ -103,10 +103,9 @@ class Metric:
             print("Index for TP/FP/TN/FN not recorded")
 
 
-# In[ ]:
-
+# to record each metric
 class Metric_Record:
-    """docstring for Metric_Info"""
+
     def __init__(self):
         self.y_true = []
         self.pred_prob = []

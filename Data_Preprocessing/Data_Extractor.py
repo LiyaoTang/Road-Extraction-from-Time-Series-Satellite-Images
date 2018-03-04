@@ -31,9 +31,9 @@ class Data_Extractor:
     
     def __init__(self, raw_image, road_mask, step, pos_topleft_coord, neg_topleft_coord, normalization='mean', encoding='binary'):
 
-        # original image info
-        self.raw_image = raw_image.copy()
-        self.road_mask = road_mask.copy()
+        # original image info (shallow assignment to reduce mem)
+        self.raw_image = raw_image
+        self.road_mask = road_mask
         
         self.band = raw_image.shape[0]
     
@@ -44,11 +44,11 @@ class Data_Extractor:
         self.encoding = encoding # ground truth encoding
         self.normalization = normalization # if need norm
 
-        # pos-neg coordinate info
-        self.pos_topleft_coord = np.array(pos_topleft_coord)
+        # pos-neg coordinate info (array shallow assignment to reduce mem)
+        self.pos_topleft_coord = pos_topleft_coord
         np.random.shuffle (self.pos_topleft_coord)
             
-        self.neg_topleft_coord = np.array(neg_topleft_coord)
+        self.neg_topleft_coord = neg_topleft_coord
         np.random.shuffle (self.neg_topleft_coord)
         
         self.pos_size = pos_topleft_coord.shape[0]

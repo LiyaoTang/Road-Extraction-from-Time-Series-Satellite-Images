@@ -137,37 +137,75 @@ print('mem usage after data loaded:', process.memory_info().rss / 1024/1024, 'MB
 
 
 # model parameter
-size = 8
+size = step
 band = 7
 
-# Hyper parameters
 conv_out = [0, 16, 16]
 last_conv_flatten = conv_out[-1]
-layer_out = [0, 128]
+layer_out = [0, 8]
 
 class_output = 1 # number of possible classifications for the problem
-
-keep_rate = 0.5 # need regularization => otherwise NaN appears inside CNN
-
 class_weight = [Train_Data.pos_size/Train_Data.size, Train_Data.neg_size/Train_Data.size]
+print(class_weight, '[neg, pos]')
+
+keep_rate = 0.5 # need regularization => otherwise NaN may appears inside CNN
 
 batch_size = 64
 learning_rate = 9e-6
-epoch = 15
-
-print(class_weight, '[neg, pos]')
+iteration = int(Train_Data.size/batch_size) + 1
 
 
-# create SGD classifier
+# placeholders
+tf.reset_default_graph()
+x = tf.placeholder(tf.float32, shape=[None, size, size, band], name='x')
+center_crop = tf.contrib.layers.flatten(x[:, int(size/2)-1:int(size/2)+2, int(size/2)-1:int(size/2)+2, :])
+y = tf.placeholder(tf.float32, shape=[None], name='y')
+
+keep_prob = tf.placeholder(tf.float32, name='keep_prob') # dropout
+is_training = tf.placeholder(tf.bool, name='is_training') # batch norm
+
+# Convolutional Layer 1
+net = tf.contrib.layers.conv2d(inputs=x, num_outputs=conv_out[1], kernel_size=3, 
+                               stride=1, padding='SAME',
+                               normalizer_fn=tf.contrib.layers.batch_norm,
+                               normalizer_params={'scale':True, 'is_training':is_training},
+                               scope='conv1')
+
+net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool1')
+
+# Convolutional Layer 2
+net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_out[2], kernel_size=3, 
+                               stride=1, padding='SAME',
+                               normalizer_fn=tf.contrib.layers.batch_norm,
+                               normalizer_params={'scale':True, 'is_training':is_training},
+                               scope='conv2')
+
+net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool2')
+
+# Flattening
+net = tf.contrib.layers.flatten(net, scope='flatten')
+
+# Dense Layer 1
+net = tf.contrib.layers.fully_connected(inputs=net, num_outputs=layer_out[1], scope='dense1')
+
+# # Drop out layer:
+# net = tf.contrib.layers.dropout(inputs=net, keep_prob=keep_prob, is_training=is_training, scope='drop')
+
+# Dense Layer 2 (output)
+net = tf.concat( [net, center_crop], 1)
+net = tf.contrib.layers.fully_connected(inputs=net, num_outputs=class_output, activation_fn=tf.nn.sigmoid, 
+                                        scope='dense2')
+net = tf.squeeze(net, name='logits')
+
 if use_weight:
-	log_classifier = sklm.SGDClassifier(loss='log', max_iter=1, 
-										class_weight={0:Train_Data.pos_size/Train_Data.size,
-													  1:Train_Data.neg_size/Train_Data.size})
+	cross_entropy = tf.reduce_mean(tf.nn.weighted_cross_entropy_with_logits(logits=net, targets=y, 
+																			pos_weight=class_weight[1]))
 else:
-	log_classifier = sklm.SGDClassifier(loss='log', max_iter=1)
+	cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=net, targets=y))
 
-all_classes = np.array([0, 1])
-print(log_classifier)
+update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS) # collect update_ops into train step
+with tf.control_dependencies(update_ops):
+    train_step = tf.train.AdamOptimizer(learning_rate).minimize(cross_entropy)
 
 # monitor mem usage
 process = psutil.Process(os.getpid())
@@ -178,20 +216,43 @@ sys.stdout.flush()
 ''' Train & monitor '''
 
 
+
+saver = tf.train.Saver()
+
+sess = tf.InteractiveSession()
+sess.run(tf.global_variables_initializer())
+
+
 balanced_acc_curve = []
 AUC_curve = []
 avg_precision_curve = []
+cross_entropy_curve = []
+
+for epoch_num in range(epoch):
+    for iter_num in range(iteration):
+        
+        batch_x, batch_y = Train_Data.get_patches(batch_size=64)
+        
+        
+
+    print("cross entropy = ", cur_cost)
+    learning_curve.append(cur_cost)
+print("finish")
+
+
+#####
+
 for epoch_num in range(epoch):
 	for iter_num in range(iteration):
 
 		batch_x, batch_y = Train_Data.get_patches(batch_size=batch_size, positive_num=pos_num, norm=True)
-		batch_x = batch_x.reshape((batch_size, -1))
-		
-		log_classifier.partial_fit(batch_x, batch_y, all_classes)
+		batch_x = batch_x.transpose((0, 2, 3, 1))
+
+		train_step.run(feed_dict={x: batch_x, y: batch_y, keep_prob: keep_rate, is_training: True})
 
 	# snap shot on CV set
 	cv_metric = Metric_Record()
-	# record info
+	cv_cross_entropy_list = []
 	for x, y in CV_Data.iterate_data(norm=True):
 		x = x.reshape((1, -1))
 
@@ -199,16 +260,20 @@ for epoch_num in range(epoch):
 		pred_prob = log_classifier.predict_proba(x)
 		cv_metric.accumulate(Y=y, pred=pred, pred_prob=pred_prob)
 
+		cv_cross_entropy_list.append(cross_entropy.eval(feed_dict={x:batch_x, y: batch_y, keep_prob: 1, is_training:False}))
+
 	# calculate value
 	balanced_acc = cv_metric.get_balanced_acc()
 	AUC_score = skmt.roc_auc_score(cv_metric.y_true, cv_metric.pred_prob)
 	avg_precision_score = skmt.average_precision_score(cv_metric.y_true, cv_metric.pred_prob)
+	mean_cross_entropy = sum(cv_cross_entropy_list)/len(cv_cross_entropy_list)
 
 	balanced_acc_curve.append(balanced_acc)
 	AUC_curve.append(AUC_score)
 	avg_precision_curve.append(avg_precision_score)
+	cross_entropy_curve.append(mean_cross_entropy)
 
-	print(" balanced_acc = ", balanced_acc, "AUC = ", AUC_score, "avg_precision = ", avg_precision_score)
+	print("mean_cross_entropy = ", mean_cross_entropy, "balanced_acc = ", balanced_acc, "AUC = ", AUC_score, "avg_precision = ", avg_precision_score)
 	sys.stdout.flush()
 
 print("finish")

@@ -132,7 +132,6 @@ print('mem usage after data loaded:', process.memory_info().rss / 1024/1024, 'MB
 
 
 
-
 ''' Create model '''
 
 
@@ -147,14 +146,17 @@ iteration = int(Train_Data.size / batch_size) + 1
 
 # create SGD classifier
 if use_weight:
-	log_classifier = sklm.SGDClassifier(loss='log', max_iter=1, 
+	log_classifier = sklm.SGDClassifier(loss='log', max_iter=1, shuffle=False,
 										class_weight={0:Train_Data.pos_size/Train_Data.size,
 													  1:Train_Data.neg_size/Train_Data.size})
 else:
-	log_classifier = sklm.SGDClassifier(loss='log', max_iter=1)
+	log_classifier = sklm.SGDClassifier(loss='log', max_iter=1, shuffle=False)
 
 all_classes = np.array([0, 1])
 print(log_classifier)
+
+pos_class_index = int(np.where(log_classifier.classes_ == 1)[0])
+print("classes in classifier ", log_classifier.classes_, pos_class_index)
 
 # monitor mem usage
 process = psutil.Process(os.getpid())
@@ -183,7 +185,7 @@ for epoch_num in range(epoch):
 		x = x.reshape((1, -1))
 
 		pred = log_classifier.predict(x)
-		pred_prob = log_classifier.predict_proba(x)
+		pred_prob = log_classifier.predict_proba(x)[0, pos_class_index]
 		cv_metric.accumulate(Y=y, pred=pred, pred_prob=pred_prob)
 
 	# calculate value
@@ -239,7 +241,7 @@ for x, y in Train_Data.iterate_data(norm=True):
 	x = x.reshape((1, -1))
 
 	pred = log_classifier.predict(x)
-	pred_prob = log_classifier.predict_proba(x)
+	pred_prob = log_classifier.predict_proba(x)[0, pos_class_index]
 	train_metric.accumulate(Y=y, pred=pred, pred_prob=pred_prob)    
 train_metric.print_info()
 
@@ -253,20 +255,17 @@ cv_metric = 0
 gc.collect()
 
 # Predict road mask
-index = np.where(log_classifier.classes_ == 1)[0][0]
-print(log_classifier.classes_, index)
-
 # Predict road prob masks on train
 train_pred_road = np.zeros(train_road_mask.shape)
 for coord, patch in Train_Data.iterate_raw_image_patches_with_coord(norm=True):
 	patch = patch.reshape([1,-1])
-	train_pred_road[int(coord[0]+width/2), int(coord[1]+width/2)] = log_classifier.predict_proba(patch)[0, index]
+	train_pred_road[int(coord[0]+width/2), int(coord[1]+width/2)] = log_classifier.predict_proba(patch)[0, pos_class_index]
 
 # Predict road prob on CV
 CV_pred_road = np.zeros(CV_road_mask.shape)
 for coord, patch in CV_Data.iterate_raw_image_patches_with_coord(norm=True):
 	patch = patch.reshape([1,-1])
-	CV_pred_road[int(coord[0]+width/2), int(coord[1]+width/2)] = log_classifier.predict_proba(patch)[0, index]
+	CV_pred_road[int(coord[0]+width/2), int(coord[1]+width/2)] = log_classifier.predict_proba(patch)[0, pos_class_index]
 
 # save prediction
 prediction_name = model_name + '_pred.h5'
