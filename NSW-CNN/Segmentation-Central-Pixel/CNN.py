@@ -83,7 +83,7 @@ if not model_name:
 
 # monitor mem usage
 process = psutil.Process(os.getpid())
-print('mem usage before data loaded:' process.memory_info().rss / 1024/1024, 'MB')
+print('mem usage before data loaded:', process.memory_info().rss / 1024/1024, 'MB')
 
 
 ''' Data preparation '''
@@ -128,8 +128,7 @@ print("pos = ", CV_Data.pos_size, "neg = ", CV_Data.neg_size)
 
 # monitor mem usage
 process = psutil.Process(os.getpid())
-print('mem usage after data loaded:' process.memory_info().rss / 1024/1024, 'MB')
-
+print('mem usage after data loaded:', process.memory_info().rss / 1024/1024, 'MB')
 
 
 
@@ -158,6 +157,7 @@ epoch = 15
 
 print(class_weight, '[neg, pos]')
 
+
 # create SGD classifier
 if use_weight:
 	log_classifier = sklm.SGDClassifier(loss='log', max_iter=1, 
@@ -171,7 +171,7 @@ print(log_classifier)
 
 # monitor mem usage
 process = psutil.Process(os.getpid())
-print('mem usage after model created:' process.memory_info().rss / 1024/1024, 'MB')
+print('mem usage after model created:', process.memory_info().rss / 1024/1024, 'MB')
 sys.stdout.flush()
 
 
@@ -216,7 +216,7 @@ print("finish")
 
 # monitor mem usage
 process = psutil.Process(os.getpid())
-print('mem usage after model trained:' process.memory_info().rss / 1024/1024, 'MB')
+print('mem usage after model trained:', process.memory_info().rss / 1024/1024, 'MB')
 
 # plot training curve
 plt.figsize=(9,5)
@@ -290,7 +290,7 @@ h5f_file.close()
 
 # monitor mem usage
 process = psutil.Process(os.getpid())
-print('mem usage after prediction maps calculated:' process.memory_info().rss / 1024/1024, 'MB')
+print('mem usage after prediction maps calculated:', process.memory_info().rss / 1024/1024, 'MB')
 
 # Analyze pred in plot
 show_pred_prob_with_raw(train_raw_image, pred_road, train_road_mask, pred_weight=0.2, figsize=(150,150), 
