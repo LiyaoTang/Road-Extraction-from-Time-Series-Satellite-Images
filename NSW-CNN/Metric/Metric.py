@@ -108,8 +108,6 @@ class Metric:
 class Metric_Record:
     """docstring for Metric_Info"""
     def __init__(self):
-        super(Metric_Info, self).__init__(self, record_index = False)
-
         self.y_true = []
         self.pred_prob = []
         self.pred_label = []

@@ -15,7 +15,7 @@ from optparse import OptionParser
 
 sys.path.append('../Metric/')
 sys.path.append('../../Visualization/')
-sys.path.append('../../Data_Preprocessing//')
+sys.path.append('../../Data_Preprocessing/')
 from Metric import *
 from Visualization import *
 from Data_Extractor import *
@@ -37,9 +37,11 @@ path_train_set = options.path_train_set
 path_cv_set = options.path_cv_set
 save_path = options.save_path
 model_name = options.model_name
+
 use_weight = options.use_weight
 pos_num = options.pos_num
 step = options.step
+epoch = options.epoch
 rand_seed = options.rand_seed
 
 if not save_path:
@@ -52,31 +54,35 @@ if not os.path.exists(save_path+'Analysis'):
 	os.makedirs(save_path+'Analysis')
 
 if not path_train_set:
-	path_train_set = "/localdata/u6142160/Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_train"
+	path_train_set = "../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_train"
 if not path_cv_set:
-	path_cv_set = "/localdata/u6142160/Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_cv"
+	path_cv_set = "../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_cv"
+
+if not pos_num:
+	pos_num = 0
 if not step:
 	step = 8
 if not epoch:
 	epoch = 15
+if not rand_seed:
+	rand_seed = 0
 
 if not model_name:
 	model_name = "sk-SGD_"
 	if use_weight: model_name += "weight_"
 	model_name += "s" + str(step) + "_"
 	model_name += "pos" + str(pos_num) + "_"
-	model_name += "ep" + str(epoch)
+	model_name += "ep" + str(epoch) + "_"
+	model_name += "r" + str(rand_seed)
 	
 	print("will be saved as ", model_name)
 	print("will be saved into ", save_path)
 
-if not rand_seed:
-	rand_seed = 0
-
-np.random.seed(rand_seed)
 
 ''' Data preparation '''
 
+
+np.random.seed(rand_seed)
 
 # Load training set
 train_set = h5py.File(path_train_set, 'r')
