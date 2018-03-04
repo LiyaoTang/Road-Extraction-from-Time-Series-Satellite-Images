@@ -10,6 +10,7 @@ import skimage.io
 import h5py
 import sys
 import os
+import gc
 
 from optparse import OptionParser
 
@@ -103,9 +104,12 @@ CV_set.close()
 Train_Data = Data_Extractor (train_raw_image, train_road_mask, step,
 							 pos_topleft_coord = train_pos_topleft_coord,
 							 neg_topleft_coord = train_neg_topleft_coord)
+gc.collect() # run garbage collector
+
 CV_Data = Data_Extractor (CV_raw_image, CV_road_mask, step,
 						  pos_topleft_coord = CV_pos_topleft_coord,
 						  neg_topleft_coord = CV_neg_topleft_coord)
+gc.collect() # run garbage collector
 
 print("train data:")
 print(train_raw_image.shape, train_road_mask.shape)
