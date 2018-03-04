@@ -136,14 +136,27 @@ print('mem usage after data loaded:' process.memory_info().rss / 1024/1024, 'MB'
 ''' Create model '''
 
 
+
 # model parameter
-width = step
-height = step
+size = 8
 band = 7
+
+# Hyper parameters
+conv_out = [0, 16, 16]
+last_conv_flatten = conv_out[-1]
+layer_out = [0, 128]
+
+class_output = 1 # number of possible classifications for the problem
+
+keep_rate = 0.5 # need regularization => otherwise NaN appears inside CNN
+
+class_weight = [Train_Data.pos_size/Train_Data.size, Train_Data.neg_size/Train_Data.size]
 
 batch_size = 64
 learning_rate = 9e-6
-iteration = int(Train_Data.size / batch_size) + 1
+epoch = 15
+
+print(class_weight, '[neg, pos]')
 
 # create SGD classifier
 if use_weight:

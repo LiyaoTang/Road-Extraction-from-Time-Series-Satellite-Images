@@ -111,18 +111,14 @@ class Metric_Record:
         self.y_true = []
         self.pred_prob = []
         self.pred_label = []
-    
+
+        self.true_pos  = 0
+        self.false_pos = 0
+        self.true_neg  = 0
+        self.false_neg = 0
+
     def _get_base_metric(self):
-        y_true = np.array(self.y_true, dtype=int)
-        pred_prob = np.array(self.pred_prob)
-        pred_label = np.array(self.pred_label, dtype=int)
-
-        true_pos = np.logical_and(pred_label, y_true).sum()
-        false_pos = np.logical_and(pred_label, np.logical_not(y_true)).sum()
-        true_neg = np.logical_and(np.logical_not(pred_label), np.logical_not(y_true)).sum()
-        false_neg = np.logical_and(np.logical_not(pred_label), y_true).sum()
-
-        return true_pos, false_pos, true_neg, false_neg
+        return self.true_pos, self.false_pos, self.true_neg, self.false_neg
 
     def accumulate(self, pred, Y, pred_prob):
         
@@ -130,6 +126,16 @@ class Metric_Record:
         self.y_true.append(Y)
         self.pred_prob.append(pred_prob)
     
+        TP_arr = np.logical_and(pred, Y)
+        FP_arr = np.logical_and(pred, np.logical_not(Y))
+        TN_arr = np.logical_and(np.logical_not(pred), np.logical_not(Y))
+        FN_arr = np.logical_and(np.logical_not(pred), Y)
+
+        self.true_pos  += TP_arr.sum()
+        self.false_pos += FP_arr.sum()
+        self.true_neg  += TN_arr.sum()
+        self.false_neg += FN_arr.sum()
+
     def print_info(self):
         size = len(self.y_true)
         
