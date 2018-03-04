@@ -105,6 +105,13 @@ class Data_Extractor:
             y = self._get_patch_label(coord)
             yield x, y
 
+    def iterate_data_with_coord (self, norm=True):
+        for coord in self.topleft_coordinate:
+            x = self._get_raw_patch(coord, norm)
+            y = self._get_patch_label(coord)
+            yield coord, x, y
+
+
     def _get_patches_from_topleft_coord (self, coord_arr, num_of_patches, start_index, norm, wrap_around):
         X = []
         Y = []

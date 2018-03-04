@@ -104,12 +104,14 @@ CV_set.close()
 Train_Data = Data_Extractor (train_raw_image, train_road_mask, step,
 							 pos_topleft_coord = train_pos_topleft_coord,
 							 neg_topleft_coord = train_neg_topleft_coord)
-gc.collect() # run garbage collector
+# run garbage collector
+gc.collect()
 
 CV_Data = Data_Extractor (CV_raw_image, CV_road_mask, step,
 						  pos_topleft_coord = CV_pos_topleft_coord,
 						  neg_topleft_coord = CV_neg_topleft_coord)
-gc.collect() # run garbage collector
+# run garbage collector
+gc.collect()
 
 print("train data:")
 print(train_raw_image.shape, train_road_mask.shape)
@@ -198,6 +200,9 @@ joblib.dump(log_classifier, save_path+model_name)
 saved_sk_obj = joblib.load(save_path+model_name)
 assert (saved_sk_obj.coef_ == log_classifier.coef_).all()
 
+# run garbage collection
+saved_sk_obj = 0
+gc.collect()
 
 ''' Evaluate model '''
 
@@ -219,6 +224,10 @@ train_metric.print_info()
 cv_metric.print_info()
 sys.stdout.flush()
 
+# run garbage collection
+train_metric = 0
+cv_metric = 0
+gc.collect()
 
 # Predict road mask
 index = np.where(log_classifier.classes_ == 1)[0][0]
