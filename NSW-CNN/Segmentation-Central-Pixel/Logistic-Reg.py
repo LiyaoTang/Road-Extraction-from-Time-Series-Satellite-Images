@@ -71,8 +71,8 @@ if not model_name:
 	model_name = "sk-SGD_"
 	if use_weight: model_name += "weight_"
 	model_name += "s" + str(step) + "_"
-	model_name += "pos" + str(pos_num) + "_"
-	model_name += "ep" + str(epoch) + "_"
+	model_name += "p" + str(pos_num) + "_"
+	model_name += "e" + str(epoch) + "_"
 	model_name += "r" + str(rand_seed)
 	
 	print("will be saved as ", model_name)
