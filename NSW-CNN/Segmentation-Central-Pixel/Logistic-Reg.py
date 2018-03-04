@@ -135,6 +135,7 @@ print('mem usage after data loaded:', process.memory_info().rss / 1024/1024, 'MB
 ''' Create model '''
 
 
+
 # model parameter
 width = step
 height = step
@@ -151,9 +152,10 @@ if use_weight:
 													  1:Train_Data.neg_size/Train_Data.size})
 else:
 	log_classifier = sklm.SGDClassifier(loss='log', max_iter=1, shuffle=False)
+print(log_classifier)
 
 all_classes = np.array([0, 1])
-print(log_classifier)
+log_classifier.classes_ = all_classes
 
 pos_class_index = int(np.where(log_classifier.classes_ == 1)[0])
 print("classes in classifier ", log_classifier.classes_, pos_class_index)
@@ -164,7 +166,9 @@ print('mem usage after model created:', process.memory_info().rss / 1024/1024, '
 sys.stdout.flush()
 
 
+
 ''' Train & monitor '''
+
 
 
 balanced_acc_curve = []
@@ -176,7 +180,7 @@ for epoch_num in range(epoch):
 		batch_x, batch_y = Train_Data.get_patches(batch_size=batch_size, positive_num=pos_num, norm=True)
 		batch_x = batch_x.reshape((batch_size, -1))
 		
-		log_classifier.partial_fit(batch_x, batch_y, all_classes)
+		log_classifier.partial_fit(batch_x, batch_y)
 
 	# snap shot on CV set
 	cv_metric = Metric_Record()
@@ -230,6 +234,7 @@ gc.collect()
 
 
 ''' Evaluate model '''
+
 
 
 print(log_classifier.coef_.shape)
