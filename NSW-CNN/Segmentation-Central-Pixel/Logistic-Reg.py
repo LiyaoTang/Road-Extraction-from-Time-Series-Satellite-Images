@@ -11,6 +11,8 @@ import h5py
 import sys
 import os
 import gc
+import os
+import psutil
 
 from optparse import OptionParser
 
@@ -79,6 +81,10 @@ if not model_name:
 	print("will be saved as ", model_name)
 	print("will be saved into ", save_path)
 
+# monitor mem usage
+process = psutil.Process(os.getpid())
+print('mem usage before data loaded:' process.memory_info().rss / 1024/1024, 'MB')
+
 
 ''' Data preparation '''
 
@@ -119,6 +125,12 @@ print("pos = ", Train_Data.pos_size, "neg = ", Train_Data.neg_size)
 print("cv data:")
 print(CV_raw_image.shape, CV_road_mask.shape)
 print("pos = ", CV_Data.pos_size, "neg = ", CV_Data.neg_size)
+
+# monitor mem usage
+process = psutil.Process(os.getpid())
+print('mem usage after data loaded:' process.memory_info().rss / 1024/1024, 'MB')
+
+
 
 
 ''' Create model '''
@@ -184,6 +196,11 @@ for epoch_num in range(epoch):
 
 print("finish")
 
+
+# monitor mem usage
+process = psutil.Process(os.getpid())
+print('mem usage after model trained:' process.memory_info().rss / 1024/1024, 'MB')
+
 # plot training curve
 plt.figsize=(9,5)
 plt.plot(balanced_acc_curve, label='balanced_acc')
@@ -203,6 +220,8 @@ assert (saved_sk_obj.coef_ == log_classifier.coef_).all()
 # run garbage collection
 saved_sk_obj = 0
 gc.collect()
+
+
 
 ''' Evaluate model '''
 
@@ -251,6 +270,10 @@ h5f_file = h5py.File(save_path + prediction_name, 'w')
 h5f_file.create_dataset (name='train_pred', data=train_pred_road)
 h5f_file.create_dataset (name='CV_pred', data=CV_pred_road)
 h5f_file.close()
+
+# monitor mem usage
+process = psutil.Process(os.getpid())
+print('mem usage after prediction maps calculated:' process.memory_info().rss / 1024/1024, 'MB')
 
 # Analyze pred in plot
 show_pred_prob_with_raw(train_raw_image, pred_road, train_road_mask, pred_weight=0.2, figsize=(150,150), 
