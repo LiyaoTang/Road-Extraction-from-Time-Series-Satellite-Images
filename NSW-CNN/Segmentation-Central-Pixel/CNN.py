@@ -2,8 +2,9 @@
 
 import numpy as np
 import sklearn as sk
-import sklearn.linear_model as sklm
 import sklearn.metrics as skmt
+import matplotlib
+matplotlib.use('agg') # so that plt works in command line
 import matplotlib.pyplot as plt
 import scipy.io as sio
 import skimage.io
@@ -29,11 +30,15 @@ parser.add_option("--train", dest="path_train_set")
 parser.add_option("--cv", dest="path_cv_set")
 parser.add_option("--save", dest="save_path")
 parser.add_option("--name", dest="model_name")
-parser.add_option("--not_weight", action="store_false", dest="use_weight")
 parser.add_option("--pos", type="int", dest="pos_num")
 parser.add_option("--step", type="int", dest="step")
 parser.add_option("-e", "--epoch", type="int", dest="epoch")
 parser.add_option("--rand", type="int", dest="rand_seed")
+parser.add_option("--not_weight", action="store_false", dest="use_weight")
+parser.add_option("--use_drop_out", action="store_true", dest="use_drop_out")
+parser.add_option("--use_center_crop", action="store_true", dest="use_center_crop")
+parser.add_option("--use_batch_norm", action="store_true", dest="use_batch_norm")
+parser.add_option("--learning_rate", type="float", dest="learning_rate")
 (options, args) = parser.parse_args()
 
 path_train_set = options.path_train_set
@@ -41,11 +46,16 @@ path_cv_set = options.path_cv_set
 save_path = options.save_path
 model_name = options.model_name
 
-use_weight = options.use_weight
 pos_num = options.pos_num
 step = options.step
 epoch = options.epoch
+learning_rate = options.learning_rate
 rand_seed = options.rand_seed
+
+use_weight = options.use_weight
+use_drop_out = options.use_drop_out
+use_center_crop = options.use_center_crop
+use_batch_norm = options.use_batch_norm
 
 if not save_path:
 	print("no save path provided")
@@ -67,12 +77,17 @@ if not step:
 	step = 8
 if not epoch:
 	epoch = 15
+if not learning_rate:
+	learning_rate = 9e-6
 if not rand_seed:
 	rand_seed = 0
 
 if not model_name:
 	model_name = "sk-SGD_"
 	if use_weight: model_name += "weight_"
+	if use_center_crop: model_name += "crop_"
+	if use_drop_out: model_name += "drop_"
+	if use_batch_norm: model_name += "bn_"
 	model_name += "s" + str(step) + "_"
 	model_name += "p" + str(pos_num) + "_"
 	model_name += "e" + str(epoch) + "_"
@@ -86,9 +101,12 @@ process = psutil.Process(os.getpid())
 print('mem usage before data loaded:', process.memory_info().rss / 1024/1024, 'MB')
 
 
+
 ''' Data preparation '''
 
 
+
+# set random seed
 np.random.seed(rand_seed)
 
 # Load training set
@@ -136,7 +154,7 @@ print('mem usage after data loaded:', process.memory_info().rss / 1024/1024, 'MB
 
 
 
-# model parameter
+# general model parameter
 size = step
 band = 7
 
@@ -148,37 +166,42 @@ class_output = 1 # number of possible classifications for the problem
 class_weight = [Train_Data.pos_size/Train_Data.size, Train_Data.neg_size/Train_Data.size]
 print(class_weight, '[neg, pos]')
 
-keep_rate = 0.5 # need regularization => otherwise NaN may appears inside CNN
-
 batch_size = 64
-learning_rate = 9e-6
+# learning_rate = 9e-6
 iteration = int(Train_Data.size/batch_size) + 1
 
 
 # placeholders
 tf.reset_default_graph()
 x = tf.placeholder(tf.float32, shape=[None, size, size, band], name='x')
-center_crop = tf.contrib.layers.flatten(x[:, int(size/2)-1:int(size/2)+2, int(size/2)-1:int(size/2)+2, :])
 y = tf.placeholder(tf.float32, shape=[None], name='y')
 
 keep_prob = tf.placeholder(tf.float32, name='keep_prob') # dropout
 is_training = tf.placeholder(tf.bool, name='is_training') # batch norm
 
 # Convolutional Layer 1
-net = tf.contrib.layers.conv2d(inputs=x, num_outputs=conv_out[1], kernel_size=3, 
-                               stride=1, padding='SAME',
-                               normalizer_fn=tf.contrib.layers.batch_norm,
-                               normalizer_params={'scale':True, 'is_training':is_training},
-                               scope='conv1')
+if use_batch_norm:
+	net = tf.contrib.layers.conv2d(inputs=x, num_outputs=conv_out[1], kernel_size=3, 
+	                               stride=1, padding='SAME',
+	                               normalizer_fn=tf.contrib.layers.batch_norm,
+	                               normalizer_params={'scale':True, 'is_training':is_training},
+	                               scope='conv1')
+else:
+	net = tf.contrib.layers.conv2d(inputs=x, num_outputs=conv_out[1], kernel_size=3, 
+	                               stride=1, padding='SAME', scope='conv1')
 
 net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool1')
 
 # Convolutional Layer 2
-net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_out[2], kernel_size=3, 
-                               stride=1, padding='SAME',
-                               normalizer_fn=tf.contrib.layers.batch_norm,
-                               normalizer_params={'scale':True, 'is_training':is_training},
-                               scope='conv2')
+if use_batch_norm:
+	net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_out[2], kernel_size=3, 
+	                               stride=1, padding='SAME',
+	                               normalizer_fn=tf.contrib.layers.batch_norm,
+	                               normalizer_params={'scale':True, 'is_training':is_training},
+	                               scope='conv2')
+else:
+	net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_out[2], kernel_size=3, 
+                               stride=1, padding='SAME', scope='conv2')
 
 net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool2')
 
@@ -188,11 +211,14 @@ net = tf.contrib.layers.flatten(net, scope='flatten')
 # Dense Layer 1
 net = tf.contrib.layers.fully_connected(inputs=net, num_outputs=layer_out[1], scope='dense1')
 
-# # Drop out layer:
-# net = tf.contrib.layers.dropout(inputs=net, keep_prob=keep_prob, is_training=is_training, scope='drop')
+if use_drop_out:
+	keep_rate = 0.5 # Drop out layer as regularization => NaN may appears inside CNN
+	net = tf.contrib.layers.dropout(inputs=net, keep_prob=keep_prob, is_training=is_training, scope='drop')
 
 # Dense Layer 2 (output)
-net = tf.concat( [net, center_crop], 1)
+if use_center_crop:
+	center_crop = tf.contrib.layers.flatten(x[:, int(size/2)-1:int(size/2)+2, int(size/2)-1:int(size/2)+2, :])
+	net = tf.concat( [net, center_crop], 1)
 net = tf.contrib.layers.fully_connected(inputs=net, num_outputs=class_output, activation_fn=tf.nn.sigmoid, 
                                         scope='dense2')
 net = tf.squeeze(net, name='logits')
@@ -211,6 +237,7 @@ with tf.control_dependencies(update_ops):
 process = psutil.Process(os.getpid())
 print('mem usage after model created:', process.memory_info().rss / 1024/1024, 'MB')
 sys.stdout.flush()
+
 
 
 ''' Train & monitor '''
@@ -240,7 +267,7 @@ for epoch_num in range(epoch):
 print("finish")
 
 
-#####
+##### working ------------------->>>>>>>>>>>>>>>>>>>
 
 for epoch_num in range(epoch):
 	for iter_num in range(iteration):

@@ -4,7 +4,8 @@ import numpy as np
 import sklearn as sk
 import sklearn.linear_model as sklm
 import sklearn.metrics as skmt
-import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('agg') # so that plt works in command lineimport matplotlib.pyplot as plt
 import scipy.io as sio
 import skimage.io
 import h5py

@@ -29,15 +29,15 @@ def show_raw_image(image, x = 0, y = 0, light=3.0, size=500, x_size=0, y_size=0,
     plt.close()
 
 # pass in whole image (raw & road) => display a subset of it (size = -1 to show the whole)
-def show_image_against_road(image, road, x = 0,y = 0, light=3.0, size=500, figsize=(20,20),
+def show_image_against_road(image, road, x = 0,y = 0, light=3.0, size=500, figsize=(20,20), BGR_axis=[1,2,3],
                             show_plot = True, show_raw=True, threshold = 0, save_path=None, close_plot=True):
 
     if size > 0:
         sub_road = road[x:x+size,y:y+size]
-        sub_image = image[[1,2,3],x:x+size,y:y+size]
+        sub_image = image[BGR_axis,x:x+size,y:y+size]
     else:
         sub_road = road
-        sub_image = image[[1,2,3]]
+        sub_image = image[BGR_axis]
 
     sub_road[np.where(sub_road == 255)] = 1        
     sub_image = sub_image/10000*light        
