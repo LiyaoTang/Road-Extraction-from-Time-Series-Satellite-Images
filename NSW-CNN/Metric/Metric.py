@@ -102,11 +102,21 @@ class Metric:
         else:
             print("Index for TP/FP/TN/FN not recorded")
 
+class ad(object):
+    """docstring for ad"""
+    def __init__(self, arg):
+        super(ad, self).__init__()
+        self.arg = arg
+        
+        
 
 # to record each metric
-class Metric_Record:
+class Metric_Record (Metric):
 
     def __init__(self):
+
+        super(Metric_Record, self).__init__()
+
         self.y_true = []
         self.pred_prob = []
         self.pred_label = []
@@ -116,6 +126,8 @@ class Metric_Record:
         self.true_neg  = 0
         self.false_neg = 0
 
+        self.size = 0
+        
     def _get_base_metric(self):
         return self.true_pos, self.false_pos, self.true_neg, self.false_neg
 
@@ -135,6 +147,8 @@ class Metric_Record:
         self.true_neg  += TN_arr.sum()
         self.false_neg += FN_arr.sum()
 
+        self.size += Y.size
+
     def print_info(self):
         size = len(self.y_true)
         
@@ -144,6 +158,8 @@ class Metric_Record:
                             'true_neg', true_neg, 'false_neg', false_neg, size))
 
         self.cal_metric(true_pos, false_pos, true_neg, false_neg, size)
+        for key in result.keys():
+            print("%-13s = %s" % (key, result[key]))
 
     def get_balanced_acc(self):
         true_pos, false_pos, true_neg, false_neg = self._get_base_metric()
