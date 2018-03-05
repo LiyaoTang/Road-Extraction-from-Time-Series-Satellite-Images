@@ -34,6 +34,9 @@ parser.add_option("--pos", type="int", dest="pos_num")
 parser.add_option("--step", type="int", dest="step")
 parser.add_option("-e", "--epoch", type="int", dest="epoch")
 parser.add_option("--rand", type="int", dest="rand_seed")
+
+parser.add_option("--conv", action="callback", nargs=1, callback=lambda option, opt_str, value, parser: [int(x) for x in value.split(,)], dest="conv_struct")
+parser.add_option("--dense", action="callback", nargs=1, callback=lambda option, opt_str, value, parser: [int(x) for x in value.split(,)], dest="dense_struct")
 parser.add_option("--not_weight", action="store_false", dest="use_weight")
 parser.add_option("--use_drop_out", action="store_true", dest="use_drop_out")
 parser.add_option("--use_center_crop", action="store_true", dest="use_center_crop")
@@ -51,6 +54,9 @@ step = options.step
 epoch = options.epoch
 learning_rate = options.learning_rate
 rand_seed = options.rand_seed
+
+conv_struct = options.conv_struct
+dense_struct = options.dense_struct
 
 use_weight = options.use_weight
 use_drop_out = options.use_drop_out
@@ -95,6 +101,11 @@ if not model_name:
 	
 	print("will be saved as ", model_name)
 	print("will be saved into ", save_path)
+
+if not conv_struct or not dense_struct:
+	print("must provide structure for conv & dense layers")
+	sys.exit()
+assert len(conv_struct) == 3 and len(dense_struct) == 2
 
 # monitor mem usage
 process = psutil.Process(os.getpid())
@@ -158,9 +169,9 @@ print('mem usage after data loaded:', process.memory_info().rss / 1024/1024, 'MB
 size = step
 band = 7
 
-conv_out = [0, 16, 16]
+conv_out = conv_struct
 last_conv_flatten = conv_out[-1]
-layer_out = [0, 8]
+layer_out = dense_struct
 
 class_output = 1 # number of possible classifications for the problem
 class_weight = [Train_Data.pos_size/Train_Data.size, Train_Data.neg_size/Train_Data.size]
