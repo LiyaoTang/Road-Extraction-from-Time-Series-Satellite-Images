@@ -67,14 +67,14 @@ if not os.path.exists(save_path+'Analysis'):
 	os.makedirs(save_path+'Analysis')
 
 if not path_train_set:
-	path_train_set = "../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_train"
+	path_train_set = "../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_16_train"
 if not path_cv_set:
-	path_cv_set = "../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_cv"
+	path_cv_set = "../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_16_cv"
 
 if not pos_num:
 	pos_num = 0
 if not step:
-	step = 8
+	step = 16
 if not epoch:
 	epoch = 15
 if not learning_rate:
@@ -83,7 +83,7 @@ if not rand_seed:
 	rand_seed = 0
 
 if not model_name:
-	model_name = "sk-SGD_"
+	model_name = "CNN_"
 	if use_weight: model_name += "weight_"
 	if use_center_crop: model_name += "crop_"
 	if use_drop_out: model_name += "drop_"
@@ -219,15 +219,15 @@ if use_drop_out:
 if use_center_crop:
 	center_crop = tf.contrib.layers.flatten(x[:, int(size/2)-1:int(size/2)+2, int(size/2)-1:int(size/2)+2, :])
 	net = tf.concat( [net, center_crop], 1)
-net = tf.contrib.layers.fully_connected(inputs=net, num_outputs=class_output, activation_fn=tf.nn.sigmoid, 
-                                        scope='dense2')
-net = tf.squeeze(net, name='logits')
+net = tf.contrib.layers.fully_connected(inputs=net, num_outputs=class_output, activation_fn=tf.nn.sigmoid, scope='dense2')
+logits = tf.squeeze(net, name='logits')
 
+# calculate entropy
 if use_weight:
-	cross_entropy = tf.reduce_mean(tf.nn.weighted_cross_entropy_with_logits(logits=net, targets=y, 
+	cross_entropy = tf.reduce_mean(tf.nn.weighted_cross_entropy_with_logits(logits=logits, targets=y, 
 																			pos_weight=class_weight[1]))
 else:
-	cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=net, targets=y))
+	cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=logits, targets=y))
 
 update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS) # collect update_ops into train step
 with tf.control_dependencies(update_ops):
@@ -249,26 +249,10 @@ saver = tf.train.Saver()
 sess = tf.InteractiveSession()
 sess.run(tf.global_variables_initializer())
 
-
 balanced_acc_curve = []
 AUC_curve = []
 avg_precision_curve = []
 cross_entropy_curve = []
-
-for epoch_num in range(epoch):
-    for iter_num in range(iteration):
-        
-        batch_x, batch_y = Train_Data.get_patches(batch_size=64)
-        
-        
-
-    print("cross entropy = ", cur_cost)
-    learning_curve.append(cur_cost)
-print("finish")
-
-
-##### working ------------------->>>>>>>>>>>>>>>>>>>
-
 for epoch_num in range(epoch):
 	for iter_num in range(iteration):
 
@@ -280,14 +264,14 @@ for epoch_num in range(epoch):
 	# snap shot on CV set
 	cv_metric = Metric_Record()
 	cv_cross_entropy_list = []
-	for x, y in CV_Data.iterate_data(norm=True):
-		x = x.reshape((1, -1))
+	for batch_x, batch_y in CV_Data.iterate_data(norm=True):
+		batch_x = batch_x.transpose((0, 2, 3, 1))
 
-		pred = log_classifier.predict(x)
-		pred_prob = log_classifier.predict_proba(x)
+		[pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, is_training: False})
+		pred = int(pred_prob > 0.5)
+
 		cv_metric.accumulate(Y=y, pred=pred, pred_prob=pred_prob)
-
-		cv_cross_entropy_list.append(cross_entropy.eval(feed_dict={x:batch_x, y: batch_y, keep_prob: 1, is_training:False}))
+		cv_cross_entropy_list.append(cross_entropy_cost)
 
 	# calculate value
 	balanced_acc = cv_metric.get_balanced_acc()
@@ -302,9 +286,7 @@ for epoch_num in range(epoch):
 
 	print("mean_cross_entropy = ", mean_cross_entropy, "balanced_acc = ", balanced_acc, "AUC = ", AUC_score, "avg_precision = ", avg_precision_score)
 	sys.stdout.flush()
-
 print("finish")
-
 
 # monitor mem usage
 process = psutil.Process(os.getpid())
@@ -317,14 +299,16 @@ plt.plot(AUC_curve, label='AUC')
 plt.plot(avg_precision_curve, label='avg_precision')
 plt.legend()
 plt.title('learning_curve_on_cross_validation')
-plt.savefig(save_path+'Analysis/'+model_name+'learning_curve.png', bbox_inches='tight')
+plt.savefig(save_path+'Analysis/'+'cv_metrics_curve.png', bbox_inches='tight')
 plt.close()
 
-from sklearn.externals import joblib
-joblib.dump(log_classifier, save_path+model_name) 
+plt.figsize=(9,5)
+plt.plot(cross_entropy_curve)
+plt.savefig(save_path+'Analysis/'+'cv_learning_curve.png', bbox_inches='tight')
+plt.close()
 
-saved_sk_obj = joblib.load(save_path+model_name)
-assert (saved_sk_obj.coef_ == log_classifier.coef_).all()
+# save model
+saver.save(sess, save_path + model_name)
 
 # run garbage collection
 saved_sk_obj = 0
@@ -335,21 +319,41 @@ gc.collect()
 ''' Evaluate model '''
 
 
-print(log_classifier.coef_.shape)
-print(log_classifier.coef_.max(), log_classifier.coef_.min(), log_classifier.coef_.mean())
 
 # train set eva
+print("On training set: ")
 train_metric = Metric_Record()
-for x, y in Train_Data.iterate_data(norm=True):
-	x = x.reshape((1, -1))
+train_cross_entropy_list = []
+for batch_x, batch_y in CV_Data.iterate_data(norm=True):
+	batch_x = batch_x.transpose((0, 2, 3, 1))
 
-	pred = log_classifier.predict(x)
-	pred_prob = log_classifier.predict_proba(x)
+	[pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, is_training: False})
+	pred = int(pred_prob > 0.5)
+	
 	train_metric.accumulate(Y=y, pred=pred, pred_prob=pred_prob)    
+	train_cross_entropy_list.append(cross_entropy_cost)
+
 train_metric.print_info()
+AUC_score = skmt.roc_auc_score(train_metric.y_true, train_metric.pred_prob)
+avg_precision_score = skmt.average_precision_score(train_metric.y_true, train_metric.pred_prob)
+mean_cross_entropy = sum(train_cross_entropy_list)/len(train_cross_entropy_list)
+print("mean_cross_entropy = ", mean_cross_entropy, "balanced_acc = ", balanced_acc, "AUC = ", AUC_score, "avg_precision = ", avg_precision_score)
+
+# plot ROC curve
+fpr, tpr, thr = skmt.roc_curve(train_metric.y_true, train_metric.pred_prob)
+plt.plot(fpr, tpr)
+plt.savefig(save_path+'Analysis/'+'train_ROC_curve.png', bbox_inches='tight')
+plt.close()
 
 # cross validation eva
+print("On CV set:")
 cv_metric.print_info()
+
+# plot ROC curve
+fpr, tpr, thr = skmt.roc_curve(cv_metric.y_true, cv_metric.pred_prob)
+plt.plot(fpr, tpr)
+plt.savefig(save_path+'Analysis/'+'cv_ROC_curve.png', bbox_inches='tight')
+plt.close()
 sys.stdout.flush()
 
 # run garbage collection
@@ -358,20 +362,17 @@ cv_metric = 0
 gc.collect()
 
 # Predict road mask
-index = np.where(log_classifier.classes_ == 1)[0][0]
-print(log_classifier.classes_, index)
-
 # Predict road prob masks on train
 train_pred_road = np.zeros(train_road_mask.shape)
 for coord, patch in Train_Data.iterate_raw_image_patches_with_coord(norm=True):
-	patch = patch.reshape([1,-1])
-	train_pred_road[int(coord[0]+width/2), int(coord[1]+width/2)] = log_classifier.predict_proba(patch)[0, index]
+	patch = patch.transpose((0, 2, 3, 1))
+	train_pred_road[int(coord[0]+width/2), int(coord[1]+width/2)] = logits.eval(feed_dict={x: batch_x, y: batch_y, is_training: False})
 
 # Predict road prob on CV
 CV_pred_road = np.zeros(CV_road_mask.shape)
 for coord, patch in CV_Data.iterate_raw_image_patches_with_coord(norm=True):
-	patch = patch.reshape([1,-1])
-	CV_pred_road[int(coord[0]+width/2), int(coord[1]+width/2)] = log_classifier.predict_proba(patch)[0, index]
+	patch = patch.transpose((0, 2, 3, 1))
+	CV_pred_road[int(coord[0]+width/2), int(coord[1]+width/2)] = logits.eval(feed_dict={x: batch_x, y: batch_y, is_training: False})
 
 # save prediction
 prediction_name = model_name + '_pred.h5'
@@ -385,12 +386,11 @@ process = psutil.Process(os.getpid())
 print('mem usage after prediction maps calculated:', process.memory_info().rss / 1024/1024, 'MB')
 
 # Analyze pred in plot
-show_pred_prob_with_raw(train_raw_image, pred_road, train_road_mask, pred_weight=0.2, figsize=(150,150), 
+show_pred_prob_with_raw(train_raw_image, train_pred_road, train_road_mask, pred_weight=0.2, figsize=(150,150), 
 						show_plot=False, save_path=save_path + 'Analysis/' + model_name + 'prob_road_on_raw - 0_2.png')
 
-
 # Analyze log pred
-log_pred = -np.log(-pred_road + 1 + 1e-7)
+log_pred = -np.log(-train_pred_road + 1 + 1e-7)
 print('log pred')
 print(log_pred.min(), log_pred.max(), log_pred.mean())
 
@@ -398,6 +398,5 @@ print('normalized log pred')
 norm_log_pred = (log_pred - log_pred.min()) / (log_pred.max()-log_pred.min())
 print(norm_log_pred.min(), norm_log_pred.max(), norm_log_pred.mean())
 
-show_pred_prob_with_raw(raw_image, norm_log_pred,
-						true_road=road_mask, pred_weight=0.2, figsize=(150,150), show_plot=False,
-						save_path=save_path + 'Analysis/' + model_name + 'log_prob_on_raw - 0_2.png')
+show_pred_prob_with_raw(train_raw_image, norm_log_pred, train_road_mask, pred_weight=0.2, figsize=(150,150), 
+						show_plot=False, save_path=save_path + 'Analysis/' + model_name + 'log_prob_on_raw - 0_2.png')

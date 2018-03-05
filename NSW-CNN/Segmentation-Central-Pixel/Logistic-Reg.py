@@ -242,6 +242,7 @@ print(log_classifier.coef_.shape)
 print(log_classifier.coef_.max(), log_classifier.coef_.min(), log_classifier.coef_.mean())
 
 # train set eva
+print("On train set")
 train_metric = Metric_Record()
 for x, y in Train_Data.iterate_data(norm=True):
 	x = x.reshape((1, -1))
@@ -250,9 +251,20 @@ for x, y in Train_Data.iterate_data(norm=True):
 	pred_prob = log_classifier.predict_proba(x)[0, pos_class_index]
 	train_metric.accumulate(Y=y, pred=pred, pred_prob=pred_prob)    
 train_metric.print_info()
+# plot ROC curve
+fpr, tpr, thr = skmt.roc_curve(train_metric.y_true, train_metric.pred_prob)
+plt.plot(fpr, tpr)
+plt.savefig(save_path+'Analysis/'+'train_ROC_curve.png', bbox_inches='tight')
+plt.close()
 
 # cross validation eva
+print("On CV set")
 cv_metric.print_info()
+# plot ROC curve
+fpr, tpr, thr = skmt.roc_curve(cv_metric.y_true, cv_metric.pred_prob)
+plt.plot(fpr, tpr)
+plt.savefig(save_path+'Analysis/'+'cv_ROC_curve.png', bbox_inches='tight')
+plt.close()
 sys.stdout.flush()
 
 # run garbage collection
@@ -298,6 +310,5 @@ print('normalized log pred')
 norm_log_pred = (log_pred - log_pred.min()) / (log_pred.max()-log_pred.min())
 print(norm_log_pred.min(), norm_log_pred.max(), norm_log_pred.mean())
 
-show_pred_prob_with_raw(raw_image, norm_log_pred,
-						true_road=road_mask, pred_weight=0.2, figsize=(150,150), show_plot=False,
-						save_path=save_path + 'Analysis/' + model_name + 'log_prob_on_raw - 0_2.png')
+show_pred_prob_with_raw(train_raw_image, norm_log_pred, train_road_mask, pred_weight=0.2, figsize=(150,150),
+						show_plot=False, save_path=save_path + 'Analysis/' + model_name + 'log_prob_on_raw - 0_2.png')
