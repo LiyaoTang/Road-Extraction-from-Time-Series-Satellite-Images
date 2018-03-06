@@ -35,8 +35,8 @@ parser.add_option("--step", type="int", dest="step")
 parser.add_option("-e", "--epoch", type="int", dest="epoch")
 parser.add_option("--rand", type="int", dest="rand_seed")
 
-parser.add_option("--conv", action="callback", nargs=1, callback=lambda option, opt_str, value, parser: [int(x) for x in value.split(,)], dest="conv_struct")
-parser.add_option("--dense", action="callback", nargs=1, callback=lambda option, opt_str, value, parser: [int(x) for x in value.split(,)], dest="dense_struct")
+parser.add_option("--conv", action="callback", nargs=1, callback=lambda option, opt_str, value, parser: [int(x) for x in value.split('-')], dest="conv_struct")
+parser.add_option("--dense", action="callback", nargs=1, callback=lambda option, opt_str, value, parser: [int(x) for x in value.split('-')], dest="dense_struct")
 parser.add_option("--not_weight", action="store_false", dest="use_weight")
 parser.add_option("--use_drop_out", action="store_true", dest="use_drop_out")
 parser.add_option("--use_center_crop", action="store_true", dest="use_center_crop")
@@ -105,7 +105,7 @@ if not model_name:
 if not conv_struct or not dense_struct:
 	print("must provide structure for conv & dense layers")
 	sys.exit()
-assert len(conv_struct) == 3 and len(dense_struct) == 2
+assert len(conv_struct) == 2 and len(dense_struct) == 1
 
 # monitor mem usage
 process = psutil.Process(os.getpid())
@@ -169,9 +169,7 @@ print('mem usage after data loaded:', process.memory_info().rss / 1024/1024, 'MB
 size = step
 band = 7
 
-conv_out = conv_struct
-last_conv_flatten = conv_out[-1]
-layer_out = dense_struct
+last_conv_flatten = conv_struct[-1]
 
 class_output = 1 # number of possible classifications for the problem
 class_weight = [Train_Data.pos_size/Train_Data.size, Train_Data.neg_size/Train_Data.size]
@@ -192,26 +190,26 @@ is_training = tf.placeholder(tf.bool, name='is_training') # batch norm
 
 # Convolutional Layer 1
 if use_batch_norm:
-	net = tf.contrib.layers.conv2d(inputs=x, num_outputs=conv_out[1], kernel_size=3, 
+	net = tf.contrib.layers.conv2d(inputs=x, num_outputs=conv_struct[0], kernel_size=3, 
 	                               stride=1, padding='SAME',
 	                               normalizer_fn=tf.contrib.layers.batch_norm,
 	                               normalizer_params={'scale':True, 'is_training':is_training},
 	                               scope='conv1')
 else:
-	net = tf.contrib.layers.conv2d(inputs=x, num_outputs=conv_out[1], kernel_size=3, 
+	net = tf.contrib.layers.conv2d(inputs=x, num_outputs=conv_struct[0], kernel_size=3, 
 	                               stride=1, padding='SAME', scope='conv1')
 
 net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool1')
 
 # Convolutional Layer 2
 if use_batch_norm:
-	net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_out[2], kernel_size=3, 
+	net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_struct[1], kernel_size=3, 
 	                               stride=1, padding='SAME',
 	                               normalizer_fn=tf.contrib.layers.batch_norm,
 	                               normalizer_params={'scale':True, 'is_training':is_training},
 	                               scope='conv2')
 else:
-	net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_out[2], kernel_size=3, 
+	net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_struct[1], kernel_size=3, 
                                stride=1, padding='SAME', scope='conv2')
 
 net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool2')
@@ -220,7 +218,7 @@ net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding=
 net = tf.contrib.layers.flatten(net, scope='flatten')
 
 # Dense Layer 1
-net = tf.contrib.layers.fully_connected(inputs=net, num_outputs=layer_out[1], scope='dense1')
+net = tf.contrib.layers.fully_connected(inputs=net, num_outputs=dense_struct[1], scope='dense1')
 
 if use_drop_out:
 	keep_rate = 0.5 # Drop out layer as regularization => NaN may appears inside CNN
