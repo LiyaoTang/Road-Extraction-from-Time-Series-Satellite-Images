@@ -85,6 +85,7 @@ if not model_name:
 # monitor mem usage
 process = psutil.Process(os.getpid())
 print('mem usage before data loaded:', process.memory_info().rss / 1024/1024, 'MB')
+print()
 
 
 ''' Data preparation '''
@@ -130,6 +131,7 @@ print("pos = ", CV_Data.pos_size, "neg = ", CV_Data.neg_size)
 # monitor mem usage
 process = psutil.Process(os.getpid())
 print('mem usage after data loaded:', process.memory_info().rss / 1024/1024, 'MB')
+print()
 
 
 
@@ -164,6 +166,7 @@ print("classes in classifier ", log_classifier.classes_, pos_class_index)
 # monitor mem usage
 process = psutil.Process(os.getpid())
 print('mem usage after model created:', process.memory_info().rss / 1024/1024, 'MB')
+print()
 sys.stdout.flush()
 
 
@@ -211,6 +214,7 @@ print("finish")
 # monitor mem usage
 process = psutil.Process(os.getpid())
 print('mem usage after model trained:', process.memory_info().rss / 1024/1024, 'MB')
+print()
 
 # plot training curve
 plt.figsize=(9,5)
@@ -295,20 +299,33 @@ h5f_file.close()
 # monitor mem usage
 process = psutil.Process(os.getpid())
 print('mem usage after prediction maps calculated:', process.memory_info().rss / 1024/1024, 'MB')
+print()
 
 # Analyze pred in plot
-show_pred_prob_with_raw(train_raw_image, pred_road, train_road_mask, pred_weight=0.2, figsize=(150,150), 
-						show_plot=False, save_path=save_path + 'Analysis/' + model_name + 'prob_road_on_raw - 0_2.png')
+show_pred_prob_with_raw(train_raw_image, train_pred_road, train_road_mask, pred_weight=0.3, figsize=(150,150), 
+						show_plot=False, save_path=save_path + 'Analysis/' + model_name + 'prob_road_on_train - 0_3.png')
 
+show_pred_prob_with_raw(CV_raw_image, CV_pred_road, CV_road_mask, pred_weight=0.3, figsize=(150,150), 
+						show_plot=False, save_path=save_path + 'Analysis/' + model_name + 'prob_road_on_CV - 0_3.png')
 
 # Analyze log pred
-log_pred = -np.log(-pred_road + 1 + 1e-7)
-print('log pred')
-print(log_pred.min(), log_pred.max(), log_pred.mean())
+train_log_pred = -np.log(-train_pred_road + 1 + 1e-7)
+CV_log_pred = -np.log(-CV_pred_road + 1 + 1e-7)
+print('train_log pred: ')
+print(train_log_pred.min(), train_log_pred.max(), train_log_pred.mean())
+print('CV_log pred: ')
+print(CV_log_pred.min(), CV_log_pred.max(), CV_log_pred.mean())
+
 
 print('normalized log pred')
-norm_log_pred = (log_pred - log_pred.min()) / (log_pred.max()-log_pred.min())
+print('train: ')
+norm_log_pred = (train_log_pred - train_log_pred.min()) / (train_log_pred.max()-train_log_pred.min())
 print(norm_log_pred.min(), norm_log_pred.max(), norm_log_pred.mean())
+show_pred_prob_with_raw(train_raw_image, norm_log_pred, train_road_mask, pred_weight=0.3, figsize=(150,150), 
+						show_plot=False, save_path=save_path + 'Analysis/' + model_name + 'log_prob_on_train - 0_3.png')
 
-show_pred_prob_with_raw(train_raw_image, norm_log_pred, train_road_mask, pred_weight=0.2, figsize=(150,150),
-						show_plot=False, save_path=save_path + 'Analysis/' + model_name + 'log_prob_on_raw - 0_2.png')
+print('train: ')
+norm_log_pred = (CV_log_pred - CV_log_pred.min()) / (CV_log_pred.max()-CV_log_pred.min())
+print(norm_log_pred.min(), norm_log_pred.max(), norm_log_pred.mean())
+show_pred_prob_with_raw(CV_raw_image, norm_log_pred, CV_road_mask, pred_weight=0.3, figsize=(150,150), 
+						show_plot=False, save_path=save_path + 'Analysis/' + model_name + 'log_prob_on_CV - 0_3.png')
