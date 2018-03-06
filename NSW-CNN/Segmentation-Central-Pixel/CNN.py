@@ -55,13 +55,8 @@ epoch = options.epoch
 learning_rate = options.learning_rate
 rand_seed = options.rand_seed
 
-if not conv_struct or not dense_struct:
-	print("must provide structure for conv & dense layers")
-	sys.exit()
-else:
-	conv_struct = [int(x) for x in options.conv_struct.split('-')]
-	dense_struct = [int(x) for x in options.dense_struct.split('-')]
-	assert len(conv_struct) == 2 and len(dense_struct) == 1
+conv_struct = options.conv_struct
+dense_struct = options.dense_struct
 
 use_weight = options.use_weight
 use_drop_out = options.use_drop_out
@@ -106,6 +101,14 @@ if not model_name:
 	
 	print("will be saved as ", model_name)
 	print("will be saved into ", save_path)
+
+if not conv_struct or not dense_struct:
+	print("must provide structure for conv & dense layers")
+	sys.exit()
+else:
+	conv_struct = [int(x) for x in conv_struct.split('-')]
+	dense_struct = [int(x) for x in dense_struct.split('-')]
+	assert len(conv_struct) == 2 and len(dense_struct) == 1
 
 # monitor mem usage
 process = psutil.Process(os.getpid())
