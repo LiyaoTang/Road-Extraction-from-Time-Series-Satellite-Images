@@ -35,8 +35,8 @@ parser.add_option("--step", type="int", dest="step")
 parser.add_option("-e", "--epoch", type="int", dest="epoch")
 parser.add_option("--rand", type="int", dest="rand_seed")
 
-parser.add_option("--conv", action="callback", type="str", callback=lambda option, opt_str, value, parser: [int(x) for x in value.split('-')], dest="conv_struct")
-parser.add_option("--dense", action="callback", type="str", callback=lambda option, opt_str, value, parser: [int(x) for x in value.split('-')], dest="dense_struct")
+parser.add_option("--conv", dest="conv_struct")
+parser.add_option("--dense", dest="dense_struct")
 parser.add_option("--not_weight", action="store_false", dest="use_weight")
 parser.add_option("--use_drop_out", action="store_true", dest="use_drop_out")
 parser.add_option("--use_center_crop", action="store_true", dest="use_center_crop")
@@ -55,8 +55,13 @@ epoch = options.epoch
 learning_rate = options.learning_rate
 rand_seed = options.rand_seed
 
-conv_struct = options.conv_struct
-dense_struct = options.dense_struct
+if not conv_struct or not dense_struct:
+	print("must provide structure for conv & dense layers")
+	sys.exit()
+else:
+	conv_struct = [int(x) for x in options.conv_struct.split('-')]
+	dense_struct = [int(x) for x in options.dense_struct.split('-')]
+	assert len(conv_struct) == 2 and len(dense_struct) == 1
 
 use_weight = options.use_weight
 use_drop_out = options.use_drop_out
@@ -101,11 +106,6 @@ if not model_name:
 	
 	print("will be saved as ", model_name)
 	print("will be saved into ", save_path)
-
-if not conv_struct or not dense_struct:
-	print("must provide structure for conv & dense layers")
-	sys.exit()
-assert len(conv_struct) == 2 and len(dense_struct) == 1
 
 # monitor mem usage
 process = psutil.Process(os.getpid())
