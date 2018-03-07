@@ -157,7 +157,7 @@ class Metric_Record (Metric):
                          % ('true_pos', true_pos, 'false_pos', false_pos,
                             'true_neg', true_neg, 'false_neg', false_neg, size))
 
-        self.cal_metric(true_pos, false_pos, true_neg, false_neg, size)
+        result = self.cal_metric(true_pos, false_pos, true_neg, false_neg, size)
         for key in result.keys():
             print("%-13s = %s" % (key, result[key]))
 

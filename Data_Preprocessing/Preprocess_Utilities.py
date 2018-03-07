@@ -93,3 +93,71 @@ def create_set_with_name(raw_image, combined_road_mask, name, step, divide, save
             h5f.create_dataset(name='road_mask', data=combined_road_mask)
         h5f.close()
     print("saved into ", h5_path)
+
+# create segmentation data set => determine to belong pos/neg by passed in func
+def create_segment_set_with_name(raw_image, combined_road_mask, name, size, step, divide, save_dir_path, save_img=True,
+                                 is_pos_exmp=lambda rd_mask: True):
+    if divide:
+        # record the top-left coordinate of each possible patches & divide into pos/neg groups
+        pos_topleft_coordinate = []
+        neg_topleft_coordinate = []
+
+        row_offset = 0
+        while (row_offset + size <= raw_image.shape[1]):
+            col_offset = 0
+            while (col_offset + size <= raw_image.shape[2]):
+                cur_img_patch = raw_image         [:,row_offset:row_offset+size, col_offset:col_offset+size]
+                cur_road_mask = combined_road_mask[  row_offset:row_offset+size, col_offset:col_offset+step]
+
+                if (cur_img_patch != -9999).all():
+                    if is_pos_exmp(cur_road_mask): # positive example
+                        pos_topleft_coordinate.append((row_offset, col_offset))
+                    else: # negative example
+                        neg_topleft_coordinate.append((row_offset, col_offset))
+              
+                col_offset += step
+            row_offset += step
+
+        pos_topleft_coordinate = np.array(pos_topleft_coordinate)
+        neg_topleft_coordinate = np.array(neg_topleft_coordinate)
+        print("pos coordinates' shape=", pos_topleft_coordinate.shape)
+        print("neg coordinates' shape=", neg_topleft_coordinate.shape)
+
+        # save set
+        h5_path = save_dir_path + name
+        h5f = h5py.File(h5_path, 'w')
+        h5f.create_dataset(name='positive_example', data=pos_topleft_coordinate)
+        h5f.create_dataset(name='negative_example', data=neg_topleft_coordinate)
+        if save_img:
+            h5f.create_dataset(name='raw_image', data=raw_image)
+            h5f.create_dataset(name='road_mask', data=combined_road_mask)
+        h5f.close()
+
+    else:
+        # record the top-left coordinate of each possible patches sequentially
+        topleft_coordinate = []
+
+        row_offset = 0
+        while (row_offset + size <= raw_image.shape[1]):
+            col_offset = 0
+            while (col_offset + size <= raw_image.shape[2]):
+                cur_img_patch = raw_image[:,row_offset:row_offset+size, col_offset:col_offset+size]
+
+                if (cur_img_patch != -9999).all():
+                    topleft_coordinate.append((row_offset, col_offset))
+
+                col_offset += step
+            row_offset += step
+
+        topleft_coordinate = np.array(topleft_coordinate)
+        print("coordinates' shape=", topleft_coordinate.shape)
+
+        # save set
+        h5_path = save_dir_path + name
+        h5f = h5py.File(h5_path, 'w')
+        h5f.create_dataset(name='topleft_coordinate', data=topleft_coordinate)
+        if save_img:
+            h5f.create_dataset(name='raw_image', data=raw_image)
+            h5f.create_dataset(name='road_mask', data=combined_road_mask)
+        h5f.close()
+    print("saved into ", h5_path)

@@ -20,7 +20,7 @@ def upsample_filt(size):
     og = np.ogrid[:size, :size]
     return (1 - abs(og[0] - center) / factor) * (1 - abs(og[1] - center) / factor)
 
-def get_bilinear_upsample_weights(factor, channel_size):
+def get_bilinear_upsample_weights(factor, in_channel, out_channel):
     """
     Create weights matrix for transposed convolution with bilinear filter
     initialization.
@@ -28,15 +28,15 @@ def get_bilinear_upsample_weights(factor, channel_size):
     
     filter_size = get_kernel_size(factor)
     
-    weights = np.zeros((filter_size,
-                        filter_size,
-                        channel_size,
-                        channel_size), dtype=np.float32)
+    weights = np.zeros((filter_size, # height
+                        filter_size, # width
+                        out_channel,
+                        in_channel), dtype=np.float32)
     
     upsample_kernel = upsample_filt(filter_size)
     
-    for i in range(channel_size):
-        
-        weights[:, :, i, i] = upsample_kernel
+    for in_idx in range(in_channel):
+        for out_idx in range(out_channel):
+            weights[:, :, out_idx, in_idx] = upsample_kernel
     
     return weights

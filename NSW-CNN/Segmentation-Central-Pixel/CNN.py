@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 import numpy as np
-import sklearn as sk
+import tensorflow as tf
 import sklearn.metrics as skmt
 import matplotlib
 matplotlib.use('agg') # so that plt works in command line
@@ -181,7 +181,6 @@ class_weight = [Train_Data.pos_size/Train_Data.size, Train_Data.neg_size/Train_D
 print(class_weight, '[neg, pos]')
 
 batch_size = 64
-# learning_rate = 9e-6
 iteration = int(Train_Data.size/batch_size) + 1
 
 
