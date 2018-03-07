@@ -42,7 +42,8 @@ parser.add_option("--conv", dest="conv_struct")
 parser.add_option("--not_weight", action="store_false", dest="use_weight")
 parser.add_option("--use_drop_out", action="store_true", dest="use_drop_out")
 parser.add_option("--use_batch_norm", action="store_true", dest="use_batch_norm")
-
+parser.add_option("--use_conv1d", action="store_true", dest="use_conv1d")
+parser.add_option("--fuse_input", action="store_true", dest="fuse_input")
 
 (options, args) = parser.parse_args()
 
@@ -62,8 +63,9 @@ conv_struct = options.conv_struct
 
 use_weight = options.use_weight
 use_drop_out = options.use_drop_out
-use_center_crop = options.use_center_crop
 use_batch_norm = options.use_batch_norm
+use_conv1d = options.use_conv1d
+fuse_input = options.fuse_input
 
 if not save_path:
 	print("no save path provided")
@@ -97,6 +99,8 @@ if not model_name:
 	if use_weight: model_name += "weight_"
 	if use_drop_out: model_name += "drop_"
 	if use_batch_norm: model_name += "bn_"
+	if use_conv1d: model_name += "conv1D_"
+	if fuse_input: model_name += "fuseI_"
 	model_name += "s" + str(size) + "_"
 	model_name += "p" + str(pos_num) + "_"
 	model_name += "e" + str(epoch) + "_"
@@ -142,13 +146,13 @@ CV_raw_image = np.array(CV_set['raw_image'])
 CV_road_mask = np.array(CV_set['road_mask'])
 CV_set.close()
 
-Train_Data = Data_Extractor (train_raw_image, train_road_mask, size,
+Train_Data = FCN_Data_Extractor (train_raw_image, train_road_mask, size,
 							 pos_topleft_coord = train_pos_topleft_coord,
 							 neg_topleft_coord = train_neg_topleft_coord)
 # run garbage collector
 gc.collect()
 
-CV_Data = Data_Extractor (CV_raw_image, CV_road_mask, size,
+CV_Data = FCN_Data_Extractor (CV_raw_image, CV_road_mask, size,
 						  pos_topleft_coord = CV_pos_topleft_coord,
 						  neg_topleft_coord = CV_neg_topleft_coord)
 # run garbage collector
@@ -185,56 +189,87 @@ iteration = int(Train_Data.size/batch_size) + 1
 
 tf.reset_default_graph()
 with tf.variable_scope('input'):
-    x = tf.placeholder(tf.float32, shape=[batch_size, size, size, band], name='x')
-    y = tf.placeholder(tf.float32, shape=[batch_size, size, size, class_output], name='y')
+	x = tf.placeholder(tf.float32, shape=[batch_size, size, size, band], name='x')
+	y = tf.placeholder(tf.float32, shape=[batch_size, size, size, class_output], name='y')
 
-    weight = tf.placeholder(tf.float32, shape=[batch_size, size, size, class_output], name='class_weight')
-    keep_prob = tf.placeholder(tf.float32, name='keep_prob') # dropout
-    is_training = tf.placeholder(tf.bool, name='is_training') # batch norm
+	weight = tf.placeholder(tf.float32, shape=[batch_size, size, size, class_output], name='class_weight')
+	keep_prob = tf.placeholder(tf.float32, name='keep_prob') # dropout
+	is_training = tf.placeholder(tf.bool, name='is_training') # batch norm
 
+
+if fuse_input:
+	with tf.variable_scope('fuse_input/inception'):
+		input_fuse_map = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_struct[0], kernel_size=1, stride=1, padding='SAME')
+		input_fuse_map = tf.contrib.layers.conv2d(inputs=input_fuse_map, num_outputs=class_output, kernel_size=1, stride=1, padding='SAME')
 
 with tf.variable_scope('down_sampling'):
-    # Convolutional Layer 1
-    net = tf.contrib.layers.conv2d(inputs=x, num_outputs=conv_struct[0], kernel_size=3, 
-                                   stride=1, padding='SAME', scope='conv1')
+	# Convolutional Layer 1
+	net = tf.contrib.layers.conv2d(inputs=x, num_outputs=conv_struct[0], kernel_size=3, 
+								   stride=1, padding='SAME', scope='conv1')
 
-    net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool1')
-    pool_1 = net
-    
-    # Convolutional Layer 2
-    net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_struct[1], kernel_size=3, 
-                                   stride=1, padding='SAME', scope='conv2')
+	net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool1')
+	pool_1 = net
+	if use_conv1d:
+		pool_1 = tf.contrib.layers.conv2d(inputs=pool_1, num_outputs=conv_struct[0], kernel_size=1, stride=1, padding='SAME', scope='fuse_with_1')
+	
+	# Convolutional Layer 2
+	net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_struct[1], kernel_size=3, 
+								   stride=1, padding='SAME', scope='conv2')
 
-    net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool2')
-    pool_2 = net
-    
-    # Convolutional Layer 3
-    net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_struct[2], kernel_size=3, 
-                                   stride=1, padding='SAME', scope='conv3')
+	net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool2')
+	pool_2 = net
+	if use_conv1d:
+		pool_2 = tf.contrib.layers.conv2d(inputs=pool_2, num_outputs=conv_struct[1], kernel_size=1, stride=1, padding='SAME', scope='fuse_with_2')
+	
+	# Convolutional Layer 3
+	net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_struct[2], kernel_size=3, 
+								   stride=1, padding='SAME', scope='conv3')
 
-    net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool3')
+	net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool3')
 
 
 with tf.variable_scope('up_sampling'):
-    kernel_size = get_kernel_size(2)
-    net = tf.contrib.layers.conv2d_transpose(inputs=net, num_outputs=conv_struct[1], kernel_size=kernel_size, stride=2, 
-                                             weights_initializer=tf.constant_initializer(get_bilinear_upsample_weights(2, conv_struct[2], conv_struct[1])), 
-                                             scope='conv3_T')
-    with tf.variable_scope('fuse_with_2'):
-        net = net + pool_2
+	kernel_size = get_kernel_size(2)
+	net = tf.contrib.layers.conv2d_transpose(inputs=net, num_outputs=conv_struct[1], kernel_size=kernel_size, stride=2, 
+											 weights_initializer=tf.constant_initializer(get_bilinear_upsample_weights(2, conv_struct[2], conv_struct[1])), 
+											 scope='conv3_T')
+	with tf.variable_scope('fuse_with_2'):
+		net = net + pool_2
 
-    net = tf.contrib.layers.conv2d_transpose(inputs=net, num_outputs=conv_struct[0], kernel_size=kernel_size, stride=2, 
-                                             weights_initializer=tf.constant_initializer(get_bilinear_upsample_weights(2, conv_struct[1], conv_struct[0])), 
-                                             scope='conv2_T')
-    with tf.variable_scope('fuse_with_1'):
-        net = net + pool_1
-    
-    net = tf.contrib.layers.conv2d_transpose(inputs=net, num_outputs=class_output, kernel_size=kernel_size, stride=2, 
-                                             weights_initializer=tf.constant_initializer(get_bilinear_upsample_weights(2, conv_struct[0], class_output)), 
-                                             scope='conv1_T')
-    pred = tf.nn.softmax(net)
-#     with tf.variable_scope('fuse_with_mean_input'):
-#         net = net + tf.reduce_mean(x, axis=-1)
+	net = tf.contrib.layers.conv2d_transpose(inputs=net, num_outputs=conv_struct[0], kernel_size=kernel_size, stride=2, 
+											 weights_initializer=tf.constant_initializer(get_bilinear_upsample_weights(2, conv_struct[1], conv_struct[0])), 
+											 scope='conv2_T')
+	with tf.variable_scope('fuse_with_1'):
+		net = net + pool_1
+	
+	net = tf.contrib.layers.conv2d_transpose(inputs=net, num_outputs=class_output, kernel_size=kernel_size, stride=2, 
+											 weights_initializer=tf.constant_initializer(get_bilinear_upsample_weights(2, conv_struct[0], class_output)), 
+											 scope='conv1_T')
+
+if fuse_input:
+	with tf.variable_scope('fuse_input/fuse'):
+		net = net + input_fuse_map
+
+with tf.variable_scope('logits'):
+	logits = tf.nn.softmax(net)
+
+with tf.variable_scope('cross_entropy')
+	logits = tf.reshape(logits, (-1, class_output))
+	labels = tf.to_float(tf.reshape(y, (-1, class_output)))
+
+	softmax = tf.nn.softmax(logits) + tf.constant(value=1e-9) # because of the numerical instableness
+
+	if use_weight:
+		weight = tf.reshape(weight,(-1, class_output))
+		cross_entropy = -tf.reduce_sum(tf.multiply(labels * tf.log(softmax), weight)) # `*` is element-wise
+	else:
+		cross_entropy = -tf.reduce_sum(labels * tf.log(softmax), reduction_indices=[1])
+	mean_cross_entropy = tf.reduce_mean(cross_entropy, name='mean_cross_entropy')
+
+# Ensures that we execute the update_ops before performing the train_step
+update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
+with tf.control_dependencies(update_ops):
+	train_step = tf.train.AdamOptimizer(learning_rate).minimize(cross_entropy)
 
 # monitor mem usage
 process = psutil.Process(os.getpid())

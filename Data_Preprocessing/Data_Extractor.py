@@ -10,26 +10,8 @@ np.random.seed(0)
 
 
 class Data_Extractor:
-    raw_image = None
-    road_mask = None
     
-    topleft_coordinate = []
-    pos_topleft_coord = []
-    neg_topleft_coord = []
- 
-    index = 0
-    pos_index = 0
-    neg_index = 0
-    
-    step = 0
-    
-    pos_size = 0
-    neg_size = 0
-    size = 0
-
-    normalization = 'mean'
-    
-    def __init__(self, raw_image, road_mask, step, pos_topleft_coord, neg_topleft_coord, normalization='mean', encoding='binary'):
+    def __init__(self, raw_image, road_mask, img_size, pos_topleft_coord, neg_topleft_coord, normalization='mean', encoding='binary'):
 
         # original image info (shallow assignment to reduce mem)
         self.raw_image = raw_image
@@ -38,7 +20,7 @@ class Data_Extractor:
         self.band = raw_image.shape[0]
     
         # patch info        
-        self.step = step
+        self.img_size = img_size
 
         # batch info
         self.encoding = encoding # ground truth encoding
@@ -63,12 +45,14 @@ class Data_Extractor:
         
         self.size = self.topleft_coordinate.shape[0]
         
-        if normalization: self._cal_norm_param()
+        if normalization: 
+            self.normalization = normalization
+            self._cal_norm_param()
 
     def _cal_norm_param(self):
         if self.normalization == 'mean':
             mu = 0
-            step = self.step
+            img_size = self.img_size
             # Careful! norm params not yet calculated
             for patch in self.iterate_raw_image_patches(norm = False):
                 mu += patch
@@ -77,14 +61,14 @@ class Data_Extractor:
             self.mu = mu.mean(axis=(1,2))
 
     def _get_raw_patch(self, coord, norm):
-        patch  = self.raw_image[:, coord[0]:coord[0]+self.step, coord[1]:coord[1]+self.step]
+        patch  = self.raw_image[:, coord[0]:coord[0]+self.img_size, coord[1]:coord[1]+self.img_size]
         if norm:
             for channel_num in range(self.band):
                 patch[channel_num] = patch[channel_num] - self.mu[channel_num]
         return patch
 
     def _get_patch_label(self, coord):
-        label = self.road_mask[int(coord[0]+self.step/2), int(coord[1]+self.step/2)]
+        label = self.road_mask[int(coord[0]+self.img_size/2), int(coord[1]+self.img_size/2)]
         if self.encoding == 'one-hot':
             one_hot_label = np.zeros(2)
             one_hot_label[label] = 1
@@ -191,29 +175,17 @@ class Data_Extractor:
         return X, Y
 
 
-# class Cross_Val_Data(Data_Extractor):
+class FCN_Data_Extractor (Data_Extractor):
 
-#     def __init__(self, raw_image, road_mask, step, pos_topleft_coord, neg_topleft_coord, normalization='mean', encoding='binary'):
+    def __init__(self, raw_image, road_mask, img_size, pos_topleft_coord, neg_topleft_coord, normalization='mean', encoding='one-hot'):
 
-#         # not storing coordinates
-#         super(Cross_Val_Data, self).__init__(raw_image, road_mask, step, None, None, normalization, encoding)
+        super(FCN_Data_Extractor, self).__init__(raw_image, road_mask, img_size, pos_topleft_coord, neg_topleft_coord, normalization, encoding)
 
-#         # iter through pos
-#         for coord in pos_topleft_coord:
-
-#     def _cal_norm_param(self):
-#         if self.normalization == 'mean':
-#             mu = 0
-#             step = self.step
-#             # Careful! norm params not yet calculated
-#             for patch in self.iterate_raw_image_patches(norm = False):
-#                 mu += patch
-#                 assert (patch != -9999).all()
-#             mu = mu / self.size
-#             self.mu = mu.mean(axis=(1,2))
-
-#     def get_cv_set(self, norm=True):
-
-
-#     def iterate_raw_image_patches(self, norm=False):
-#         
+    def _get_patch_label(self, coord):
+        label = self.road_mask[coord[0]:coord[0]+self.img_size, coord[1]:coord[1]+self.img_size]
+        if self.encoding == 'one-hot':
+            one_hot_label = np.zeros((img_size, img_size, 2))
+            one_hot_label[:, :, 0][np.where(label == 0)] = 1
+            one_hot_label[:, :, 1][np.where(label == 1)] = 1
+            return one_hot_label
+        return label
