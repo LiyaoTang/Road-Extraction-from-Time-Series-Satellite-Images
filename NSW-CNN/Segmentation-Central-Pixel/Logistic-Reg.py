@@ -5,7 +5,8 @@ import sklearn as sk
 import sklearn.linear_model as sklm
 import sklearn.metrics as skmt
 import matplotlib
-matplotlib.use('agg') # so that plt works in command lineimport matplotlib.pyplot as plt
+matplotlib.use('agg') # so that plt works in command line
+import matplotlib.pyplot as plt
 import scipy.io as sio
 import skimage.io
 import h5py
@@ -61,6 +62,8 @@ if not path_train_set:
 	path_train_set = "../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_train"
 if not path_cv_set:
 	path_cv_set = "../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_cv"
+print("Train set:", path_train_set)
+print("CV set:", path_cv_set)
 
 if not pos_num:
 	pos_num = 0
@@ -223,7 +226,7 @@ plt.plot(AUC_curve, label='AUC')
 plt.plot(avg_precision_curve, label='avg_precision')
 plt.legend()
 plt.title('learning_curve_on_cross_validation')
-plt.savefig(save_path+'Analysis/'+model_name+'learning_curve.png', bbox_inches='tight')
+plt.savefig(save_path+'Analysis/'+ model_name +'_learning_curve.png', bbox_inches='tight')
 plt.close()
 
 from sklearn.externals import joblib
@@ -258,7 +261,7 @@ train_metric.print_info()
 # plot ROC curve
 fpr, tpr, thr = skmt.roc_curve(train_metric.y_true, train_metric.pred_prob)
 plt.plot(fpr, tpr)
-plt.savefig(save_path+'Analysis/'+'train_ROC_curve.png', bbox_inches='tight')
+plt.savefig(save_path+'Analysis/' + model_name +'_train_ROC_curve.png', bbox_inches='tight')
 plt.close()
 
 # cross validation eva
@@ -267,7 +270,7 @@ cv_metric.print_info()
 # plot ROC curve
 fpr, tpr, thr = skmt.roc_curve(cv_metric.y_true, cv_metric.pred_prob)
 plt.plot(fpr, tpr)
-plt.savefig(save_path+'Analysis/'+'cv_ROC_curve.png', bbox_inches='tight')
+plt.savefig(save_path+'Analysis/' + model_name +'_cv_ROC_curve.png', bbox_inches='tight')
 plt.close()
 sys.stdout.flush()
 
@@ -300,32 +303,3 @@ h5f_file.close()
 process = psutil.Process(os.getpid())
 print('mem usage after prediction maps calculated:', process.memory_info().rss / 1024/1024, 'MB')
 print()
-
-# Analyze pred in plot
-show_pred_prob_with_raw(train_raw_image, train_pred_road, train_road_mask, pred_weight=0.3, figsize=(150,150), 
-						show_plot=False, save_path=save_path + 'Analysis/' + model_name + 'prob_road_on_train - 0_3.png')
-
-show_pred_prob_with_raw(CV_raw_image, CV_pred_road, CV_road_mask, pred_weight=0.3, figsize=(150,150), 
-						show_plot=False, save_path=save_path + 'Analysis/' + model_name + 'prob_road_on_CV - 0_3.png')
-
-# Analyze log pred
-train_log_pred = -np.log(-train_pred_road + 1 + 1e-7)
-CV_log_pred = -np.log(-CV_pred_road + 1 + 1e-7)
-print('train_log pred: ')
-print(train_log_pred.min(), train_log_pred.max(), train_log_pred.mean())
-print('CV_log pred: ')
-print(CV_log_pred.min(), CV_log_pred.max(), CV_log_pred.mean())
-
-
-print('normalized log pred')
-print('train: ')
-norm_log_pred = (train_log_pred - train_log_pred.min()) / (train_log_pred.max()-train_log_pred.min())
-print(norm_log_pred.min(), norm_log_pred.max(), norm_log_pred.mean())
-show_pred_prob_with_raw(train_raw_image, norm_log_pred, train_road_mask, pred_weight=0.3, figsize=(150,150), 
-						show_plot=False, save_path=save_path + 'Analysis/' + model_name + 'log_prob_on_train - 0_3.png')
-
-print('train: ')
-norm_log_pred = (CV_log_pred - CV_log_pred.min()) / (CV_log_pred.max()-CV_log_pred.min())
-print(norm_log_pred.min(), norm_log_pred.max(), norm_log_pred.mean())
-show_pred_prob_with_raw(CV_raw_image, norm_log_pred, CV_road_mask, pred_weight=0.3, figsize=(150,150), 
-						show_plot=False, save_path=save_path + 'Analysis/' + model_name + 'log_prob_on_CV - 0_3.png')
