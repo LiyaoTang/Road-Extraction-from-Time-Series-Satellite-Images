@@ -1,13 +1,7 @@
-
 # coding: utf-8
-
-# In[1]:
 
 import numpy as np
 np.random.seed(0)
-
-# In[2]:
-
 
 class Data_Extractor:
     
@@ -184,12 +178,68 @@ class FCN_Data_Extractor (Data_Extractor):
     def __init__(self, raw_image, road_mask, img_size, pos_topleft_coord, neg_topleft_coord, normalization='mean', encoding='one-hot'):
 
         super(FCN_Data_Extractor, self).__init__(raw_image, road_mask, img_size, pos_topleft_coord, neg_topleft_coord, normalization, encoding)
-
+        self.neg_weight = self.pos_size / self.size
+        self.pos_weight = self.neg_size / self.size
+        
     def _get_patch_label(self, coord):
         label = self.road_mask[coord[0]:coord[0]+self.img_size, coord[1]:coord[1]+self.img_size]
         if self.encoding == 'one-hot':
-            one_hot_label = np.zeros((img_size, img_size, 2))
+            one_hot_label = np.zeros((self.img_size, self.img_size, 2))
             one_hot_label[:, :, 0][np.where(label == 0)] = 1
             one_hot_label[:, :, 1][np.where(label == 1)] = 1
             return one_hot_label
         return label
+
+    def get_patches(self, batch_size, positive_num = 0, norm = True, wrap_around=True, weighted=True):
+        X = []
+        Y = []
+
+        if positive_num > 0 and positive_num <= batch_size:
+            # pos patches
+            X_pos, Y_pos, self.pos_index = self._get_patches_from_topleft_coord (self.pos_topleft_coord,
+                                                                     num_of_patches = positive_num,
+                                                                     start_index = self.pos_index,
+                                                                     norm = norm, 
+                                                                     wrap_around=wrap_around)
+            
+            negative_num = batch_size - positive_num
+            X_neg, Y_neg, self.neg_index = self._get_patches_from_topleft_coord (self.neg_topleft_coord,
+                                                                     num_of_patches = negative_num,
+                                                                     start_index = self.neg_index,
+                                                                     norm = norm, 
+                                                                     wrap_around=wrap_around)
+            
+            X.extend (X_pos)
+            Y.extend (Y_pos)
+            
+            X.extend (X_neg)
+            Y.extend (Y_neg)
+        
+        else: # sample batches randomly
+            X, Y, self.index = self._get_patches_from_topleft_coord (self.topleft_coordinate,
+                                                                      num_of_patches = batch_size,
+                                                                      start_index = self.index,
+                                                                      norm = norm,
+                                                                      wrap_around=wrap_around)
+
+        X = np.array(X)
+        Y = np.array(Y)
+    
+        if weighted:
+            Weight = Y.copy()
+            Weight[:,:,:,0] *= self.neg_weight
+            Weight[:,:,:,1] *= self.pos_weight
+            Weight = Weight.sum(axis=-1)
+
+        return X, Y, Weight
+
+
+
+# sensetime:
+
+# base: 17k*(>15) = ~25.5
+# shenzhen:
+#     12% zhu fang gong ji jin
+#     5+1+1 yi liao bao xian
+
+#     holiday:

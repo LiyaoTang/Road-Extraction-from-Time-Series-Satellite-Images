@@ -180,11 +180,11 @@ print()
 
 # general model parameter
 band = 7
-last_conv_flatten = conv_struct[-1]
 
 class_output = 2 # number of possible classifications for the problem
 class_weight = [Train_Data.pos_size/Train_Data.size, Train_Data.neg_size/Train_Data.size]
-print(class_weight, '[neg, pos]')
+if use_weight:
+	print(class_weight, '[neg, pos]')
 
 batch_size = 64
 iteration = int(Train_Data.size/batch_size) + 1
