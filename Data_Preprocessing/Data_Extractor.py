@@ -36,6 +36,10 @@ class Data_Extractor:
         self.pos_size = pos_topleft_coord.shape[0]
         self.neg_size = neg_topleft_coord.shape[0]
 
+        self.pos_index = 0
+        self.neg_index = 0
+        self.index = 0
+
         # create topleft_coordinate using both pos & neg
         self.topleft_coordinate = []
         self.topleft_coordinate.extend (pos_topleft_coord)
