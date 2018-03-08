@@ -43,7 +43,7 @@ parser.add_option("--not_weight", action="store_false", dest="use_weight")
 parser.add_option("--use_drop_out", action="store_true", dest="use_drop_out")
 parser.add_option("--use_batch_norm", action="store_true", dest="use_batch_norm")
 parser.add_option("--use_conv1d", action="store_true", dest="use_conv1d")
-parser.add_option("--fuse_input", action="store_true", dest="fuse_input")
+parser.add_option("--fuse_input", dest="fuse_input")
 
 (options, args) = parser.parse_args()
 
@@ -90,11 +90,17 @@ if not size:
 if not epoch:
 	epoch = 15
 if not batch_size:
-	batch_size = 1
+	batch_size = 2
 if not learning_rate:
 	learning_rate = 9e-6
 if not rand_seed:
 	rand_seed = 0
+
+# parse fuse input options: e.g. 3-16;5-8;1-32 
+# => concat[ 3x3 out_channel=16, 5x5 out_channel=8, 1x1 out_channel=32] followed by 1x1 conv out_channel = classoutput
+# fuse_input = 1 => use only one 1x1 conv out_channel = classoutput
+if fuse_input:
+	fuse_input = [[int(x) for x in config.split('-')] for config in fuse_input.split(';')]
 
 if not model_name:
 	model_name = "CNN_"
@@ -186,7 +192,7 @@ class_weight = [Train_Data.pos_size/Train_Data.size, Train_Data.neg_size/Train_D
 if use_weight:
 	print(class_weight, '[neg, pos]')
 
-batch_size = 64
+batch_size = 2
 iteration = int(Train_Data.size/batch_size) + 1
 
 tf.reset_default_graph()
@@ -194,15 +200,18 @@ with tf.variable_scope('input'):
 	x = tf.placeholder(tf.float32, shape=[batch_size, size, size, band], name='x')
 	y = tf.placeholder(tf.float32, shape=[batch_size, size, size, class_output], name='y')
 
-	weight = tf.placeholder(tf.float32, shape=[batch_size, size, size, class_output], name='class_weight')
+	weight = tf.placeholder(tf.float32, shape=[batch_size, size, size], name='class_weight')
 	keep_prob = tf.placeholder(tf.float32, name='keep_prob') # dropout
 	is_training = tf.placeholder(tf.bool, name='is_training') # batch norm
 
 
 if fuse_input:
 	with tf.variable_scope('fuse_input/inception'):
-		input_fuse_map = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_struct[0], kernel_size=1, stride=1, padding='SAME')
+		if fuse_input != 1:
+			input_fuse_map = tf.concat([tf.contrib.layers.conv2d(inputs=net, num_outputs=cfg[1], kernel_size=cfg[0], stride=1, padding='SAME') for cfg in fuse_input],
+				  					   axis=-1)
 		input_fuse_map = tf.contrib.layers.conv2d(inputs=input_fuse_map, num_outputs=class_output, kernel_size=1, stride=1, padding='SAME')
+		
 
 with tf.variable_scope('down_sampling'):
 	# Convolutional Layer 1
@@ -262,7 +271,7 @@ with tf.variable_scope('cross_entropy')
 	softmax = tf.nn.softmax(logits) + tf.constant(value=1e-9) # because of the numerical instableness
 
 	if use_weight:
-		weight = tf.reshape(weight,(-1, class_output))
+		weight = tf.reshape(weight,[-1])
 		cross_entropy = -tf.reduce_sum(tf.multiply(labels * tf.log(softmax), weight)) # `*` is element-wise
 	else:
 		cross_entropy = -tf.reduce_sum(labels * tf.log(softmax), reduction_indices=[1])
@@ -297,15 +306,15 @@ cross_entropy_curve = []
 for epoch_num in range(epoch):
 	for iter_num in range(iteration):
 
-		batch_x, batch_y = Train_Data.get_patches(batch_size=batch_size, positive_num=pos_num, norm=True)
+		batch_x, batch_y, weight = Train_Data.get_patches(batch_size=batch_size, positive_num=pos_num, norm=True, weighted=True)
 		batch_x = batch_x.transpose((0, 2, 3, 1))
 
-		train_step.run(feed_dict={x: batch_x, y: batch_y, keep_prob: keep_rate, is_training: True})
+		train_step.run(feed_dict={x: batch_x, y: batch_y, weight: weight, keep_prob: keep_rate, is_training: True})
 
 	# snap shot on CV set
 	cv_metric = Metric_Record()
 	cv_cross_entropy_list = []
-	for batch_x, batch_y in CV_Data.iterate_data(norm=True):
+	for batch_x, batch_y in CV_Data.iterate_data(norm=True, weighted=True):
 		batch_x = batch_x.transpose((0, 2, 3, 1))
 
 		[pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, is_training: False})
@@ -366,7 +375,7 @@ gc.collect()
 print("On training set: ")
 train_metric = Metric_Record()
 train_cross_entropy_list = []
-for batch_x, batch_y in CV_Data.iterate_data(norm=True):
+for batch_x, batch_y in CV_Data.iterate_data(norm=True, weighted=True):
 	batch_x = batch_x.transpose((0, 2, 3, 1))
 
 	[pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, is_training: False})
@@ -405,16 +414,16 @@ gc.collect()
 
 # Predict road mask
 # Predict road prob masks on train
-train_pred_road = np.zeros(train_road_mask.shape)
+train_pred_road = np.zeros([x for x in train_road_mask.shape] + [2])
 for coord, patch in Train_Data.iterate_raw_image_patches_with_coord(norm=True):
 	patch = patch.transpose((0, 2, 3, 1))
-	train_pred_road[int(coord[0]+width/2), int(coord[1]+width/2)] = logits.eval(feed_dict={x: batch_x, y: batch_y, is_training: False})
+	train_pred_road[coord[0]:coord[0]+size, coord[1]:coord[1]+size, :] += logits.eval(feed_dict={x: batch_x, y: batch_y, is_training: False})
 
 # Predict road prob on CV
-CV_pred_road = np.zeros(CV_road_mask.shape)
+CV_pred_road = np.zeros([x for x in CV_road_mask.shape] + [2])
 for coord, patch in CV_Data.iterate_raw_image_patches_with_coord(norm=True):
 	patch = patch.transpose((0, 2, 3, 1))
-	CV_pred_road[int(coord[0]+width/2), int(coord[1]+width/2)] = logits.eval(feed_dict={x: batch_x, y: batch_y, is_training: False})
+	CV_pred_road[coord[0]:coord[0]+size, coord[1]:coord[1]+size, :] += logits.eval(feed_dict={x: batch_x, y: batch_y, is_training: False})
 
 # save prediction
 prediction_name = model_name + '_pred.h5'

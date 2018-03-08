@@ -230,10 +230,40 @@ class FCN_Data_Extractor (Data_Extractor):
             Weight[:,:,:,0] *= self.neg_weight
             Weight[:,:,:,1] *= self.pos_weight
             Weight = Weight.sum(axis=-1)
+            
+            return X, Y, Weight
 
-        return X, Y, Weight
+        else:
+            return X, Y
 
 
+    def iterate_data (self, norm=True, weighted=True):
+        for coord in self.topleft_coordinate:
+            x = self._get_raw_patch(coord, norm)
+            y = self._get_patch_label(coord)
+
+            if weighted:
+                w[:,:,:,0] *= self.neg_weight
+                w[:,:,:,1] *= self.pos_weight
+                w = Weight.sum(axis=-1)
+                yield x, y, w
+
+            else:
+                yield x, y
+
+
+    def iterate_data_with_coord (self, norm=True, weighted=True):
+        for coord in self.topleft_coordinate:
+            x = self._get_raw_patch(coord, norm)
+            y = self._get_patch_label(coord)
+            if weighted:
+                w[:,:,:,0] *= self.neg_weight
+                w[:,:,:,1] *= self.pos_weight
+                w = Weight.sum(axis=-1)
+                yield coord, x, y, w
+
+            else:
+                yield coord, x, y
 
 # sensetime:
 
