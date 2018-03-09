@@ -24,7 +24,6 @@ from Metric import *
 from Visualization import *
 from Data_Extractor import *
 
-
 parser = OptionParser()
 parser.add_option("--train", dest="path_train_set")
 parser.add_option("--cv", dest="path_cv_set")
@@ -96,19 +95,13 @@ if not learning_rate:
 if not rand_seed:
 	rand_seed = 0
 
-# parse fuse input options: e.g. 3-16;5-8;1-32 
-# => concat[ 3x3 out_channel=16, 5x5 out_channel=8, 1x1 out_channel=32] followed by 1x1 conv out_channel = classoutput
-# fuse_input = 1 => use only one 1x1 conv out_channel = classoutput
-if fuse_input:
-	fuse_input = [[int(x) for x in config.split('-')] for config in fuse_input.split(';')]
-
 if not model_name:
 	model_name = "CNN_"
 	if use_weight: model_name += "weight_"
 	if use_drop_out: model_name += "drop_"
 	if use_batch_norm: model_name += "bn_"
 	if use_conv1d: model_name += "conv1D_"
-	if fuse_input: model_name += "fuseI_"
+	if fuse_input: model_name += "fuseI" + fuse_input + "_"
 	model_name += "s" + str(size) + "_"
 	model_name += "p" + str(pos_num) + "_"
 	model_name += "e" + str(epoch) + "_"
@@ -123,6 +116,12 @@ if not conv_struct:
 else:
 	conv_struct = [int(x) for x in conv_struct.split('-')]
 	assert len(conv_struct) == 3
+
+# parse fuse input options: e.g. 3-16;5-8;1-32 
+# => concat[ 3x3 out_channel=16, 5x5 out_channel=8, 1x1 out_channel=32] followed by 1x1 conv out_channel = classoutput
+# fuse_input = 1 => use only one 1x1 conv out_channel = classoutput
+if fuse_input:
+	fuse_input = [[int(x) for x in config.split('-')] for config in fuse_input.split(';')]
 
 # monitor mem usage
 process = psutil.Process(os.getpid())
@@ -155,14 +154,14 @@ CV_road_mask = np.array(CV_set['road_mask'])
 CV_set.close()
 
 Train_Data = FCN_Data_Extractor (train_raw_image, train_road_mask, size,
-							 pos_topleft_coord = train_pos_topleft_coord,
-							 neg_topleft_coord = train_neg_topleft_coord)
+								 pos_topleft_coord = train_pos_topleft_coord,
+								 neg_topleft_coord = train_neg_topleft_coord)
 # run garbage collector
 gc.collect()
 
 CV_Data = FCN_Data_Extractor (CV_raw_image, CV_road_mask, size,
-						  pos_topleft_coord = CV_pos_topleft_coord,
-						  neg_topleft_coord = CV_neg_topleft_coord)
+							  pos_topleft_coord = CV_pos_topleft_coord,
+							  neg_topleft_coord = CV_neg_topleft_coord)
 # run garbage collector
 gc.collect()
 
