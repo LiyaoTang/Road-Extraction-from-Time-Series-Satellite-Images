@@ -39,11 +39,10 @@ parser.add_option("--batch", type="float", dest="batch_size")
 parser.add_option("--rand", type="int", dest="rand_seed")
 
 parser.add_option("--conv", dest="conv_struct")
+parser.add_option("--depth", type="int", dest="depth")
 parser.add_option("--not_weight", action="store_false", dest="use_weight")
-parser.add_option("--use_drop_out", action="store_true", dest="use_drop_out")
 parser.add_option("--use_batch_norm", action="store_true", dest="use_batch_norm")
 parser.add_option("--use_conv1d", action="store_true", dest="use_conv1d")
-parser.add_option("--fuse_input", dest="fuse_input")
 
 (options, args) = parser.parse_args()
 
@@ -61,11 +60,10 @@ rand_seed = options.rand_seed
 
 conv_struct = options.conv_struct
 
+depth = options.depth
 use_weight = options.use_weight
-use_drop_out = options.use_drop_out
 use_batch_norm = options.use_batch_norm
 use_conv1d = options.use_conv1d
-fuse_input = options.fuse_input
 
 if not save_path:
 	print("no save path provided")
@@ -96,19 +94,10 @@ if not learning_rate:
 if not rand_seed:
 	rand_seed = 0
 
-# parse fuse input options: e.g. 3-16;5-8;1-32 
-# => concat[ 3x3 out_channel=16, 5x5 out_channel=8, 1x1 out_channel=32] followed by 1x1 conv out_channel = classoutput
-# fuse_input = 1 => use only one 1x1 conv out_channel = classoutput
-if fuse_input:
-	fuse_input = [[int(x) for x in config.split('-')] for config in fuse_input.split(';')]
-
 if not model_name:
-	model_name = "CNN_"
+	model_name = "FCN_incep_"
+	model_name += conv_struct + "_"
 	if use_weight: model_name += "weight_"
-	if use_drop_out: model_name += "drop_"
-	if use_batch_norm: model_name += "bn_"
-	if use_conv1d: model_name += "conv1D_"
-	if fuse_input: model_name += "fuseI_"
 	model_name += "s" + str(size) + "_"
 	model_name += "p" + str(pos_num) + "_"
 	model_name += "e" + str(epoch) + "_"
@@ -117,11 +106,19 @@ if not model_name:
 	print("will be saved as ", model_name)
 	print("will be saved into ", save_path)
 
+
+# parse conv_struct: e.g. 3-16;5-8;1-32 | 3-8;1-16 | ...
+# => concat[ 3x3 out_channel=16, 5x5 out_channel=8, 1x1 out_channel=32]
+# => followed by inception concat [3x3 out_channel=8, 1x1 out_channel=16]
+# => ...
+# conv_struct = 1 => use only one 1x1 conv out_channel = classoutput
+
+# note that at last layer, out_channel = 2 is requested
 if not conv_struct:
 	print("must provide structure for conv")
 	sys.exit()
 else:
-	conv_struct = [int(x) for x in conv_struct.split('-')]
+	conv_struct = [[[int(x) for x in config.split('-')] for config in layer.split(';')] for layer in conv_struct.split('|')] 
 	assert len(conv_struct) == 3
 
 # monitor mem usage
@@ -205,62 +202,13 @@ with tf.variable_scope('input'):
 	is_training = tf.placeholder(tf.bool, name='is_training') # batch norm
 
 
-if fuse_input:
-	with tf.variable_scope('fuse_input/inception'):
-		if fuse_input != 1:
-			input_fuse_map = tf.concat([tf.contrib.layers.conv2d(inputs=x, num_outputs=cfg[1], kernel_size=cfg[0], stride=1, padding='SAME') for cfg in fuse_input],
-				  					   axis=-1)
-		input_fuse_map = tf.contrib.layers.conv2d(inputs=input_fuse_map, num_outputs=class_output, kernel_size=1, stride=1, padding='SAME')
+with tf.variable_scope('inception'):
+	if conv_struct != 1:
+		net = tf.concat([tf.contrib.layers.conv2d(inputs=x, num_outputs=cfg[1], kernel_size=cfg[0], stride=1, padding='SAME') for cfg in conv_struct],
+			  					   axis=-1)
+
+net = tf.contrib.layers.conv2d(inputs=input_fuse_map, num_outputs=class_output, kernel_size=1, stride=1, padding='SAME', scope='output_map')
 		
-
-with tf.variable_scope('down_sampling'):
-	# Convolutional Layer 1
-	net = tf.contrib.layers.conv2d(inputs=x, num_outputs=conv_struct[0], kernel_size=3, 
-								   stride=1, padding='SAME', scope='conv1')
-
-	net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool1')
-	pool_1 = net
-	if use_conv1d:
-		pool_1 = tf.contrib.layers.conv2d(inputs=pool_1, num_outputs=conv_struct[0], kernel_size=1, stride=1, padding='SAME', scope='fuse_with_1')
-	
-	# Convolutional Layer 2
-	net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_struct[1], kernel_size=3, 
-								   stride=1, padding='SAME', scope='conv2')
-
-	net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool2')
-	pool_2 = net
-	if use_conv1d:
-		pool_2 = tf.contrib.layers.conv2d(inputs=pool_2, num_outputs=conv_struct[1], kernel_size=1, stride=1, padding='SAME', scope='fuse_with_2')
-	
-	# Convolutional Layer 3
-	net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_struct[2], kernel_size=3, 
-								   stride=1, padding='SAME', scope='conv3')
-
-	net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool3')
-
-
-with tf.variable_scope('up_sampling'):
-	kernel_size = get_kernel_size(2)
-	net = tf.contrib.layers.conv2d_transpose(inputs=net, num_outputs=conv_struct[1], kernel_size=kernel_size, stride=2, 
-											 weights_initializer=tf.constant_initializer(get_bilinear_upsample_weights(2, conv_struct[2], conv_struct[1])), 
-											 scope='conv3_T')
-	with tf.variable_scope('fuse_with_2'):
-		net = net + pool_2
-
-	net = tf.contrib.layers.conv2d_transpose(inputs=net, num_outputs=conv_struct[0], kernel_size=kernel_size, stride=2, 
-											 weights_initializer=tf.constant_initializer(get_bilinear_upsample_weights(2, conv_struct[1], conv_struct[0])), 
-											 scope='conv2_T')
-	with tf.variable_scope('fuse_with_1'):
-		net = net + pool_1
-	
-	net = tf.contrib.layers.conv2d_transpose(inputs=net, num_outputs=class_output, kernel_size=kernel_size, stride=2, 
-											 weights_initializer=tf.constant_initializer(get_bilinear_upsample_weights(2, conv_struct[0], class_output)), 
-											 scope='conv1_T')
-
-if fuse_input:
-	with tf.variable_scope('fuse_input/fuse'):
-		net = net + input_fuse_map
-
 with tf.variable_scope('logits'):
 	logits = tf.nn.softmax(net)
 
