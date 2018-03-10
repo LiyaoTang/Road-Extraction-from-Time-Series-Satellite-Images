@@ -39,10 +39,8 @@ parser.add_option("--batch", type="float", dest="batch_size")
 parser.add_option("--rand", type="int", dest="rand_seed")
 
 parser.add_option("--conv", dest="conv_struct")
-parser.add_option("--depth", type="int", dest="depth")
-parser.add_option("--not_weight", action="store_false", dest="use_weight")
-parser.add_option("--use_batch_norm", action="store_true", dest="use_batch_norm")
-parser.add_option("--use_conv1d", action="store_true", dest="use_conv1d")
+parser.add_option("--not_weight", action="store_false", default=True, dest="use_weight")
+parser.add_option("--use_batch_norm", action="store_true", default=False, dest="use_batch_norm")
 
 (options, args) = parser.parse_args()
 
@@ -60,10 +58,8 @@ rand_seed = options.rand_seed
 
 conv_struct = options.conv_struct
 
-depth = options.depth
 use_weight = options.use_weight
 use_batch_norm = options.use_batch_norm
-use_conv1d = options.use_conv1d
 
 if not save_path:
 	print("no save path provided")
@@ -93,6 +89,9 @@ if not learning_rate:
 	learning_rate = 9e-6
 if not rand_seed:
 	rand_seed = 0
+if use_batch_norm:
+	print("sorry, BN not supported yet")
+	sts.exit()
 
 if not model_name:
 	model_name = "FCN_incep_"
@@ -106,7 +105,7 @@ if not model_name:
 	print("will be saved as ", model_name)
 	print("will be saved into ", save_path)
 
-
+	
 # parse conv_struct: e.g. 3-16;5-8;1-32 | 3-8;1-16 | ...
 # => concat[ 3x3 out_channel=16, 5x5 out_channel=8, 1x1 out_channel=32]
 # => followed by inception concat [3x3 out_channel=8, 1x1 out_channel=16]

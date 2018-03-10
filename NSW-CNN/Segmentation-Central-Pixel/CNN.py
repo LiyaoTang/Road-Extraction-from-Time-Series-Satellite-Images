@@ -37,10 +37,10 @@ parser.add_option("--rand", type="int", dest="rand_seed")
 
 parser.add_option("--conv", dest="conv_struct")
 parser.add_option("--dense", dest="dense_struct")
-parser.add_option("--not_weight", action="store_false", dest="use_weight")
-parser.add_option("--use_drop_out", action="store_true", dest="use_drop_out")
-parser.add_option("--use_center_crop", action="store_true", dest="use_center_crop")
-parser.add_option("--use_batch_norm", action="store_true", dest="use_batch_norm")
+parser.add_option("--not_weight", action="store_false", default=True, dest="use_weight")
+parser.add_option("--use_drop_out", action="store_true", default=False, dest="use_drop_out")
+parser.add_option("--use_center_crop", action="store_true", default=False, dest="use_center_crop")
+parser.add_option("--use_batch_norm", action="store_true", default=False, dest="use_batch_norm")
 parser.add_option("--learning_rate", type="float", dest="learning_rate")
 (options, args) = parser.parse_args()
 
@@ -96,7 +96,6 @@ if not model_name:
 	if use_center_crop: model_name += "crop_"
 	if use_drop_out: model_name += "drop_"
 	if use_batch_norm: model_name += "bn_"
-	model_name += "s" + str(step) + "_"
 	model_name += "p" + str(pos_num) + "_"
 	model_name += "e" + str(epoch) + "_"
 	model_name += "r" + str(rand_seed)
@@ -224,7 +223,7 @@ net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding=
 net = tf.contrib.layers.flatten(net, scope='flatten')
 
 # Dense Layer 1
-net = tf.contrib.layers.fully_connected(inputs=net, num_outputs=dense_struct[1], scope='dense1')
+net = tf.contrib.layers.fully_connected(inputs=net, num_outputs=dense_struct[0], scope='dense1')
 
 if use_drop_out:
 	keep_rate = 0.5 # Drop out layer as regularization => NaN may appears inside CNN
@@ -238,11 +237,13 @@ net = tf.contrib.layers.fully_connected(inputs=net, num_outputs=class_output, ac
 logits = tf.squeeze(net, name='logits')
 
 # calculate entropy
+print(logits)
+print(y)
 if use_weight:
 	cross_entropy = tf.reduce_mean(tf.nn.weighted_cross_entropy_with_logits(logits=logits, targets=y, 
 																			pos_weight=class_weight[1]))
 else:
-	cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=logits, targets=y))
+	cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=logits, labels=y))
 
 update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS) # collect update_ops into train step
 with tf.control_dependencies(update_ops):
