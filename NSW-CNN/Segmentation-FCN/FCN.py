@@ -314,7 +314,7 @@ for epoch_num in range(epoch):
 		[pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, weight: batch_w, is_training: False})
 		pred = int(pred_prob > 0.5)
 
-		cv_metric.accumulate(Y=y, pred=pred, pred_prob=pred_prob)
+		cv_metric.accumulate(Y=batch_y, pred=pred, pred_prob=pred_prob)
 		cv_cross_entropy_list.append(cross_entropy_cost)
 
 	# calculate value
@@ -375,7 +375,7 @@ for batch_x, batch_y, batch_w in CV_Data.iterate_data(norm=True, weighted=True):
 	[pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, weight: batch_w, is_training: False})
 	pred = int(pred_prob > 0.5)
 	
-	train_metric.accumulate(Y=y, pred=pred, pred_prob=pred_prob)    
+	train_metric.accumulate(Y=batch_y, pred=pred, pred_prob=pred_prob)    
 	train_cross_entropy_list.append(cross_entropy_cost)
 
 train_metric.print_info()

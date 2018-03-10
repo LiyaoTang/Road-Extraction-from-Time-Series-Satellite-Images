@@ -92,6 +92,8 @@ if not rand_seed:
 
 if not model_name:
 	model_name = "CNN_"
+	model_name += conv_struct + "_"
+	model_name += dense_struct + "_"
 	if use_weight: model_name += "weight_"
 	if use_center_crop: model_name += "crop_"
 	if use_drop_out: model_name += "drop_"
@@ -284,7 +286,7 @@ for epoch_num in range(epoch):
 		[pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, is_training: False})
 		pred = int(pred_prob > 0.5)
 
-		cv_metric.accumulate(Y=y, pred=pred, pred_prob=pred_prob)
+		cv_metric.accumulate(Y=batch_y, pred=pred, pred_prob=pred_prob)
 		cv_cross_entropy_list.append(cross_entropy_cost)
 
 	# calculate value
@@ -345,7 +347,7 @@ for batch_x, batch_y in CV_Data.iterate_data(norm=True):
 	[pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, is_training: False})
 	pred = int(pred_prob > 0.5)
 	
-	train_metric.accumulate(Y=y, pred=pred, pred_prob=pred_prob)    
+	train_metric.accumulate(Y=batch_y, pred=pred, pred_prob=pred_prob)    
 	train_cross_entropy_list.append(cross_entropy_cost)
 
 train_metric.print_info()

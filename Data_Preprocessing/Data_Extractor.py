@@ -53,7 +53,7 @@ class Data_Extractor:
             img_size = self.img_size
             # Careful! norm params not yet calculated
             for patch in self.iterate_raw_image_patches(norm = False):
-                mu += patch
+                mu += patch[0]
                 assert (patch != -9999).all()
             mu = mu / self.size
             self.mu = mu.mean(axis=(1,2))
@@ -75,22 +75,22 @@ class Data_Extractor:
 
     def iterate_raw_image_patches (self, norm):
         for coord in self.topleft_coordinate:
-            yield self._get_raw_patch(coord, norm)
+            yield np.array([self._get_raw_patch(coord, norm)])
                 
     def iterate_raw_image_patches_with_coord (self, norm):
         for coord in self.topleft_coordinate:
-            yield coord, self._get_raw_patch(coord, norm)
+            yield coord, np.array([self._get_raw_patch(coord, norm)])
 
     def iterate_data (self, norm=True):
         for coord in self.topleft_coordinate:
-            x = self._get_raw_patch(coord, norm)
-            y = self._get_patch_label(coord)
+            x = np.array([self._get_raw_patch(coord, norm)])
+            y = np.array([self._get_patch_label(coord)])
             yield x, y
 
     def iterate_data_with_coord (self, norm=True):
         for coord in self.topleft_coordinate:
-            x = self._get_raw_patch(coord, norm)
-            y = self._get_patch_label(coord)
+            x = np.array([self._get_raw_patch(coord, norm)])
+            y = np.array([self._get_patch_label(coord)])
             yield coord, x, y
 
 
@@ -239,8 +239,8 @@ class FCN_Data_Extractor (Data_Extractor):
 
     def iterate_data (self, norm=True, weighted=True):
         for coord in self.topleft_coordinate:
-            x = self._get_raw_patch(coord, norm)
-            y = self._get_patch_label(coord)
+            x = np.array([self._get_raw_patch(coord, norm)])
+            y = np.array([self._get_patch_label(coord)])
 
             if weighted:
                 w[:,:,:,0] *= self.neg_weight
@@ -254,8 +254,8 @@ class FCN_Data_Extractor (Data_Extractor):
 
     def iterate_data_with_coord (self, norm=True, weighted=True):
         for coord in self.topleft_coordinate:
-            x = self._get_raw_patch(coord, norm)
-            y = self._get_patch_label(coord)
+            x = np.array([self._get_raw_patch(coord, norm)])
+            y = np.array([self._get_patch_label(coord)])
             if weighted:
                 w[:,:,:,0] *= self.neg_weight
                 w[:,:,:,1] *= self.pos_weight
