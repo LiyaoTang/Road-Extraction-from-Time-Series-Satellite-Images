@@ -39,7 +39,6 @@ parser.add_option("--rand", type="int", dest="rand_seed")
 
 parser.add_option("--conv", dest="conv_struct")
 parser.add_option("--not_weight", action="store_false", default=True, dest="use_weight")
-parser.add_option("--use_drop_out", action="store_true", default=False, dest="use_drop_out")
 parser.add_option("--use_batch_norm", action="store_true", default=False, dest="use_batch_norm")
 parser.add_option("--use_conv1d", action="store_true", default=False, dest="use_conv1d")
 parser.add_option("--fuse_input", dest="fuse_input")
@@ -61,7 +60,6 @@ rand_seed = options.rand_seed
 conv_struct = options.conv_struct
 
 use_weight = options.use_weight
-use_drop_out = options.use_drop_out
 use_batch_norm = options.use_batch_norm
 use_conv1d = options.use_conv1d
 fuse_input = options.fuse_input
@@ -98,7 +96,6 @@ if not rand_seed:
 if not model_name:
 	model_name = "CNN_"
 	if use_weight: model_name += "weight_"
-	if use_drop_out: model_name += "drop_"
 	if use_batch_norm: model_name += "bn_"
 	if use_conv1d: model_name += "conv1D_"
 	if fuse_input: model_name += "fuseI" + fuse_input + "_"
@@ -187,11 +184,10 @@ print()
 band = 7
 
 class_output = 2 # number of possible classifications for the problem
-class_weight = [Train_Data.pos_size/Train_Data.size, Train_Data.neg_size/Train_Data.size]
 if use_weight:
+	class_weight = [Train_Data.pos_size/Train_Data.size, Train_Data.neg_size/Train_Data.size]
 	print(class_weight, '[neg, pos]')
 
-batch_size = 2
 iteration = int(Train_Data.size/batch_size) + 1
 
 tf.reset_default_graph()
@@ -200,7 +196,6 @@ with tf.variable_scope('input'):
 	y = tf.placeholder(tf.float32, shape=[batch_size, size, size, class_output], name='y')
 
 	weight = tf.placeholder(tf.float32, shape=[batch_size, size, size], name='class_weight')
-	keep_prob = tf.placeholder(tf.float32, name='keep_prob') # dropout
 	is_training = tf.placeholder(tf.bool, name='is_training') # batch norm
 
 
@@ -305,18 +300,18 @@ cross_entropy_curve = []
 for epoch_num in range(epoch):
 	for iter_num in range(iteration):
 
-		batch_x, batch_y, weight = Train_Data.get_patches(batch_size=batch_size, positive_num=pos_num, norm=True, weighted=True)
+		batch_x, batch_y, batch_w = Train_Data.get_patches(batch_size=batch_size, positive_num=pos_num, norm=True, weighted=True)
 		batch_x = batch_x.transpose((0, 2, 3, 1))
 
-		train_step.run(feed_dict={x: batch_x, y: batch_y, weight: weight, keep_prob: keep_rate, is_training: True})
+		train_step.run(feed_dict={x: batch_x, y: batch_y, weight: batch_w, is_training: True})
 
 	# snap shot on CV set
 	cv_metric = Metric_Record()
 	cv_cross_entropy_list = []
-	for batch_x, batch_y in CV_Data.iterate_data(norm=True, weighted=True):
+	for batch_x, batch_y, batch_w in CV_Data.iterate_data(norm=True, weighted=True):
 		batch_x = batch_x.transpose((0, 2, 3, 1))
 
-		[pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, is_training: False})
+		[pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, weight: batch_w, is_training: False})
 		pred = int(pred_prob > 0.5)
 
 		cv_metric.accumulate(Y=y, pred=pred, pred_prob=pred_prob)
@@ -374,10 +369,10 @@ gc.collect()
 print("On training set: ")
 train_metric = Metric_Record()
 train_cross_entropy_list = []
-for batch_x, batch_y in CV_Data.iterate_data(norm=True, weighted=True):
+for batch_x, batch_y, batch_w in CV_Data.iterate_data(norm=True, weighted=True):
 	batch_x = batch_x.transpose((0, 2, 3, 1))
 
-	[pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, is_training: False})
+	[pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, weight: batch_w, is_training: False})
 	pred = int(pred_prob > 0.5)
 	
 	train_metric.accumulate(Y=y, pred=pred, pred_prob=pred_prob)    

@@ -184,13 +184,11 @@ print(class_weight, '[neg, pos]')
 batch_size = 64
 iteration = int(Train_Data.size/batch_size) + 1
 
-
 # placeholders
 tf.reset_default_graph()
 x = tf.placeholder(tf.float32, shape=[None, size, size, band], name='x')
 y = tf.placeholder(tf.float32, shape=[None], name='y')
 
-keep_prob = tf.placeholder(tf.float32, name='keep_prob') # dropout
 is_training = tf.placeholder(tf.bool, name='is_training') # batch norm
 
 # Convolutional Layer 1
@@ -226,8 +224,7 @@ net = tf.contrib.layers.flatten(net, scope='flatten')
 net = tf.contrib.layers.fully_connected(inputs=net, num_outputs=dense_struct[0], scope='dense1')
 
 if use_drop_out:
-	keep_rate = 0.5 # Drop out layer as regularization => NaN may appears inside CNN
-	net = tf.contrib.layers.dropout(inputs=net, keep_prob=keep_prob, is_training=is_training, scope='drop')
+	net = tf.contrib.layers.dropout(inputs=net, keep_prob=0.5, is_training=is_training, scope='dropout')
 
 # Dense Layer 2 (output)
 if use_center_crop:
@@ -276,7 +273,7 @@ for epoch_num in range(epoch):
 		batch_x, batch_y = Train_Data.get_patches(batch_size=batch_size, positive_num=pos_num, norm=True)
 		batch_x = batch_x.transpose((0, 2, 3, 1))
 
-		train_step.run(feed_dict={x: batch_x, y: batch_y, keep_prob: keep_rate, is_training: True})
+		train_step.run(feed_dict={x: batch_x, y: batch_y, is_training: True})
 
 	# snap shot on CV set
 	cv_metric = Metric_Record()
