@@ -25,23 +25,24 @@ from Visualization import *
 from Data_Extractor import *
 
 parser = OptionParser()
-parser.add_option("--train", dest="path_train_set")
-parser.add_option("--cv", dest="path_cv_set")
 parser.add_option("--save", dest="save_path")
 parser.add_option("--name", dest="model_name")
 
-parser.add_option("--pos", type="int", dest="pos_num")
-parser.add_option("--size", type="int", dest="size")
-parser.add_option("-e", "--epoch", type="int", dest="epoch")
-parser.add_option("--learning_rate", type="float", dest="learning_rate")
-parser.add_option("--batch", type="float", dest="batch_size")
-parser.add_option("--rand", type="int", dest="rand_seed")
+parser.add_option("--train", dest="path_train_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_128_train")
+parser.add_option("--cv", dest="path_cv_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_128_cv")
+
+parser.add_option("--pos", type="int", default=0, dest="pos_num")
+parser.add_option("--size", type="int", default=128, dest="size")
+parser.add_option("-e", "--epoch", type="int", default=15, dest="epoch")
+parser.add_option("--learning_rate", type="float", default=9e-6, dest="learning_rate")
+parser.add_option("--batch", type="int", default=2, dest="batch_size")
+parser.add_option("--rand", type="int", default=0, dest="rand_seed")
 
 parser.add_option("--conv", dest="conv_struct")
+parser.add_option("--fuse_input", dest="fuse_input")
 parser.add_option("--not_weight", action="store_false", default=True, dest="use_weight")
 parser.add_option("--use_batch_norm", action="store_true", default=False, dest="use_batch_norm")
 parser.add_option("--use_conv1d", action="store_true", default=False, dest="use_conv1d")
-parser.add_option("--fuse_input", dest="fuse_input")
 
 (options, args) = parser.parse_args()
 
@@ -73,25 +74,8 @@ if not os.path.exists(save_path):
 if not os.path.exists(save_path+'Analysis'):
 	os.makedirs(save_path+'Analysis')
 
-if not path_train_set:
-	path_train_set = "../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_128_train"
-if not path_cv_set:
-	path_cv_set = "../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_128_cv"
 print("Train set:", path_train_set)
 print("CV set:", path_cv_set)
-
-if not pos_num:
-	pos_num = 0
-if not size:
-	size = 128
-if not epoch:
-	epoch = 15
-if not batch_size:
-	batch_size = 2
-if not learning_rate:
-	learning_rate = 9e-6
-if not rand_seed:
-	rand_seed = 0
 
 if not model_name:
 	model_name = "CNN_"
@@ -99,7 +83,6 @@ if not model_name:
 	if use_batch_norm: model_name += "bn_"
 	if use_conv1d: model_name += "conv1D_"
 	if fuse_input: model_name += "fuseI" + fuse_input + "_"
-	model_name += "s" + str(size) + "_"
 	model_name += "p" + str(pos_num) + "_"
 	model_name += "e" + str(epoch) + "_"
 	model_name += "r" + str(rand_seed)

@@ -27,15 +27,17 @@ from Data_Extractor import *
 
 
 parser = OptionParser()
-parser.add_option("--train", dest="path_train_set")
-parser.add_option("--cv", dest="path_cv_set")
 parser.add_option("--save", dest="save_path")
 parser.add_option("--name", dest="model_name")
+
+parser.add_option("--train", dest="path_train_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_train")
+parser.add_option("--cv", dest="path_cv_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_cv")
+
 parser.add_option("--not_weight", action="store_false", default=True, dest="use_weight")
-parser.add_option("--pos", type="int", dest="pos_num")
-parser.add_option("--step", type="int", dest="step")
-parser.add_option("-e", "--epoch", type="int", dest="epoch")
-parser.add_option("--rand", type="int", dest="rand_seed")
+parser.add_option("--pos", type="int", default=0, dest="pos_num")
+parser.add_option("--size", type="int", default=8, dest="size")
+parser.add_option("-e", "--epoch", type="int", default=15, dest="epoch")
+parser.add_option("--rand", type="int", default=0, dest="rand_seed")
 (options, args) = parser.parse_args()
 
 path_train_set = options.path_train_set
@@ -45,7 +47,7 @@ model_name = options.model_name
 
 use_weight = options.use_weight
 pos_num = options.pos_num
-step = options.step
+size = options.size
 epoch = options.epoch
 rand_seed = options.rand_seed
 
@@ -58,26 +60,12 @@ if not os.path.exists(save_path):
 if not os.path.exists(save_path+'Analysis'):
 	os.makedirs(save_path+'Analysis')
 
-if not path_train_set:
-	path_train_set = "../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_train"
-if not path_cv_set:
-	path_cv_set = "../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_cv"
 print("Train set:", path_train_set)
 print("CV set:", path_cv_set)
-
-if not pos_num:
-	pos_num = 0
-if not step:
-	step = 8
-if not epoch:
-	epoch = 15
-if not rand_seed:
-	rand_seed = 0
 
 if not model_name:
 	model_name = "sk-SGD_"
 	if use_weight: model_name += "weight_"
-	model_name += "s" + str(step) + "_"
 	model_name += "p" + str(pos_num) + "_"
 	model_name += "e" + str(epoch) + "_"
 	model_name += "r" + str(rand_seed)
@@ -91,7 +79,9 @@ print('mem usage before data loaded:', process.memory_info().rss / 1024/1024, 'M
 print()
 
 
+
 ''' Data preparation '''
+
 
 
 np.random.seed(rand_seed)
@@ -112,13 +102,13 @@ CV_raw_image = np.array(CV_set['raw_image'])
 CV_road_mask = np.array(CV_set['road_mask'])
 CV_set.close()
 
-Train_Data = Data_Extractor (train_raw_image, train_road_mask, step,
+Train_Data = Data_Extractor (train_raw_image, train_road_mask, size,
 							 pos_topleft_coord = train_pos_topleft_coord,
 							 neg_topleft_coord = train_neg_topleft_coord)
 # run garbage collector
 gc.collect()
 
-CV_Data = Data_Extractor (CV_raw_image, CV_road_mask, step,
+CV_Data = Data_Extractor (CV_raw_image, CV_road_mask, size,
 						  pos_topleft_coord = CV_pos_topleft_coord,
 						  neg_topleft_coord = CV_neg_topleft_coord)
 # run garbage collector
@@ -143,8 +133,6 @@ print()
 
 
 # model parameter
-width = step
-height = step
 band = 7
 
 batch_size = 64
@@ -284,13 +272,13 @@ gc.collect()
 train_pred_road = np.zeros(train_road_mask.shape)
 for coord, patch in Train_Data.iterate_raw_image_patches_with_coord(norm=True):
 	patch = patch.reshape([1,-1])
-	train_pred_road[int(coord[0]+width/2), int(coord[1]+width/2)] = log_classifier.predict_proba(patch)[0, pos_class_index]
+	train_pred_road[int(coord[0]+size/2), int(coord[1]+size/2)] = log_classifier.predict_proba(patch)[0, pos_class_index]
 
 # Predict road prob on CV
 CV_pred_road = np.zeros(CV_road_mask.shape)
 for coord, patch in CV_Data.iterate_raw_image_patches_with_coord(norm=True):
 	patch = patch.reshape([1,-1])
-	CV_pred_road[int(coord[0]+width/2), int(coord[1]+width/2)] = log_classifier.predict_proba(patch)[0, pos_class_index]
+	CV_pred_road[int(coord[0]+size/2), int(coord[1]+size/2)] = log_classifier.predict_proba(patch)[0, pos_class_index]
 
 # save prediction
 prediction_name = model_name + '_pred.h5'
