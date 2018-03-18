@@ -9,3 +9,8 @@ Data/
 
 # Large Result
 **/Result/**/*.h5
+
+# Result
+**/Result
+
+

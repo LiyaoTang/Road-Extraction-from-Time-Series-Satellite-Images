@@ -112,15 +112,15 @@ def show_pred_road_against_raw(image, pred_road, true_road=None, light=3.0,
 def show_pred_prob_with_raw(image, road_prob, true_road=None, light=3.0, pred_weight=0.3,
                             figsize=(20,20), show_plot=True, save_path=None):
 
-    sub_image = image[[1,2,3]]
-
+    sub_image = image[[1,2,3]] # BGR
+    
     assert (road_prob >= 0).all() and (road_prob <= 1).all()
     sub_image = sub_image/10000*light        
     
     for img in sub_image:
         img[np.where(img<0)] = 0
         img[np.where(img>1)] = 1
-
+    
     # add into R channel
     sub_image[2] = sub_image[2] + road_prob*pred_weight
     sub_image[2][np.where(sub_image[2]>1)] = 1
@@ -129,8 +129,8 @@ def show_pred_prob_with_raw(image, road_prob, true_road=None, light=3.0, pred_we
     if not (true_road is None):
         true_road_index = np.where(true_road == 1)
         sub_image[0][true_road_index] = 1
-        
-    patch = np.array([sub_image[2].T, sub_image[1].T, sub_image[0].T]).T
+    
+    patch = np.array([sub_image[2], sub_image[1], sub_image[0]]).transpose(1,2,0)
     plt.figure(figsize=figsize)
     plt.imshow(patch)
     if not save_path is None:
