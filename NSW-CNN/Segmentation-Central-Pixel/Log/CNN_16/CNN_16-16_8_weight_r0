@@ -1,0 +1,89 @@
+Train set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_16_train
+CV set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_16_cv
+will be saved as  CNN_16-16_8_weight_p0_e15_r0
+will be saved into  ./Result/motor_trunk_pri_sec_tert_uncl_track/CNN_16/CNN_16-16_8_weight_r0/
+mem usage before data loaded: 181.3359375 MB
+
+train data:
+(7, 7650, 8091) (7650, 8091)
+pos =  261356 neg =  18047087
+cv data:
+(7, 2365, 8091) (2365, 8091)
+pos =  19277 neg =  673667
+mem usage after data loaded: 6248.71484375 MB
+
+[0.01427516255751513, 0.9857248374424848] [neg, pos]
+Tensor("logits:0", dtype=float32)
+Tensor("y:0", shape=(?,), dtype=float32)
+mem usage after model created: 6273.0078125 MB
+
+2018-03-14 18:04:55.707449: I tensorflow/core/platform/cpu_feature_guard.cc:137] Your CPU supports instructions that this TensorFlow binary was not compiled to use: SSE4.1 SSE4.2 AVX
+2018-03-14 18:04:55.886975: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:892] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2018-03-14 18:04:55.887688: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1030] Found device 0 with properties: 
+name: Tesla K40c major: 3 minor: 5 memoryClockRate(GHz): 0.745
+pciBusID: 0000:03:00.0
+totalMemory: 11.17GiB freeMemory: 10.92GiB
+2018-03-14 18:04:56.067912: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:892] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2018-03-14 18:04:56.068624: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1030] Found device 1 with properties: 
+name: Tesla K40c major: 3 minor: 5 memoryClockRate(GHz): 0.745
+pciBusID: 0000:83:00.0
+totalMemory: 11.17GiB freeMemory: 11.03GiB
+2018-03-14 18:04:56.068699: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1045] Device peer to peer matrix
+2018-03-14 18:04:56.068734: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1051] DMA: 0 1 
+2018-03-14 18:04:56.068747: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1061] 0:   Y N 
+2018-03-14 18:04:56.068755: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1061] 1:   N Y 
+2018-03-14 18:04:56.068774: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1120] Creating TensorFlow device (/device:GPU:0) -> (device: 0, name: Tesla K40c, pci bus id: 0000:03:00.0, compute capability: 3.5)
+2018-03-14 18:04:56.068785: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1120] Creating TensorFlow device (/device:GPU:1) -> (device: 1, name: Tesla K40c, pci bus id: 0000:83:00.0, compute capability: 3.5)
+mean_cross_entropy =  0.6950340531345793 balanced_acc =  0.4974257966261569 AUC =  0.4996685997521024 avg_precision =  0.027799095347796246
+mean_cross_entropy =  0.6930451233600737 balanced_acc =  0.4950713547132651 AUC =  0.4999285919379054 avg_precision =  0.027816881871490985
+mean_cross_entropy =  0.69304209053814 balanced_acc =  0.4952357204870585 AUC =  0.49993230289320634 avg_precision =  0.027816961607044454
+mean_cross_entropy =  0.6930416205439847 balanced_acc =  0.4952357204870585 AUC =  0.4999337869596089 avg_precision =  0.02781695172118216
+mean_cross_entropy =  0.6930407226538454 balanced_acc =  0.4952918530907655 AUC =  0.4999330450996674 avg_precision =  0.027816973024937
+mean_cross_entropy =  0.6930407196724692 balanced_acc =  0.4952918530907655 AUC =  0.4999345293200787 avg_precision =  0.027816990705677214
+mean_cross_entropy =  0.6930407167169839 balanced_acc =  0.4952918530907655 AUC =  0.49993452920457215 avg_precision =  0.027816973024937
+mean_cross_entropy =  0.6930380290530581 balanced_acc =  0.4954644593408624 AUC =  0.4999360138870094 avg_precision =  0.02781703844723671
+mean_cross_entropy =  0.6930385664898143 balanced_acc =  0.4923780658714895 AUC =  0.499936744658324 avg_precision =  0.027816108070489357
+mean_cross_entropy =  0.6930385635563063 balanced_acc =  0.4923780658714895 AUC =  0.49991007358446005 avg_precision =  0.027816645069913926
+mean_cross_entropy =  0.6930376657514955 balanced_acc =  0.492417891699583 AUC =  0.49991007373846874 avg_precision =  0.02781665633656775
+mean_cross_entropy =  0.6930376627671947 balanced_acc =  0.492417891699583 AUC =  0.49991081582942326 avg_precision =  0.02781665633656775
+mean_cross_entropy =  0.6930376598394927 balanced_acc =  0.492417891699583 AUC =  0.49991081582942326 avg_precision =  0.02781665633656775
+mean_cross_entropy =  0.6930367620015225 balanced_acc =  0.49245822460721034 AUC =  0.49991155807438653 avg_precision =  0.02781666773505105
+mean_cross_entropy =  0.6930367590678854 balanced_acc =  0.49245822460721034 AUC =  0.49991155807438653 avg_precision =  0.02781666773505105
+finish
+mem usage after model trained: 6726.671875 MB
+
+On training set: 
+true_pos  = 2
+false_pos = 155
+true_neg  = 673512
+false_neg = 19275
+size = 692944
+pos_recall    = 0.00010375058359703273
+pos_precision = 0.012738853503184714
+pos_F1        = 0.00020582484305855714
+neg_recall    = 0.9997699159970728
+neg_precision = 0.972177595711236
+neg_F1        = 0.9857807141696684
+accuracy      = 0.9719602161213604
+balanced_accuracy = 0.49245822460721034
+mean_cross_entropy =  0.6930367590678854 balanced_acc =  0.49245822460721034 AUC =  0.49991155807438653 avg_precision =  0.02781666773505105
+On CV set:
+true_pos  = 2
+false_pos = 155
+true_neg  = 673512
+false_neg = 19275
+size = 692944
+pos_recall    = 0.00010375058359703273
+pos_precision = 0.012738853503184714
+pos_F1        = 0.00020582484305855714
+neg_recall    = 0.9997699159970728
+neg_precision = 0.972177595711236
+neg_F1        = 0.9857807141696684
+accuracy      = 0.9719602161213604
+balanced_accuracy = 0.49245822460721034
+/localdata/u6142160/anaconda3/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: compiletime version 3.5 of module 'tensorflow.python.framework.fast_tensor_util' does not match runtime version 3.6
+  return f(*args, **kwds)
+/localdata/u6142160/anaconda3/lib/python3.6/site-packages/h5py/__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+mem usage after prediction maps calculated: 7085.1796875 MB
+

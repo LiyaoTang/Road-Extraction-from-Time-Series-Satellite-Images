@@ -1,0 +1,48 @@
+Train set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_16_train
+CV set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_16_cv
+will be saved as  CNN_16-16_128_weight_p8_e15_r0
+will be saved into  ./Result/motor_trunk_pri_sec_tert_uncl_track/CNN_16/CNN_16-16_128_weight_p8_r0/
+mem usage before data loaded: 181.3828125 MB
+
+train data:
+(7, 7650, 8091) (7650, 8091)
+pos =  261356 neg =  18047087
+cv data:
+(7, 2365, 8091) (2365, 8091)
+pos =  19277 neg =  673667
+mem usage after data loaded: 6256.6171875 MB
+
+[0.01427516255751513, 0.9857248374424848] [neg, pos]
+Tensor("logits:0", dtype=float32)
+Tensor("y:0", shape=(?,), dtype=float32)
+mem usage after model created: 6280.19921875 MB
+
+2018-03-17 19:14:57.988992: I tensorflow/core/platform/cpu_feature_guard.cc:137] Your CPU supports instructions that this TensorFlow binary was not compiled to use: SSE4.1 SSE4.2 AVX
+2018-03-17 19:14:58.200179: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:892] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2018-03-17 19:14:58.200884: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1030] Found device 0 with properties: 
+name: Tesla K40c major: 3 minor: 5 memoryClockRate(GHz): 0.745
+pciBusID: 0000:03:00.0
+totalMemory: 11.17GiB freeMemory: 10.73GiB
+2018-03-17 19:14:58.429276: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:892] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2018-03-17 19:14:58.430021: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1030] Found device 1 with properties: 
+name: Tesla K40c major: 3 minor: 5 memoryClockRate(GHz): 0.745
+pciBusID: 0000:83:00.0
+totalMemory: 11.17GiB freeMemory: 10.58GiB
+2018-03-17 19:14:58.430100: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1045] Device peer to peer matrix
+2018-03-17 19:14:58.430136: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1051] DMA: 0 1 
+2018-03-17 19:14:58.430149: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1061] 0:   Y N 
+2018-03-17 19:14:58.430159: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1061] 1:   N Y 
+2018-03-17 19:14:58.430181: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1120] Creating TensorFlow device (/device:GPU:0) -> (device: 0, name: Tesla K40c, pci bus id: 0000:03:00.0, compute capability: 3.5)
+2018-03-17 19:14:58.430193: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1120] Creating TensorFlow device (/device:GPU:1) -> (device: 1, name: Tesla K40c, pci bus id: 0000:83:00.0, compute capability: 3.5)
+mean_cross_entropy =  0.6929027774916788 balanced_acc =  0.48608982407527673 AUC =  0.4999850723210554 avg_precision =  0.027818144515995416
+mean_cross_entropy =  0.6928719194803054 balanced_acc =  nan AUC =  0.5 avg_precision =  0.027818986815673418
+mean_cross_entropy =  0.6928719194803054 balanced_acc =  nan AUC =  0.5 avg_precision =  0.027818986815673418
+mean_cross_entropy =  0.6928719194803054 balanced_acc =  nan AUC =  0.5 avg_precision =  0.027818986815673418
+mean_cross_entropy =  0.6928719194803054 balanced_acc =  nan AUC =  0.5 avg_precision =  0.027818986815673418
+mean_cross_entropy =  0.6928719194803054 balanced_acc =  nan AUC =  0.5 avg_precision =  0.027818986815673418
+mean_cross_entropy =  0.6928719194803054 balanced_acc =  nan AUC =  0.5 avg_precision =  0.027818986815673418
+mean_cross_entropy =  0.6928719194803054 balanced_acc =  nan AUC =  0.5 avg_precision =  0.027818986815673418
+mean_cross_entropy =  0.6928719194803054 balanced_acc =  nan AUC =  0.5 avg_precision =  0.027818986815673418
+mean_cross_entropy =  0.6928719194803054 balanced_acc =  nan AUC =  0.5 avg_precision =  0.027818986815673418
+mean_cross_entropy =  0.6928719194803054 balanced_acc =  nan AUC =  0.5 avg_precision =  0.027818986815673418
+mean_cross_entropy =  0.6928719194803054 balanced_acc =  nan AUC =  0.5 avg_precision =  0.027818986815673418
