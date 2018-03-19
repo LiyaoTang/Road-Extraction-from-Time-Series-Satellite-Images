@@ -72,7 +72,7 @@ class Data_Extractor:
     def _get_raw_patch(self, coord, norm):
         patch  = self.raw_image[:, coord[0]:coord[0]+self.img_size, coord[1]:coord[1]+self.img_size]
         if norm:
-            if self.normalization='mean':
+            if self.normalization == 'mean':
                 for channel_num in range(self.band):
                     patch[channel_num] = patch[channel_num] - self.mu[channel_num]
             else:
