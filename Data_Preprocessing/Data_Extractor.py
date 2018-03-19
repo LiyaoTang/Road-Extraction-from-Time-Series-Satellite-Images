@@ -55,8 +55,8 @@ class Data_Extractor:
         for patch in self.iterate_raw_image_patches(norm = False):
             mu += patch[0]
             assert (patch != -9999).all()
-        mu = mu / self.size
-        self.mu = mu.mean(axis=(1,2))
+        mu = (mu / self.size).mean(axis=(1,2))
+        self.mu = mu
         print("mu = ", mu)
 
         if self.normalization == 'Gaussian':
