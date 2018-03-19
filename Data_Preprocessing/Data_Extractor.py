@@ -61,7 +61,7 @@ class Data_Extractor:
 
         if self.normalization == 'Gaussian':
             std = 0
-            mu_ext = np.repeat(mu, [np.prod(patch[0][0].shape)]*patch[0].shape[0]).reshape(patch[0][0].shape)
+            mu_ext = np.repeat(mu, [np.prod(patch[0][0].shape)]*patch[0].shape[0]).reshape(patch[0].shape)
             
             for patch in self.iterate_raw_image_patches(norm = False):
                 std += ((patch[0]-mu_ext)**2).mean(axis=(-1,-2))
