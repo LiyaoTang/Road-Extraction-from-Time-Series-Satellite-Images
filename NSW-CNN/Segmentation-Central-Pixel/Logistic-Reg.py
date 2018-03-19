@@ -55,7 +55,6 @@ size = options.size
 epoch = options.epoch
 rand_seed = options.rand_seed
 
-assert len(norm) < 2
 if not save_path:
 	print("no save path provided")
 	sys.exit()
@@ -78,6 +77,9 @@ if not model_name:
 	
 	print("will be saved as ", model_name)
 	print("will be saved into ", save_path)
+
+if norm.startswith('G'): norm = 'Gaussian'
+else: norm = 'mean'
 
 # monitor mem usage
 process = psutil.Process(os.getpid())
@@ -110,13 +112,15 @@ CV_set.close()
 
 Train_Data = Data_Extractor (train_raw_image, train_road_mask, size,
 							 pos_topleft_coord = train_pos_topleft_coord,
-							 neg_topleft_coord = train_neg_topleft_coord)
+							 neg_topleft_coord = train_neg_topleft_coord,
+							 normalization = norm)
 # run garbage collector
 gc.collect()
 
 CV_Data = Data_Extractor (CV_raw_image, CV_road_mask, size,
 						  pos_topleft_coord = CV_pos_topleft_coord,
-						  neg_topleft_coord = CV_neg_topleft_coord)
+						  neg_topleft_coord = CV_neg_topleft_coord,
+						  normalization = norm)
 # run garbage collector
 gc.collect()
 
@@ -147,11 +151,11 @@ iteration = int(Train_Data.size / batch_size) + 1
 
 # create SGD classifier
 if use_weight:
-	log_classifier = sklm.SGDClassifier(loss='log', max_iter=1, shuffle=False,
+	log_classifier = sklm.SGDClassifier(loss='log', max_iter=1, shuffle=False, alpha=norm_param,
 										class_weight={0:Train_Data.pos_size/Train_Data.size,
 													  1:Train_Data.neg_size/Train_Data.size})
 else:
-	log_classifier = sklm.SGDClassifier(loss='log', max_iter=1, shuffle=False)
+	log_classifier = sklm.SGDClassifier(loss='log', max_iter=1, shuffle=False, alpha=norm_param,)
 print(log_classifier)
 
 all_classes = np.array([0, 1])
@@ -177,7 +181,7 @@ AUC_curve = []
 avg_precision_curve = []
 for epoch_num in range(epoch):
 	for iter_num in range(iteration):
-
+		
 		batch_x, batch_y = Train_Data.get_patches(batch_size=batch_size, positive_num=pos_num, norm=True)
 		batch_x = batch_x.reshape((batch_size, -1))
 		
@@ -239,8 +243,9 @@ gc.collect()
 
 
 
-print(log_classifier.coef_.shape)
-print(log_classifier.coef_.max(), log_classifier.coef_.min(), log_classifier.coef_.mean())
+print("coefficient info:")
+print("shape = ", log_classifier.coef_.shape)
+print(log_classifier.coef_.max(), log_classifier.coef_.min(), log_classifier.coef_.mean(), log_classifier.coef_.var())
 
 # train set eva
 print("On train set")

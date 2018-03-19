@@ -45,24 +45,39 @@ class Data_Extractor:
         
         if normalization: 
             self.normalization = normalization
+            assert normalization in set('mean', 'Gaussian')
             self._cal_norm_param()
 
     def _cal_norm_param(self):
-        if self.normalization == 'mean':
-            mu = 0
-            img_size = self.img_size
-            # Careful! norm params not yet calculated
+        mu = 0
+        img_size = self.img_size
+        # Careful! norm params not yet calculated
+        for patch in self.iterate_raw_image_patches(norm = False):
+            mu += patch[0]
+            assert (patch != -9999).all()
+        mu = mu / self.size
+        self.mu = mu.mean(axis=(1,2))
+        
+        if self.normalization == 'Gaussian':
+            std = 0
+            mu_ext = np.repeat(mu, [np.prod(patch[0][0].shape)]*patch[0].shape[0]).reshape(patch[0][0].shape)
+            
             for patch in self.iterate_raw_image_patches(norm = False):
-                mu += patch[0]
-                assert (patch != -9999).all()
-            mu = mu / self.size
-            self.mu = mu.mean(axis=(1,2))
+                std += ((patch[0]-mu_ext)**2).mean(axis=(-1,-2))
+            std = np.sqrt(std / self.size)
+            self.std = std
+
+
 
     def _get_raw_patch(self, coord, norm):
         patch  = self.raw_image[:, coord[0]:coord[0]+self.img_size, coord[1]:coord[1]+self.img_size]
         if norm:
-            for channel_num in range(self.band):
-                patch[channel_num] = patch[channel_num] - self.mu[channel_num]
+            if self.normalization='mean':
+                for channel_num in range(self.band):
+                    patch[channel_num] = patch[channel_num] - self.mu[channel_num]
+            else:
+                for channel_num in range(self.band):
+                    patch[channel_num] = (patch[channel_num] - self.mu[channel_num]) / self.std[channel_num]
         return patch
 
     def _get_patch_label(self, coord):
