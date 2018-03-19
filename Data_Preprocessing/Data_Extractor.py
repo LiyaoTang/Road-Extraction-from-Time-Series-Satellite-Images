@@ -57,7 +57,8 @@ class Data_Extractor:
             assert (patch != -9999).all()
         mu = mu / self.size
         self.mu = mu.mean(axis=(1,2))
-        
+        print("mu = ", mu)
+
         if self.normalization == 'Gaussian':
             std = 0
             mu_ext = np.repeat(mu, [np.prod(patch[0][0].shape)]*patch[0].shape[0]).reshape(patch[0][0].shape)
@@ -66,6 +67,7 @@ class Data_Extractor:
                 std += ((patch[0]-mu_ext)**2).mean(axis=(-1,-2))
             std = np.sqrt(std / self.size)
             self.std = std
+            print('std = ', std)
 
 
 
