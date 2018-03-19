@@ -44,3 +44,48 @@ mean_cross_entropy =  0.6928731688836985 balanced_acc =  0.6527578346015991 AUC 
 mean_cross_entropy =  0.6928731688836985 balanced_acc =  0.6527578346015991 AUC =  0.5000244532329772 avg_precision =  0.027834835461547656
 mean_cross_entropy =  0.6928731688836985 balanced_acc =  0.6527578346015991 AUC =  0.5000244532329772 avg_precision =  0.027834835461547656
 mean_cross_entropy =  0.6928731688836985 balanced_acc =  0.6527578346015991 AUC =  0.5000244532329772 avg_precision =  0.027834835461547656
+mean_cross_entropy =  0.6928731688836985 balanced_acc =  0.6527578346015991 AUC =  0.5000244532329772 avg_precision =  0.027834835461547656
+mean_cross_entropy =  0.6928737092773594 balanced_acc =  0.48609046644596515 AUC =  0.5000244531559728 avg_precision =  0.027834835461547656
+mean_cross_entropy =  0.6928737092773594 balanced_acc =  0.48609046644596515 AUC =  0.49999851558707786 avg_precision =  0.027818986815673418
+mean_cross_entropy =  0.6928737092773594 balanced_acc =  0.48609046644596515 AUC =  0.49999851558707786 avg_precision =  0.027818986815673418
+mean_cross_entropy =  0.6928737092773594 balanced_acc =  0.48609046644596515 AUC =  0.49999851558707786 avg_precision =  0.027818986815673418
+finish
+mem usage after model trained: 6941.05859375 MB
+
+On training set: 
+true_pos  = 0
+false_pos = 2
+true_neg  = 673665
+false_neg = 19277
+size = 692944
+pos_recall    = 0.0
+pos_precision = 0.0
+pos_F1        = nan
+neg_recall    = 0.9999970311741557
+neg_precision = 0.9721809328919303
+neg_F1        = 0.9858928193799398
+accuracy      = 0.9721781269482094
+balanced_accuracy = 0.48609046644596515
+mean_cross_entropy =  0.6928737092773594 balanced_acc =  0.48609046644596515 AUC =  0.49999851558707786 avg_precision =  0.027818986815673418
+On CV set:
+true_pos  = 0
+false_pos = 2
+true_neg  = 673665
+false_neg = 19277
+size = 692944
+pos_recall    = 0.0
+pos_precision = 0.0
+pos_F1        = nan
+neg_recall    = 0.9999970311741557
+neg_precision = 0.9721809328919303
+neg_F1        = 0.9858928193799398
+accuracy      = 0.9721781269482094
+balanced_accuracy = 0.48609046644596515
+/localdata/u6142160/anaconda3/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: compiletime version 3.5 of module 'tensorflow.python.framework.fast_tensor_util' does not match runtime version 3.6
+  return f(*args, **kwds)
+/localdata/u6142160/anaconda3/lib/python3.6/site-packages/h5py/__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+../Metric/Metric.py:62: RuntimeWarning: invalid value encountered in double_scalars
+  pos_F1 = 2*(pos_recall*pos_precision) / (pos_recall+pos_precision)
+mem usage after prediction maps calculated: 7476.4375 MB
+
