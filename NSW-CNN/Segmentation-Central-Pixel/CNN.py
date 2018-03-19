@@ -44,6 +44,8 @@ parser.add_option("--not_weight", action="store_false", default=True, dest="use_
 parser.add_option("--use_drop_out", action="store_true", default=False, dest="use_drop_out")
 parser.add_option("--use_center_crop", action="store_true", default=False, dest="use_center_crop")
 parser.add_option("--use_batch_norm", action="store_true", default=False, dest="use_batch_norm")
+
+parser.add_option("--gpu", dest="gpu")
 (options, args) = parser.parse_args()
 
 path_train_set = options.path_train_set
@@ -64,6 +66,13 @@ use_weight = options.use_weight
 use_drop_out = options.use_drop_out
 use_center_crop = options.use_center_crop
 use_batch_norm = options.use_batch_norm
+
+gpu = options.gpu
+
+# restrict to single gpu
+assert gpu in set(['0', '1'])
+os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+os.environ["CUDA_VISIBLE_DEVICES"] = gpu
 
 if not save_path:
 	print("no save path provided")
