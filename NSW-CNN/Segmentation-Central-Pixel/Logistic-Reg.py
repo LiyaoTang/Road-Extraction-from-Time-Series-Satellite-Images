@@ -35,6 +35,8 @@ parser.add_option("--cv", dest="path_cv_set", default="../../Data/090085/Road_Da
 
 parser.add_option("--not_weight", action="store_false", default=True, dest="use_weight")
 parser.add_option("--pos", type="int", default=0, dest="pos_num")
+parser.add_option("--norm_param", type="float", default=0.01, dest="norm_param")
+parser.add_option("--norm", default="", dest="norm")
 parser.add_option("--size", type="int", default=8, dest="size")
 parser.add_option("-e", "--epoch", type="int", default=15, dest="epoch")
 parser.add_option("--rand", type="int", default=0, dest="rand_seed")
@@ -47,10 +49,13 @@ model_name = options.model_name
 
 use_weight = options.use_weight
 pos_num = options.pos_num
+norm = str(options.norm)
+norm_param = options.norm_param
 size = options.size
 epoch = options.epoch
 rand_seed = options.rand_seed
 
+assert len(norm) < 2
 if not save_path:
 	print("no save path provided")
 	sys.exit()
@@ -67,6 +72,7 @@ if not model_name:
 	model_name = "sk-SGD_"
 	if use_weight: model_name += "weight_"
 	model_name += "p" + str(pos_num) + "_"
+	model_name += "n" + norm + str(norm_param).replace('.', '_') + "_"
 	model_name += "e" + str(epoch) + "_"
 	model_name += "r" + str(rand_seed)
 	

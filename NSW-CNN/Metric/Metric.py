@@ -163,4 +163,4 @@ class Metric_Record (Metric):
 
     def get_balanced_acc(self):
         true_pos, false_pos, true_neg, false_neg = self._get_base_metric()
-        return ( (true_pos/(true_pos + false_pos)) + (true_neg/(true_neg+false_neg)) ) / 2
+        return ( (true_pos/(true_pos + false_neg)) + (true_neg/(true_neg+false_pos)) ) / 2
