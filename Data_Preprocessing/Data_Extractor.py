@@ -45,7 +45,7 @@ class Data_Extractor:
         
         if normalization: 
             self.normalization = normalization
-            assert normalization in set('mean', 'Gaussian')
+            assert normalization in set(['mean', 'Gaussian'])
             self._cal_norm_param()
 
     def _cal_norm_param(self):
