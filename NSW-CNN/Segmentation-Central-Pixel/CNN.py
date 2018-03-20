@@ -49,7 +49,7 @@ parser.add_option("--use_batch_norm", action="store_true", default=False, dest="
 parser.add_option("--gpu", dest="gpu")
 (options, args) = parser.parse_args()
 
-path_train_set = options.path_train_set
+path_train_set = options.path_train_set 
 path_cv_set = options.path_cv_set
 save_path = options.save_path
 model_name = options.model_name
@@ -110,6 +110,9 @@ else:
 	conv_struct = [int(x) for x in conv_struct.split('-')]
 	dense_struct = [int(x) for x in dense_struct.split('-')]
 	assert len(conv_struct) == 2 and len(dense_struct) == 1
+
+if norm.startswith('G'): norm = 'Gaussian'
+else: norm = 'mean'
 
 # monitor mem usage
 process = psutil.Process(os.getpid())
