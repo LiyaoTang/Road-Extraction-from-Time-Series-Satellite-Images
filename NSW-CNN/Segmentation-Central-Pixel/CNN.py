@@ -37,6 +37,7 @@ parser.add_option("--size", type="int", default=16, dest="size")
 parser.add_option("-e", "--epoch", type="int", default=15, dest="epoch")
 parser.add_option("--learning_rate", type="float", default=6e-9, dest="learning_rate")
 parser.add_option("--rand", type="int", default=0, dest="rand_seed")
+parser.add_option("--norm", default="", dest="norm")
 
 parser.add_option("--conv", dest="conv_struct")
 parser.add_option("--dense", dest="dense_struct")
@@ -94,6 +95,7 @@ if not model_name:
 	if use_center_crop: model_name += "crop_"
 	if use_drop_out: model_name += "drop_"
 	if use_batch_norm: model_name += "bn_"
+	if norm: model_name += norm + "_"
 	model_name += "p" + str(pos_num) + "_"
 	model_name += "e" + str(epoch) + "_"
 	model_name += "r" + str(rand_seed)
@@ -141,13 +143,15 @@ CV_set.close()
 
 Train_Data = Data_Extractor (train_raw_image, train_road_mask, size,
 							 pos_topleft_coord = train_pos_topleft_coord,
-							 neg_topleft_coord = train_neg_topleft_coord)
+							 neg_topleft_coord = train_neg_topleft_coord,
+							 normalization = norm)
 # run garbage collector
 gc.collect()
 
 CV_Data = Data_Extractor (CV_raw_image, CV_road_mask, size,
 						  pos_topleft_coord = CV_pos_topleft_coord,
-						  neg_topleft_coord = CV_neg_topleft_coord)
+						  neg_topleft_coord = CV_neg_topleft_coord,
+						  normalization = norm)
 # run garbage collector
 gc.collect()
 
