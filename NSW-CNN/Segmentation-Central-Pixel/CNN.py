@@ -55,6 +55,7 @@ save_path = options.save_path
 model_name = options.model_name
 
 pos_num = options.pos_num
+norm = options.norm
 size = options.size
 epoch = options.epoch
 learning_rate = options.learning_rate
