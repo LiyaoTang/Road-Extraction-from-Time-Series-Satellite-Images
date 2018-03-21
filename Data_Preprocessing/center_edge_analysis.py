@@ -40,21 +40,7 @@ CV_set.close()
 gc.collect()
 
 
-# In[3]:
-
-
-size = 8
-norm = 'Gaussian'
-Train_Data = Data_Extractor (train_raw_image, train_road_mask, size,
-                             pos_topleft_coord = train_pos_topleft_coord,
-                             neg_topleft_coord = train_neg_topleft_coord,
-                             normalization = norm)
-
-gc.collect()
-
-
-
-
+print(train_raw_image.shape)
 def is_close_to_edge(coord, raw_img, size):
     dist = int(1.5*size)
     return (raw_img[:,coord[0]-dist:coord[0]+dist, coord[1]-dist:coord[1]+dist] == -9999).any()
@@ -64,31 +50,53 @@ def is_close_to_edge(coord, raw_img, size):
 # Training Set
 #################################
 
-edge_img = []
-center_img = []
-i = 0
-for coord, patch, y in Train_Data.iterate_data_with_coord(norm=True):
-    if is_close_to_edge(coord,  train_raw_image, size):
-        edge_img.extend(patch)
-    else:
-        center_img.extend(patch)
-    i += 1
-    if i > 5000:
-        gc.collect()
-        i = 0
-
-edge_img = np.array(edge_img)
-gc.collect()
-center_img = np.array(center_img)
-gc.collect()
-
+size = 8
+norm = 'Gaussian'
+Train_Data = Data_Extractor (train_raw_image, train_road_mask, size,
+                             pos_topleft_coord = train_pos_topleft_coord,
+                             neg_topleft_coord = train_neg_topleft_coord,
+                             normalization = norm)
 
 h5f = h5py.File('./Result/center_edge_img_train.h5', 'w')
-h5f.create_dataset(name='edge', data=edge_img)
-h5f.create_dataset(name='center', data=center_img)
+h5f.create_group(name='edge', data=edge_img)
+h5f.create_group(name='center', data=center_img)
 h5f.close()
 
+for ch_n in range(7):
+    edge_img = []
+    center_img = []
+    gc.collect()
 
+    i = 0
+    for coord, patch, y in Train_Data.iterate_data_with_coord(norm=True):
+        patch = patch[0]
+        if is_close_to_edge(coord,  train_raw_image, size):
+            edge_img.extend(patch[ch_n])
+        else:
+            center_img.extend(patch[ch_n])
+        
+        i += 1
+        if i > 1000:
+            gc.collect()
+            i = 0
+    gc.collect()
+    
+    h5f = h5py.File('./Result/center_edge_img_train.h5', 'w')
+    edge_group = h5f['edge']
+    edge_group.create_dataset(name=str(ch_n), data=edge_img)
+
+    gc.collect()
+
+    center_group = h5f['center']
+    center_group.create_dataset(name=str(ch_n), data=center_img)
+
+    h5f.close()
+    gc.collect()
+
+Train_Data = 0
+edge_img = 0
+center_img = 0
+gc.collect()
 #################################
 # Training Set
 #################################
@@ -97,25 +105,44 @@ CV_Data = Data_Extractor (CV_raw_image, CV_road_mask, size,
                           pos_topleft_coord = CV_pos_topleft_coord,
                           neg_topleft_coord = CV_neg_topleft_coord,
                           normalization = norm)
-edge_img = []
-center_img = []
-i = 0
-for coord, patch, y in CV_Data.iterate_data_with_coord(norm=True):
-    if is_close_to_edge(coord,  train_raw_image, size):
-        edge_img.extend(patch)
-    else:
-        center_img.extend(patch)
-    i += 1
-    if i > 5000:
-        gc.collect()
-        i = 0
 
-edge_img = np.array(edge_img)
-gc.collect()
-center_img = np.array(center_img)
-gc.collect()
-
-h5f = h5py.File('./Result/center_edge_img_cv.h5', 'w')
-h5f.create_dataset(name='edge', data=edge_img)
-h5f.create_dataset(name='center', data=center_img)
+h5f = h5py.File('./Result/center_edge_img_train.h5', 'w')
+h5f.create_group(name='edge', data=edge_img)
+h5f.create_group(name='center', data=center_img)
 h5f.close()
+
+for ch_n in range(7):
+    edge_img = []
+    center_img = []
+    gc.collect()
+
+    i = 0
+    for coord, patch, y in Train_Data.iterate_data_with_coord(norm=True):
+        patch = patch[0]
+        if is_close_to_edge(coord,  train_raw_image, size):
+            edge_img.extend(patch[ch_n])
+        else:
+            center_img.extend(patch[ch_n])
+        
+        i += 1
+        if i > 1000:
+            gc.collect()
+            i = 0
+    gc.collect()
+    
+    h5f = h5py.File('./Result/center_edge_img_cv.h5', 'w')
+    edge_group = h5f['edge']
+    edge_group.create_dataset(name=str(ch_n), data=edge_img)
+
+    gc.collect()
+
+    center_group = h5f['center']
+    center_group.create_dataset(name=str(ch_n), data=center_img)
+
+    h5f.close()
+    gc.collect()
+
+Train_Data = 0
+edge_img = 0
+center_img = 0
+gc.collect()
