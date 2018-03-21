@@ -29,14 +29,6 @@ train_raw_image = np.array(train_set['raw_image'])
 train_road_mask = np.array(train_set['road_mask'])
 train_set.close()
 
-# Load cross-validation set
-CV_set = h5py.File(path_cv_set, 'r')
-CV_pos_topleft_coord = np.array(CV_set['positive_example'])
-CV_neg_topleft_coord = np.array(CV_set['negative_example'])
-CV_raw_image = np.array(CV_set['raw_image'])
-CV_road_mask = np.array(CV_set['road_mask'])
-CV_set.close()
-
 gc.collect()
 
 
@@ -58,8 +50,8 @@ Train_Data = Data_Extractor (train_raw_image, train_road_mask, size,
                              normalization = norm)
 
 h5f = h5py.File('./Result/center_edge_img_train.h5', 'w')
-h5f.create_group(name='edge', data=edge_img)
-h5f.create_group(name='center', data=center_img)
+h5f.create_group(name='edge')
+h5f.create_group(name='center')
 h5f.close()
 
 for ch_n in range(7):
@@ -97,18 +89,29 @@ Train_Data = 0
 edge_img = 0
 center_img = 0
 gc.collect()
+
+
 #################################
-# Training Set
+# CV Set
 #################################
+
+
+# Load cross-validation set
+CV_set = h5py.File(path_cv_set, 'r')
+CV_pos_topleft_coord = np.array(CV_set['positive_example'])
+CV_neg_topleft_coord = np.array(CV_set['negative_example'])
+CV_raw_image = np.array(CV_set['raw_image'])
+CV_road_mask = np.array(CV_set['road_mask'])
+CV_set.close()
 
 CV_Data = Data_Extractor (CV_raw_image, CV_road_mask, size,
                           pos_topleft_coord = CV_pos_topleft_coord,
                           neg_topleft_coord = CV_neg_topleft_coord,
                           normalization = norm)
 
-h5f = h5py.File('./Result/center_edge_img_train.h5', 'w')
-h5f.create_group(name='edge', data=edge_img)
-h5f.create_group(name='center', data=center_img)
+h5f = h5py.File('./Result/center_edge_img_cv.h5', 'w')
+h5f.create_group(name='edge')
+h5f.create_group(name='center')
 h5f.close()
 
 for ch_n in range(7):
@@ -117,9 +120,9 @@ for ch_n in range(7):
     gc.collect()
 
     i = 0
-    for coord, patch, y in Train_Data.iterate_data_with_coord(norm=True):
+    for coord, patch, y in CV_Data.iterate_data_with_coord(norm=True):
         patch = patch[0]
-        if is_close_to_edge(coord,  train_raw_image, size):
+        if is_close_to_edge(coord,  CV_raw_image, size):
             edge_img.extend(patch[ch_n])
         else:
             center_img.extend(patch[ch_n])
@@ -141,8 +144,3 @@ for ch_n in range(7):
 
     h5f.close()
     gc.collect()
-
-Train_Data = 0
-edge_img = 0
-center_img = 0
-gc.collect()
