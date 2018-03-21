@@ -74,8 +74,8 @@ for coord, patch, y in Train_Data.iterate_data_with_coord(norm=True):
         center_img.extend(patch)
     i += 1
     if i > 5000:
-	    gc.collect()
-    	i = 0
+        gc.collect()
+        i = 0
 
 edge_img = np.array(edge_img)
 gc.collect()
@@ -107,8 +107,8 @@ for coord, patch, y in CV_Data.iterate_data_with_coord(norm=True):
         center_img.extend(patch)
     i += 1
     if i > 5000:
-	    gc.collect()
-    	i = 0
+        gc.collect()
+        i = 0
 
 edge_img = np.array(edge_img)
 gc.collect()
