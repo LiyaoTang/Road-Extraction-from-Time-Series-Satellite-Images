@@ -11,6 +11,7 @@ import numpy as np
 import h5py
 import sys
 import gc
+import psutil
 
 from Data_Extractor import *
 
@@ -138,7 +139,7 @@ for ch_n in range(7):
     center_group = h5f['center']
     center_group.create_dataset(name=str(ch_n), data=center_img)
     h5f.close()
-    
+
     edge_img = []
     center_img = []    
     gc.collect()
