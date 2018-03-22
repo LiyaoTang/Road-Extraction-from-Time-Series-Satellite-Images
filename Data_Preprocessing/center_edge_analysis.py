@@ -63,9 +63,9 @@ for ch_n in range(7):
     for coord, patch, y in Train_Data.iterate_data_with_coord(norm=True):
         patch = patch[0]
         if is_close_to_edge(coord,  train_raw_image, size):
-            edge_img.extend(patch[ch_n])
+            edge_img.append(patch[ch_n])
         else:
-            center_img.extend(patch[ch_n])
+            center_img.append(patch[ch_n])
         
         i += 1
         if i > 1000:
@@ -76,13 +76,12 @@ for ch_n in range(7):
     h5f = h5py.File('./Result/center_edge_img_train.h5', 'w')
     edge_group = h5f['edge']
     edge_group.create_dataset(name=str(ch_n), data=edge_img)
-
-    gc.collect()
-
     center_group = h5f['center']
     center_group.create_dataset(name=str(ch_n), data=center_img)
-
     h5f.close()
+
+    edge_img = []
+    center_img = []
     gc.collect()
 
 Train_Data = 0
@@ -123,9 +122,9 @@ for ch_n in range(7):
     for coord, patch, y in CV_Data.iterate_data_with_coord(norm=True):
         patch = patch[0]
         if is_close_to_edge(coord,  CV_raw_image, size):
-            edge_img.extend(patch[ch_n])
+            edge_img.append(patch[ch_n])
         else:
-            center_img.extend(patch[ch_n])
+            center_img.append(patch[ch_n])
         
         i += 1
         if i > 1000:
@@ -136,11 +135,10 @@ for ch_n in range(7):
     h5f = h5py.File('./Result/center_edge_img_cv.h5', 'w')
     edge_group = h5f['edge']
     edge_group.create_dataset(name=str(ch_n), data=edge_img)
-
-    gc.collect()
-
     center_group = h5f['center']
     center_group.create_dataset(name=str(ch_n), data=center_img)
-
     h5f.close()
+    
+    edge_img = []
+    center_img = []    
     gc.collect()
