@@ -1,0 +1,82 @@
+Train set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_train
+CV set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_cv
+will be saved as  sk-SGD_weight_p16_n3_0_e15_r1
+will be saved into  ./Result/motor_trunk_pri_sec_tert_uncl_track/sklearn/
+mem usage before data loaded: 83.97265625 MB
+
+mu =  [ 144.71187809  191.4973748   363.63933132  368.9204473  2385.57259035
+ 1362.40326606  728.31018062]
+mu =  [ 150.8227309   198.28994142  365.46753706  373.66751856 2370.63525823
+ 1356.64782764  731.00466191]
+train data:
+(7, 7650, 8091) (7650, 8091)
+pos =  304920 neg =  21258076
+cv data:
+(7, 2365, 8091) (2365, 8091)
+pos =  23150 neg =  782418
+mem usage after data loaded: 5997.73046875 MB
+
+SGDClassifier(alpha=3.0, average=False,
+       class_weight={0: 0.014140892109797729, 1: 0.9858591078902023},
+       epsilon=0.1, eta0=0.0, fit_intercept=True, l1_ratio=0.15,
+       learning_rate='optimal', loss='log', max_iter=1, n_iter=None,
+       n_jobs=1, penalty='l2', power_t=0.5, random_state=None,
+       shuffle=False, tol=None, verbose=0, warm_start=False)
+classes in classifier  [0 1] 1
+mem usage after model created: 5997.97265625 MB
+
+ balanced_acc =  0.5023081428686429 AUC =  0.5024224581484721 avg_precision =  0.028873676462919474
+ balanced_acc =  0.5000102247136441 AUC =  0.5000108637582469 avg_precision =  0.028738093553356648
+ balanced_acc =  0.49998031886167005 AUC =  0.4999803189444836 avg_precision =  0.028736388470630737
+ balanced_acc =  0.5001368987572319 AUC =  0.4999619465915838 avg_precision =  0.02873573341353085
+ balanced_acc =  0.5000103539579996 AUC =  0.500010353819977 avg_precision =  0.02873806509345821
+ balanced_acc =  0.5069356093744658 AUC =  0.507333157641615 avg_precision =  0.02927417875747583
+ balanced_acc =  0.49891943293892715 AUC =  0.49892300764125647 avg_precision =  0.028677498657114515
+ balanced_acc =  0.5048100900499695 AUC =  0.5049865101963058 avg_precision =  0.029041330228645752
+ balanced_acc =  0.5000051195339968 AUC =  0.5000057623328141 avg_precision =  0.02873780861143489
+ balanced_acc =  0.5034886892445459 AUC =  0.5033100535043474 avg_precision =  0.028954867636656827
+ balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.028737487089854612
+ balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.028737487089854612
+ balanced_acc =  0.5053699138805826 AUC =  0.5055688728402108 avg_precision =  0.029170926160063892
+ balanced_acc =  0.506699708723194 AUC =  0.5066737300004366 avg_precision =  0.029199361228804874
+ balanced_acc =  0.5106776691762652 AUC =  0.5108641132685827 avg_precision =  0.029438368361119144
+finish
+mem usage after model trained: 6136.421875 MB
+
+coefficient info:
+shape =  (1, 448)
+0.09486029036975534 -0.07457099658957887 0.011153695128622843 0.0005675423666800583
+On train set
+true_pos  = 288362
+false_pos = 17498934
+true_neg  = 3759142
+false_neg = 16558
+size = 21562996
+pos_recall    = 0.9456972320608684
+pos_precision = 0.016211682765047593
+pos_F1        = 0.03187691325374404
+neg_recall    = 0.17683359491235237
+neg_precision = 0.9956145880234128
+neg_F1        = 0.3003256080904455
+accuracy      = 0.1877060126524162
+balanced_accuracy = 0.5059131353942302
+On CV set
+true_pos  = 3472
+false_pos = 100637
+true_neg  = 681781
+false_neg = 19678
+size = 805568
+pos_recall    = 0.14997840172786178
+pos_precision = 0.03334966237308974
+pos_F1        = 0.05456588532048814
+neg_recall    = 0.8713769366246686
+neg_precision = 0.9719470418085733
+neg_F1        = 0.918918481787911
+accuracy      = 0.8506457555414316
+balanced_accuracy = 0.5026483520908315
+/localdata/u6142160/anaconda3/lib/python3.6/site-packages/h5py/__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+/localdata/u6142160/anaconda3/lib/python3.6/site-packages/sklearn/linear_model/base.py:340: RuntimeWarning: overflow encountered in exp
+  np.exp(prob, prob)
+mem usage after prediction maps calculated: 8540.4765625 MB
+
