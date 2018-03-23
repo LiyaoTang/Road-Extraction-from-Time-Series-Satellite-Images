@@ -55,6 +55,12 @@ h5f.create_group(name='edge')
 h5f.create_group(name='center')
 h5f.close()
 
+process = psutil.Process(os.getpid())
+print('mem usage at the beginning ' + str(ch_n) + ':', process.memory_info().rss / 1024/1024, 'MB')
+print()
+sys.stdout.flush()
+
+
 for ch_n in range(7):
     edge_img = []
     center_img = []
@@ -73,6 +79,11 @@ for ch_n in range(7):
             gc.collect()
             i = 0
     gc.collect()
+
+    process = psutil.Process(os.getpid())
+    print('mem usage after band' + str(ch_n) + ':', process.memory_info().rss / 1024/1024, 'MB')
+    print()
+    sys.stdout.flush()
     
     h5f = h5py.File('./Result/center_edge_img_train.h5', 'w')
     edge_group = h5f['edge']
@@ -132,7 +143,12 @@ for ch_n in range(7):
             gc.collect()
             i = 0
     gc.collect()
-    
+
+    process = psutil.Process(os.getpid())
+    print('mem usage after band' + str(ch_n) + ':', process.memory_info().rss / 1024/1024, 'MB')
+    print()
+    sys.stdout.flush()
+
     h5f = h5py.File('./Result/center_edge_img_cv.h5', 'w')
     edge_group = h5f['edge']
     edge_group.create_dataset(name=str(ch_n), data=edge_img)
