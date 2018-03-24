@@ -10,6 +10,7 @@ import skimage.io
 import numpy as np
 import h5py
 import sys
+import os
 import gc
 import psutil
 

@@ -1,0 +1,11 @@
+/localdata/u6142160/anaconda3/lib/python3.6/site-packages/h5py/__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+(7, 7650, 8091)
+mu =  [ 144.71187809  191.4973748   363.63933132  368.9204473  2385.57259035
+ 1362.40326606  728.31018062]
+std =  [125.65067662 147.07994057 235.16274288 262.88676276 927.00557037
+ 842.7245097  545.23410243]
+Traceback (most recent call last):
+  File "center_edge_analysis.py", line 58, in <module>
+    process = psutil.Process(os.getpid())
+NameError: name 'os' is not defined

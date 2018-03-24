@@ -1,0 +1,86 @@
+Train set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_train
+CV set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_cv
+will be saved as  sk-SGD_weight_p16_n0_8_e15_r1
+will be saved into  ./Result/motor_trunk_pri_sec_tert_uncl_track/sklearn/
+mem usage before data loaded: 83.96875 MB
+
+mu =  [ 144.71187809  191.4973748   363.63933132  368.9204473  2385.57259035
+ 1362.40326606  728.31018062]
+mu =  [ 150.8227309   198.28994142  365.46753706  373.66751856 2370.63525823
+ 1356.64782764  731.00466191]
+train data:
+(7, 7650, 8091) (7650, 8091)
+pos =  304920 neg =  21258076
+cv data:
+(7, 2365, 8091) (2365, 8091)
+pos =  23150 neg =  782418
+mem usage after data loaded: 6271.01171875 MB
+
+SGDClassifier(alpha=0.8, average=False,
+       class_weight={0: 0.014140892109797729, 1: 0.9858591078902023},
+       epsilon=0.1, eta0=0.0, fit_intercept=True, l1_ratio=0.15,
+       learning_rate='optimal', loss='log', max_iter=1, n_iter=None,
+       n_jobs=1, penalty='l2', power_t=0.5, random_state=None,
+       shuffle=False, tol=None, verbose=0, warm_start=False)
+classes in classifier  [0 1] 1
+mem usage after model created: 6271.2265625 MB
+
+ balanced_acc =  0.5164095327302001 AUC =  0.5178907819165913 avg_precision =  0.030171642936477578
+ balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.028737487089854612
+ balanced_acc =  0.4999138654001581 AUC =  0.49991386473764965 avg_precision =  0.02873267957788847
+ balanced_acc =  0.500007668535233 AUC =  0.500007668535233 avg_precision =  0.02873791517908128
+ balanced_acc =  0.5158048118617632 AUC =  0.5158226662158739 avg_precision =  0.029697744557053395
+ balanced_acc =  0.4999660444547472 AUC =  0.49996666828926023 avg_precision =  0.02873562737375695
+ balanced_acc =  0.4981685769517939 AUC =  0.49817157872234225 avg_precision =  0.028635782243302675
+ balanced_acc =  0.5028558983350317 AUC =  0.5028912739947378 avg_precision =  0.028914356547892758
+ balanced_acc =  0.5209417607211961 AUC =  0.5210831398850084 avg_precision =  0.030152545345563504
+ balanced_acc =  0.5043424955656239 AUC =  0.5043723710526277 avg_precision =  0.029025297820396995
+ balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.028737487089854612
+ balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.028737487089854612
+ balanced_acc =  0.5016246460472729 AUC =  0.5016549286181105 avg_precision =  0.0288342913470748
+ balanced_acc =  0.5041101197905257 AUC =  0.5040758104105549 avg_precision =  0.029099410819203697
+ balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.028737487089854612
+finish
+mem usage after model trained: 6407.1953125 MB
+
+coefficient info:
+shape =  (1, 448)
+0.37438191809354804 -0.32545703132156917 0.03402667080987088 0.00888993049004645
+On train set
+true_pos  = 304920
+false_pos = 21255168
+true_neg  = 2908
+false_neg = 0
+size = 21562996
+pos_recall    = 1.0
+pos_precision = 0.014142799417145236
+pos_F1        = 0.02789114003525633
+neg_recall    = 0.00013679507025941577
+neg_precision = 1.0
+neg_F1        = 0.00027355271985529927
+accuracy      = 0.014275752775727455
+balanced_accuracy = 0.5070713997085726
+On CV set
+true_pos  = 23150
+false_pos = 782418
+true_neg  = 0
+false_neg = 0
+size = 805568
+pos_recall    = 1.0
+pos_precision = 0.028737487089854612
+pos_F1        = 0.055869427235802765
+neg_recall    = 0.0
+neg_precision = nan
+neg_F1        = nan
+accuracy      = 0.028737487089854612
+balanced_accuracy = nan
+/localdata/u6142160/anaconda3/lib/python3.6/site-packages/h5py/__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+/localdata/u6142160/anaconda3/lib/python3.6/site-packages/sklearn/linear_model/base.py:340: RuntimeWarning: overflow encountered in exp
+  np.exp(prob, prob)
+../Metric/Metric.py:71: RuntimeWarning: invalid value encountered in long_scalars
+  neg_precision = true_neg / (true_neg + false_neg)
+../Metric/Metric.py:81: RuntimeWarning: invalid value encountered in long_scalars
+  balanced_acc = ( (true_pos/(true_pos + false_pos)) + (true_neg/(true_neg+false_neg)) ) / 2
+mem usage after prediction maps calculated: 8486.9296875 MB
+
