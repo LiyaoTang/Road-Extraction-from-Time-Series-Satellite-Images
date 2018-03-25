@@ -56,16 +56,17 @@ h5f.create_group(name='edge')
 h5f.create_group(name='center')
 h5f.close()
 
-process = psutil.Process(os.getpid())
-print('mem usage at the beginning ' + str(ch_n) + ':', process.memory_info().rss / 1024/1024, 'MB')
-print()
-sys.stdout.flush()
-
 
 for ch_n in range(7):
+
     edge_img = []
     center_img = []
     gc.collect()
+
+    process = psutil.Process(os.getpid())
+    print('mem usage at the beginning ' + str(ch_n) + ':', process.memory_info().rss / 1024/1024, 'MB')
+    print()
+    sys.stdout.flush()
 
     i = 0
     for coord, patch, y in Train_Data.iterate_data_with_coord(norm=True):
