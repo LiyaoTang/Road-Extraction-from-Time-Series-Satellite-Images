@@ -2,7 +2,7 @@ Train set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posne
 CV set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_cv
 will be saved as  sk-SGD_weight_p16_n0_6_e15_r1
 will be saved into  ./Result/motor_trunk_pri_sec_tert_uncl_track/sklearn/
-mem usage before data loaded: 83.9765625 MB
+mem usage before data loaded: 90.75390625 MB
 
 mu =  [ 144.71187809  191.4973748   363.63933132  368.9204473  2385.57259035
  1362.40326606  728.31018062]
@@ -14,7 +14,7 @@ pos =  304920 neg =  21258076
 cv data:
 (7, 2365, 8091) (2365, 8091)
 pos =  23150 neg =  782418
-mem usage after data loaded: 6326.48828125 MB
+mem usage after data loaded: 6366.83203125 MB
 
 SGDClassifier(alpha=0.6, average=False,
        class_weight={0: 0.014140892109797729, 1: 0.9858591078902023},
@@ -23,7 +23,7 @@ SGDClassifier(alpha=0.6, average=False,
        n_jobs=1, penalty='l2', power_t=0.5, random_state=None,
        shuffle=False, tol=None, verbose=0, warm_start=False)
 classes in classifier  [0 1] 1
-mem usage after model created: 6326.59765625 MB
+mem usage after model created: 6366.83203125 MB
 
  balanced_acc =  0.5013049074920966 AUC =  0.5013343099480716 avg_precision =  0.028812188182630722
  balanced_acc =  0.5007962634877127 AUC =  0.5008813053074815 avg_precision =  0.028787572927132844
