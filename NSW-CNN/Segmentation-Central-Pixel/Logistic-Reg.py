@@ -35,7 +35,8 @@ parser.add_option("--cv", dest="path_cv_set", default="../../Data/090085/Road_Da
 
 parser.add_option("--not_weight", action="store_false", default=True, dest="use_weight")
 parser.add_option("--pos", type="int", default=0, dest="pos_num")
-parser.add_option("--norm_param", type="float", default=0.01, dest="norm_param")
+parser.add_option("--norm_param", dest="norm_param")
+parser.add_option("--sample_norm", type="int", default=0, dest="sample_norm")
 parser.add_option("--norm", default="", dest="norm")
 parser.add_option("--size", type="int", default=8, dest="size")
 parser.add_option("-e", "--epoch", type="int", default=15, dest="epoch")
@@ -51,9 +52,12 @@ use_weight = options.use_weight
 pos_num = options.pos_num
 norm = str(options.norm)
 norm_param = options.norm_param
+sample_norm = options.sample_norm
 size = options.size
 epoch = options.epoch
 rand_seed = options.rand_seed
+
+np.random.seed(rand_seed)
 
 if not save_path:
 	print("no save path provided")
@@ -67,6 +71,16 @@ if not os.path.exists(save_path+'Analysis'):
 print("Train set:", path_train_set)
 print("CV set:", path_cv_set)
 
+if sample_norm:
+	norm_param = norm_param.split('-')
+	norm_param = [float(x) for x in norm_param]
+	assert len(norm_param) == 2
+	norm_param = np.random.uniform(norm_param[0], norm_param[1])
+	norm_param = np.around(norm_param, decimals=sample_norm)
+else:
+	norm_param = float(norm_param)
+
+assert norm in set(['G', ''])
 if not model_name:
 	model_name = "sk-SGD_"
 	if use_weight: model_name += "weight_"
@@ -79,7 +93,7 @@ if not model_name:
 	print("will be saved into ", save_path)
 
 if norm.startswith('G'): norm = 'Gaussian'
-else: norm = 'mean'
+elif norm == '': norm = 'mean'
 
 # monitor mem usage
 process = psutil.Process(os.getpid())
@@ -92,7 +106,6 @@ print()
 
 
 
-np.random.seed(rand_seed)
 
 # Load training set
 train_set = h5py.File(path_train_set, 'r')

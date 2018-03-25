@@ -7,6 +7,7 @@ import numpy as np
 import h5py
 import sys
 import gc
+import os
 
 from optparse import OptionParser
 
@@ -25,6 +26,8 @@ parser.add_option("--pred_weight", type="float", default=0.5, dest="pred_weight"
 parser.add_option("--analyze_train", action='store_true', default=False, dest="analyze_train")
 parser.add_option("--analyze_CV", action='store_true', default=False, dest="analyze_CV")
 
+parser.add_option("--save", dest="save_path")
+
 (options, args) = parser.parse_args()
 
 pred_dir = options.pred_dir
@@ -35,6 +38,13 @@ pred_weight = options.pred_weight
 
 analyze_train = options.analyze_train
 analyze_CV = options.analyze_CV
+
+save_path = options.save_path
+
+pred_dir = pred_dir.strip('/') + '/'
+save_path = save_path.strip('/') + '/'
+assert not (save_path is None)
+if not os.path.exists(save_path): os.makedirs(save_path)
 
 h5f = h5py.File(pred_dir + pred_name, 'r')
 train_pred = np.array(h5f['train_pred'])
@@ -51,7 +61,7 @@ if analyze_train:
     train_set.close()
 
     show_pred_prob_with_raw(train_raw_image, train_pred, train_road_mask, pred_weight=pred_weight, figsize=(150,150), 
-    						show_plot=False, save_path=pred_dir + save_name + '_train_' + str(pred_weight).replace('.', '_') + '.png')
+    						show_plot=False, save_path=save_path + save_name + '_train_' + str(pred_weight).replace('.', '_') + '.png')
     plt.close()
 
 if analyze_CV:
@@ -63,5 +73,5 @@ if analyze_CV:
     gc.collect()
 
     show_pred_prob_with_raw(CV_raw_image, CV_pred, CV_road_mask, pred_weight=pred_weight, figsize=(150,150), 
-    						show_plot=False, save_path=pred_dir + save_name + '_CV_' + str(pred_weight).replace('.', '_') + '.png')
+    						show_plot=False, save_path=save_path + save_name + '_CV_' + str(pred_weight).replace('.', '_') + '.png')
     plt.close()
