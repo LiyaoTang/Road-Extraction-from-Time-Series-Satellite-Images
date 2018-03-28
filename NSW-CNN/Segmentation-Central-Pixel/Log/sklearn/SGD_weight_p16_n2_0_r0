@@ -1,6 +1,6 @@
 Train set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_train
 CV set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_cv
-will be saved as  sk-SGD_weight_p16_n0_6_e15_r1
+will be saved as  sk-SGD_weight_p16_n2_0_e15_r0
 will be saved into  ./Result/motor_trunk_pri_sec_tert_uncl_track/sklearn/
 mem usage before data loaded: 85.94921875 MB
 
@@ -16,7 +16,7 @@ cv data:
 pos =  23150 neg =  782418
 mem usage after data loaded: 6362.02734375 MB
 
-SGDClassifier(alpha=0.6, average=False,
+SGDClassifier(alpha=2.0, average=False,
        class_weight={0: 0.014140892109797729, 1: 0.9858591078902023},
        epsilon=0.1, eta0=0.0, fit_intercept=True, l1_ratio=0.15,
        learning_rate='optimal', loss='log', max_iter=1, n_iter=None,
@@ -25,41 +25,41 @@ SGDClassifier(alpha=0.6, average=False,
 classes in classifier  [0 1] 1
 mem usage after model created: 6362.02734375 MB
 
- balanced_acc =  0.5013049074920966 AUC =  0.5013343099480716 avg_precision =  0.028812188182630722
- balanced_acc =  0.5007962634877127 AUC =  0.5008813053074815 avg_precision =  0.028787572927132844
+ balanced_acc =  0.5030088586709218 AUC =  0.5030812101414562 avg_precision =  0.02891122690461591
+ balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.028737487089854612
+ balanced_acc =  0.503982627217756 AUC =  0.5040212929496011 avg_precision =  0.02900918922146116
+ balanced_acc =  0.4999815969508756 AUC =  0.49998159708889817 avg_precision =  0.02873645981557618
+ balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.028737487089854612
+ balanced_acc =  0.5038346275242545 AUC =  0.5039195605270116 avg_precision =  0.028985335155915233
  balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.028737487089854612
  balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.028737487089854612
- balanced_acc =  0.5065279638437342 AUC =  0.5064914384282293 avg_precision =  0.02917166134099771
- balanced_acc =  0.49910079236175464 AUC =  0.49910090934970397 avg_precision =  0.02868737204906096
- balanced_acc =  0.4998542044720899 AUC =  0.49985547063614344 avg_precision =  0.02872942191774959
- balanced_acc =  0.5067383311435497 AUC =  0.5068125480998382 avg_precision =  0.029259927695455084
+ balanced_acc =  0.5044717902717779 AUC =  0.5044685764709231 avg_precision =  0.029207623035598804
+ balanced_acc =  0.500007668535233 AUC =  0.500007668535233 avg_precision =  0.02873791517908128
+ balanced_acc =  0.50584896804952 AUC =  0.5058019838892632 avg_precision =  0.029125943960598134
+ balanced_acc =  0.5063607934194494 AUC =  0.5067433900580239 avg_precision =  0.029134892998214233
+ balanced_acc =  0.49996063772334004 AUC =  0.49996063772334004 avg_precision =  0.028735289926168646
  balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.028737487089854612
- balanced_acc =  0.504705278729807 AUC =  0.5047165826697054 avg_precision =  0.02909467021277921
- balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.028737487089854612
- balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.028737487089854612
- balanced_acc =  0.5015729623833723 AUC =  0.5015984731543326 avg_precision =  0.02882975007839716
- balanced_acc =  0.4999607669676956 AUC =  0.4999607669676956 avg_precision =  0.028735297139919232
  balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.028737487089854612
 finish
 mem usage after model trained: 6506.35546875 MB
 
 coefficient info:
 shape =  (1, 448)
-0.45976774752027894 -0.43338031669149074 0.045034172320783696 0.015299797990791841
+0.14609696673227657 -0.12889146644370153 0.01327405361940724 0.0014376484178028341
 On train set
 true_pos  = 304920
-false_pos = 21254025
-true_neg  = 4051
+false_pos = 21257453
+true_neg  = 623
 false_neg = 0
 size = 21562996
 pos_recall    = 1.0
-pos_precision = 0.014143549232116878
-pos_F1        = 0.027892598129379227
-neg_recall    = 0.00019056287125890416
+pos_precision = 0.014141300681515898
+pos_F1        = 0.02788822557963622
+neg_recall    = 2.930650920619533e-05
 neg_precision = 1.0
-neg_F1        = 0.000381053127939646
-accuracy      = 0.014328760252054028
-balanced_accuracy = 0.5070717746160585
+neg_F1        = 5.8611300719766524e-05
+accuracy      = 0.014169784198819126
+balanced_accuracy = 0.5070706503407579
 On CV set
 true_pos  = 23150
 false_pos = 782418
@@ -82,5 +82,5 @@ balanced_accuracy = nan
   neg_precision = true_neg / (true_neg + false_neg)
 ../Metric/Metric.py:81: RuntimeWarning: invalid value encountered in long_scalars
   balanced_acc = ( (true_pos/(true_pos + false_pos)) + (true_neg/(true_neg+false_neg)) ) / 2
-mem usage after prediction maps calculated: 9241.30078125 MB
+mem usage after prediction maps calculated: 9243.51953125 MB
 
