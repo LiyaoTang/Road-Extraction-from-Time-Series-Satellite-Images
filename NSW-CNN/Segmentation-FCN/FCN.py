@@ -45,6 +45,8 @@ parser.add_option("--use_batch_norm", action="store_true", default=False, dest="
 parser.add_option("--use_conv1d", action="store_true", default=False, dest="use_conv1d")
 
 parser.add_option("--gpu", dest="gpu")
+parser.add_option("--gpu_max_mem", type="float", default=0.8, dest="gpu_max_mem")
+
 (options, args) = parser.parse_args()
 
 path_train_set = options.path_train_set
@@ -67,6 +69,7 @@ use_conv1d = options.use_conv1d
 fuse_input = options.fuse_input
 
 gpu = options.gpu
+gpu_max_mem = options.gpu_max_mem
 
 # restrict to single gpu
 assert gpu in set(['0', '1'])
@@ -281,7 +284,9 @@ sys.stdout.flush()
 
 saver = tf.train.Saver()
 
-sess = tf.InteractiveSession()
+config = tf.ConfigProto()
+config.gpu_options.per_process_gpu_memory_fraction = gpu_max_mem
+sess = tf.InteractiveSession(config=config)
 sess.run(tf.global_variables_initializer())
 
 balanced_acc_curve = []

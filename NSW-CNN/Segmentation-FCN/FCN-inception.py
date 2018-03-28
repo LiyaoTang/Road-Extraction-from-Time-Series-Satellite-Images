@@ -44,6 +44,8 @@ parser.add_option("--not_weight", action="store_false", default=True, dest="use_
 parser.add_option("--use_batch_norm", action="store_true", default=False, dest="use_batch_norm")
 
 parser.add_option("--gpu", dest="gpu")
+parser.add_option("--gpu_max_mem", type="float", default=0.8, dest="gpu_max_mem")
+
 (options, args) = parser.parse_args()
 
 path_train_set = options.path_train_set
@@ -64,6 +66,7 @@ use_weight = options.use_weight
 use_batch_norm = options.use_batch_norm
 
 gpu = options.gpu
+gpu_max_mem = options.gpu_max_mem
 
 # restrict to single gpu
 assert gpu in set(['0', '1'])
@@ -234,7 +237,9 @@ sys.stdout.flush()
 
 saver = tf.train.Saver()
 
-sess = tf.InteractiveSession()
+config = tf.ConfigProto()
+config.gpu_options.per_process_gpu_memory_fraction = gpu_max_mem
+sess = tf.InteractiveSession(config=config)
 sess.run(tf.global_variables_initializer())
 
 balanced_acc_curve = []
