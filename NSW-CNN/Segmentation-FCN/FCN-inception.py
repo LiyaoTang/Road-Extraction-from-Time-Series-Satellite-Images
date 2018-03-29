@@ -36,7 +36,7 @@ parser.add_option("--pos", type="int", default=0, dest="pos_num")
 parser.add_option("--size", type="int", default=128, dest="size")
 parser.add_option("-e", "--epoch", type="int", default=15, dest="epoch")
 parser.add_option("--learning_rate", type="float", default=9e-6, dest="learning_rate")
-parser.add_option("--batch", type="int", default=2, dest="batch_size")
+parser.add_option("--batch", type="int", default=1, dest="batch_size")
 parser.add_option("--rand", type="int", default=0, dest="rand_seed")
 
 parser.add_option("--conv", dest="conv_struct")
@@ -74,31 +74,31 @@ os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 os.environ["CUDA_VISIBLE_DEVICES"] = gpu
 
 if not save_path:
-	print("no save path provided")
-	sys.exit()
+    print("no save path provided")
+    sys.exit()
 save_path = save_path.strip('/') + '/'
 if not os.path.exists(save_path):
-	os.makedirs(save_path)
+    os.makedirs(save_path)
 if not os.path.exists(save_path+'Analysis'):
-	os.makedirs(save_path+'Analysis')
+    os.makedirs(save_path+'Analysis')
 
 print("Train set:", path_train_set)
 print("CV set:", path_cv_set)
 
 if use_batch_norm:
-	print("sorry, BN not supported yet")
-	sts.exit()
+    print("sorry, BN not supported yet")
+    sts.exit()
 
 if not model_name:
-	model_name = "FCN_incep_"
-	model_name += conv_struct + "_"
-	if use_weight: model_name += "weight_"
-	model_name += "p" + str(pos_num) + "_"
-	model_name += "e" + str(epoch) + "_"
-	model_name += "r" + str(rand_seed)
-	
-	print("will be saved as ", model_name)
-	print("will be saved into ", save_path)
+    model_name = "Incep_"
+    model_name += conv_struct + "_"
+    if use_weight: model_name += "weight_"
+    model_name += "p" + str(pos_num) + "_"
+    model_name += "e" + str(epoch) + "_"
+    model_name += "r" + str(rand_seed)
+    
+    print("will be saved as ", model_name)
+    print("will be saved into ", save_path)
 
 
 # parse conv_struct: e.g. 3-16;5-8;1-32 | 3-8;1-16 | ...
@@ -109,11 +109,12 @@ if not model_name:
 
 # note that at last layer, out_channel = 2 is requested
 if not conv_struct:
-	print("must provide structure for conv")
-	sys.exit()
+    print("must provide structure for conv")
+    sys.exit()
 else:
-	conv_struct = [[[int(x) for x in config.split('-')] for config in layer.split(';')] for layer in conv_struct.split('|')] 
-	assert len(conv_struct) == 3
+    conv_struct = [[[int(x) for x in config.split('-')] for config in layer.split(';')] for layer in conv_struct.split('|')]
+    print("conv_struct = ", conv_struct)
+    assert len(conv_struct) == 3
 
 # monitor mem usage
 process = psutil.Process(os.getpid())
@@ -146,14 +147,14 @@ CV_road_mask = np.array(CV_set['road_mask'])
 CV_set.close()
 
 Train_Data = FCN_Data_Extractor (train_raw_image, train_road_mask, size,
-							 pos_topleft_coord = train_pos_topleft_coord,
-							 neg_topleft_coord = train_neg_topleft_coord)
+                             pos_topleft_coord = train_pos_topleft_coord,
+                             neg_topleft_coord = train_neg_topleft_coord)
 # run garbage collector
 gc.collect()
 
 CV_Data = FCN_Data_Extractor (CV_raw_image, CV_road_mask, size,
-						  pos_topleft_coord = CV_pos_topleft_coord,
-						  neg_topleft_coord = CV_neg_topleft_coord)
+                          pos_topleft_coord = CV_pos_topleft_coord,
+                          neg_topleft_coord = CV_neg_topleft_coord)
 # run garbage collector
 gc.collect()
 
@@ -176,52 +177,47 @@ print()
 
 
 # general model parameter
+
 band = 7
 
 class_output = 2 # number of possible classifications for the problem
 if use_weight:
-	class_weight = [Train_Data.pos_size/Train_Data.size, Train_Data.neg_size/Train_Data.size]
-	print(class_weight, '[neg, pos]')
+    class_weight = [Train_Data.pos_size/Train_Data.size, Train_Data.neg_size/Train_Data.size]
+    print(class_weight, '[neg, pos]')
 
-batch_size = 2
 iteration = int(Train_Data.size/batch_size) + 1
 
 tf.reset_default_graph()
 with tf.variable_scope('input'):
-	x = tf.placeholder(tf.float32, shape=[batch_size, size, size, band], name='x')
-	y = tf.placeholder(tf.float32, shape=[batch_size, size, size, class_output], name='y')
+    x = tf.placeholder(tf.float32, shape=[batch_size, size, size, band], name='x')
+    y = tf.placeholder(tf.float32, shape=[batch_size, size, size, class_output], name='y')
 
-	weight = tf.placeholder(tf.float32, shape=[batch_size, size, size], name='class_weight')
-	is_training = tf.placeholder(tf.bool, name='is_training') # batch norm
+    is_training = tf.placeholder(tf.bool, name='is_training') # batch norm
 
 
 with tf.variable_scope('inception'):
-	if conv_struct != 1:
-		net = tf.concat([tf.contrib.layers.conv2d(inputs=x, num_outputs=cfg[1], kernel_size=cfg[0], stride=1, padding='SAME') for cfg in conv_struct],
-			  					   axis=-1)
+    if conv_struct != 1:
+        net = tf.concat([tf.contrib.layers.conv2d(inputs=x, num_outputs=cfg[1], kernel_size=cfg[0], stride=1, padding='SAME') for cfg in conv_struct],
+                        axis=-1)
 
 net = tf.contrib.layers.conv2d(inputs=input_fuse_map, num_outputs=class_output, kernel_size=1, stride=1, padding='SAME', scope='output_map')
-		
+        
 with tf.variable_scope('logits'):
-	logits = tf.nn.softmax(net)
+    logits = tf.nn.softmax(net)
 
-with tf.variable_scope('cross_entropy')
-	logits = tf.reshape(logits, (-1, class_output))
-	labels = tf.to_float(tf.reshape(y, (-1, class_output)))
+with tf.variable_scope('cross_entropy'):
+    logits = tf.reshape(logits, (-1, class_output))
+    labels = tf.to_float(tf.reshape(y, (-1, class_output)))
 
-	softmax = tf.nn.softmax(logits) + tf.constant(value=1e-9) # because of the numerical instableness
+    softmax = tf.nn.softmax(logits) + tf.constant(value=1e-9) # because of the numerical instableness
 
-	if use_weight:
-		weight = tf.reshape(weight,[-1])
-		cross_entropy = -tf.reduce_sum(tf.multiply(labels * tf.log(softmax), weight)) # `*` is element-wise
-	else:
-		cross_entropy = -tf.reduce_sum(labels * tf.log(softmax), reduction_indices=[1])
-	mean_cross_entropy = tf.reduce_mean(cross_entropy, name='mean_cross_entropy')
+    cross_entropy = -tf.reduce_sum(labels * tf.log(softmax), reduction_indices=[1])
+    mean_cross_entropy = tf.reduce_mean(cross_entropy, name='mean_cross_entropy')
 
 # Ensures that we execute the update_ops before performing the train_step
 update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
 with tf.control_dependencies(update_ops):
-	train_step = tf.train.AdamOptimizer(learning_rate).minimize(cross_entropy)
+    train_step = tf.train.AdamOptimizer(learning_rate).minimize(cross_entropy)
 
 # monitor mem usage
 process = psutil.Process(os.getpid())
@@ -247,38 +243,38 @@ AUC_curve = []
 avg_precision_curve = []
 cross_entropy_curve = []
 for epoch_num in range(epoch):
-	for iter_num in range(iteration):
+    for iter_num in range(iteration):
 
-		batch_x, batch_y, batch_w = Train_Data.get_patches(batch_size=batch_size, positive_num=pos_num, norm=True, weighted=True)
-		batch_x = batch_x.transpose((0, 2, 3, 1))
+        batch_x, batch_y = Train_Data.get_patches(batch_size=batch_size, positive_num=pos_num, norm=True, weighted=use_weight)
+        batch_x = batch_x.transpose((0, 2, 3, 1))
 
-		train_step.run(feed_dict={x: batch_x, y: batch_y, weight: batch_w, is_training: True})
+        train_step.run(feed_dict={x: batch_x, y: batch_y, is_training: True})
 
-	# snap shot on CV set
-	cv_metric = Metric_Record()
-	cv_cross_entropy_list = []
-	for batch_x, batch_y, batch_w in CV_Data.iterate_data(norm=True, weighted=True):
-		batch_x = batch_x.transpose((0, 2, 3, 1))
+    # snap shot on CV set
+    cv_metric = Metric_Record()
+    cv_cross_entropy_list = []
+    for batch_x, batch_y in CV_Data.iterate_data(norm=True, weighted=use_weight):
+        batch_x = batch_x.transpose((0, 2, 3, 1))
 
-		[pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, weight: batch_w, is_training: False})
-		pred = int(pred_prob > 0.5)
+        [pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, is_training: False})
+        pred = int(pred_prob > 0.5)
 
-		cv_metric.accumulate(Y=batch_y, pred=pred, pred_prob=pred_prob)
-		cv_cross_entropy_list.append(cross_entropy_cost)
+        cv_metric.accumulate(Y=batch_y, pred=pred, pred_prob=pred_prob)
+        cv_cross_entropy_list.append(cross_entropy_cost)
 
-	# calculate value
-	balanced_acc = cv_metric.get_balanced_acc()
-	AUC_score = skmt.roc_auc_score(cv_metric.y_true, cv_metric.pred_prob)
-	avg_precision_score = skmt.average_precision_score(cv_metric.y_true, cv_metric.pred_prob)
-	mean_cross_entropy = sum(cv_cross_entropy_list)/len(cv_cross_entropy_list)
+    # calculate value
+    balanced_acc = cv_metric.get_balanced_acc()
+    AUC_score = skmt.roc_auc_score(cv_metric.y_true, cv_metric.pred_prob)
+    avg_precision_score = skmt.average_precision_score(cv_metric.y_true, cv_metric.pred_prob)
+    mean_cross_entropy = sum(cv_cross_entropy_list)/len(cv_cross_entropy_list)
 
-	balanced_acc_curve.append(balanced_acc)
-	AUC_curve.append(AUC_score)
-	avg_precision_curve.append(avg_precision_score)
-	cross_entropy_curve.append(mean_cross_entropy)
+    balanced_acc_curve.append(balanced_acc)
+    AUC_curve.append(AUC_score)
+    avg_precision_curve.append(avg_precision_score)
+    cross_entropy_curve.append(mean_cross_entropy)
 
-	print("mean_cross_entropy = ", mean_cross_entropy, "balanced_acc = ", balanced_acc, "AUC = ", AUC_score, "avg_precision = ", avg_precision_score)
-	sys.stdout.flush()
+    print("mean_cross_entropy = ", mean_cross_entropy, "balanced_acc = ", balanced_acc, "AUC = ", AUC_score, "avg_precision = ", avg_precision_score)
+    sys.stdout.flush()
 print("finish")
 
 # monitor mem usage
@@ -318,14 +314,14 @@ gc.collect()
 print("On training set: ")
 train_metric = Metric_Record()
 train_cross_entropy_list = []
-for batch_x, batch_y, batch_w in CV_Data.iterate_data(norm=True, weighted=True):
-	batch_x = batch_x.transpose((0, 2, 3, 1))
+for batch_x, batch_y in CV_Data.iterate_data(norm=True, weighted=use_weight):
+    batch_x = batch_x.transpose((0, 2, 3, 1))
 
-	[pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, weight: batch_w, is_training: False})
-	pred = int(pred_prob > 0.5)
-	
-	train_metric.accumulate(Y=batch_y, pred=pred, pred_prob=pred_prob)    
-	train_cross_entropy_list.append(cross_entropy_cost)
+    [pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, is_training: False})
+    pred = int(pred_prob > 0.5)
+    
+    train_metric.accumulate(Y=batch_y, pred=pred, pred_prob=pred_prob)    
+    train_cross_entropy_list.append(cross_entropy_cost)
 
 train_metric.print_info()
 AUC_score = skmt.roc_auc_score(train_metric.y_true, train_metric.pred_prob)
@@ -359,14 +355,14 @@ gc.collect()
 # Predict road prob masks on train
 train_pred_road = np.zeros([x for x in train_road_mask.shape] + [2])
 for coord, patch in Train_Data.iterate_raw_image_patches_with_coord(norm=True):
-	patch = patch.transpose((0, 2, 3, 1))
-	train_pred_road[coord[0]:coord[0]+size, coord[1]:coord[1]+size, :] += logits.eval(feed_dict={x: batch_x, y: batch_y, is_training: False})
+    patch = patch.transpose((0, 2, 3, 1))
+    train_pred_road[coord[0]:coord[0]+size, coord[1]:coord[1]+size, :] += logits.eval(feed_dict={x: batch_x, y: batch_y, is_training: False})
 
 # Predict road prob on CV
 CV_pred_road = np.zeros([x for x in CV_road_mask.shape] + [2])
 for coord, patch in CV_Data.iterate_raw_image_patches_with_coord(norm=True):
-	patch = patch.transpose((0, 2, 3, 1))
-	CV_pred_road[coord[0]:coord[0]+size, coord[1]:coord[1]+size, :] += logits.eval(feed_dict={x: batch_x, y: batch_y, is_training: False})
+    patch = patch.transpose((0, 2, 3, 1))
+    CV_pred_road[coord[0]:coord[0]+size, coord[1]:coord[1]+size, :] += logits.eval(feed_dict={x: batch_x, y: batch_y, is_training: False})
 
 # save prediction
 prediction_name = model_name + '_pred.h5'

@@ -189,7 +189,6 @@ with tf.variable_scope('input'):
 	x = tf.placeholder(tf.float32, shape=[batch_size, size, size, band], name='x')
 	y = tf.placeholder(tf.float32, shape=[batch_size, size, size, class_output], name='y')
 
-	weight = tf.placeholder(tf.float32, shape=[batch_size, size, size], name='class_weight')
 	is_training = tf.placeholder(tf.bool, name='is_training') # batch norm
 
 
@@ -252,17 +251,13 @@ if fuse_input:
 with tf.variable_scope('logits'):
 	logits = tf.nn.softmax(net)
 
-with tf.variable_scope('cross_entropy')
+with tf.variable_scope('cross_entropy'):
 	logits = tf.reshape(logits, (-1, class_output))
 	labels = tf.to_float(tf.reshape(y, (-1, class_output)))
 
 	softmax = tf.nn.softmax(logits) + tf.constant(value=1e-9) # because of the numerical instableness
 
-	if use_weight:
-		weight = tf.reshape(weight,[-1])
-		cross_entropy = -tf.reduce_sum(tf.multiply(labels * tf.log(softmax), weight)) # `*` is element-wise
-	else:
-		cross_entropy = -tf.reduce_sum(labels * tf.log(softmax), reduction_indices=[1])
+	cross_entropy = -tf.reduce_sum(labels * tf.log(softmax), reduction_indices=[1])
 	mean_cross_entropy = tf.reduce_mean(cross_entropy, name='mean_cross_entropy')
 
 # Ensures that we execute the update_ops before performing the train_step
@@ -296,18 +291,18 @@ cross_entropy_curve = []
 for epoch_num in range(epoch):
 	for iter_num in range(iteration):
 
-		batch_x, batch_y, batch_w = Train_Data.get_patches(batch_size=batch_size, positive_num=pos_num, norm=True, weighted=True)
+		batch_x, batch_y = Train_Data.get_patches(batch_size=batch_size, positive_num=pos_num, norm=True, weighted=use_weight)
 		batch_x = batch_x.transpose((0, 2, 3, 1))
 
-		train_step.run(feed_dict={x: batch_x, y: batch_y, weight: batch_w, is_training: True})
+		train_step.run(feed_dict={x: batch_x, y: batch_y, is_training: True})
 
 	# snap shot on CV set
 	cv_metric = Metric_Record()
 	cv_cross_entropy_list = []
-	for batch_x, batch_y, batch_w in CV_Data.iterate_data(norm=True, weighted=True):
+	for batch_x, batch_y in CV_Data.iterate_data(norm=True, weighted=use_weight):
 		batch_x = batch_x.transpose((0, 2, 3, 1))
 
-		[pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, weight: batch_w, is_training: False})
+		[pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, is_training: False})
 		pred = int(pred_prob > 0.5)
 
 		cv_metric.accumulate(Y=batch_y, pred=pred, pred_prob=pred_prob)
@@ -365,10 +360,10 @@ gc.collect()
 print("On training set: ")
 train_metric = Metric_Record()
 train_cross_entropy_list = []
-for batch_x, batch_y, batch_w in CV_Data.iterate_data(norm=True, weighted=True):
+for batch_x, batch_y in CV_Data.iterate_data(norm=True, weighted=use_weight):
 	batch_x = batch_x.transpose((0, 2, 3, 1))
 
-	[pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, weight: batch_w, is_training: False})
+	[pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, is_training: False})
 	pred = int(pred_prob > 0.5)
 	
 	train_metric.accumulate(Y=batch_y, pred=pred, pred_prob=pred_prob)    

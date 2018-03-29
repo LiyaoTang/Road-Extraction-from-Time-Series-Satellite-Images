@@ -243,15 +243,10 @@ class FCN_Data_Extractor (Data_Extractor):
         Y = np.array(Y)
     
         if weighted:
-            Weight = Y.copy()
-            Weight[:,:,:,0] *= self.neg_weight
-            Weight[:,:,:,1] *= self.pos_weight
-            Weight = Weight.sum(axis=-1)
+            Y[:,:,:,0] *= self.neg_weight
+            Y[:,:,:,1] *= self.pos_weight
             
-            return X, Y, Weight
-
-        else:
-            return X, Y
+        return X, Y
 
 
     def iterate_data (self, norm=True, weighted=True):
@@ -260,13 +255,10 @@ class FCN_Data_Extractor (Data_Extractor):
             y = np.array([self._get_patch_label(coord)])
 
             if weighted:
-                w[:,:,:,0] *= self.neg_weight
-                w[:,:,:,1] *= self.pos_weight
-                w = Weight.sum(axis=-1)
-                yield x, y, w
+                y[:,:,:,0] *= self.neg_weight
+                y[:,:,:,1] *= self.pos_weight
 
-            else:
-                yield x, y
+            yield x, y
 
 
     def iterate_data_with_coord (self, norm=True, weighted=True):
@@ -274,19 +266,7 @@ class FCN_Data_Extractor (Data_Extractor):
             x = np.array([self._get_raw_patch(coord, norm)])
             y = np.array([self._get_patch_label(coord)])
             if weighted:
-                w[:,:,:,0] *= self.neg_weight
-                w[:,:,:,1] *= self.pos_weight
-                w = Weight.sum(axis=-1)
-                yield coord, x, y, w
-
-            else:
-                yield coord, x, y
-
-# sensetime:
-
-# base: 17k*(>15) = ~25.5
-# shenzhen:
-#     12% zhu fang gong ji jin
-#     5+1+1 yi liao bao xian
-
-#     holiday:
+                y[:,:,:,0] *= self.neg_weight
+                y[:,:,:,1] *= self.pos_weight
+            
+            yield coord, x, y
