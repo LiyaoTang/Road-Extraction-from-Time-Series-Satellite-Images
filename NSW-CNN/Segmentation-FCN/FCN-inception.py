@@ -212,7 +212,7 @@ with tf.variable_scope('cross_entropy'):
     softmax = tf.nn.softmax(logits) + tf.constant(value=1e-9) # because of the numerical instableness
 
     cross_entropy = -tf.reduce_sum(labels * tf.log(softmax), reduction_indices=[1])
-    mean_cross_entropy = tf.reduce_mean(cross_entropy, name='mean_cross_entropy')
+    cross_entropy = tf.reduce_mean(cross_entropy, name='mean_cross_entropy')
 
 # Ensures that we execute the update_ops before performing the train_step
 update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
@@ -257,15 +257,16 @@ for epoch_num in range(epoch):
         batch_x = batch_x.transpose((0, 2, 3, 1))
 
         [pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, is_training: False})
-        pred = int(pred_prob > 0.5)
 
-        cv_metric.accumulate(Y=batch_y, pred=pred, pred_prob=pred_prob)
+        cv_metric.accumulate(Y         = np.array(batch_y.reshape(-1,class_output)[:,1]>0.5, dtype=int), 
+                             pred      = np.array(pred_prob.reshape(-1,class_output)[:,1]>0.5, dtype=int), 
+                             pred_prob = pred_prob.reshape(-1,class_output)[:,1])
         cv_cross_entropy_list.append(cross_entropy_cost)
 
     # calculate value
     balanced_acc = cv_metric.get_balanced_acc()
-    AUC_score = skmt.roc_auc_score(cv_metric.y_true, cv_metric.pred_prob)
-    avg_precision_score = skmt.average_precision_score(cv_metric.y_true, cv_metric.pred_prob)
+    AUC_score = skmt.roc_auc_score(np.array(cv_metric.y_true).flatten(), np.array(cv_metric.pred_prob).flatten())
+    avg_precision_score = skmt.average_precision_score(np.array(cv_metric.y_true).flatten(), np.array(cv_metric.pred_prob).flatten())
     mean_cross_entropy = sum(cv_cross_entropy_list)/len(cv_cross_entropy_list)
 
     balanced_acc_curve.append(balanced_acc)
@@ -305,7 +306,6 @@ saved_sk_obj = 0
 gc.collect()
 
 
-
 ''' Evaluate model '''
 
 
@@ -318,19 +318,20 @@ for batch_x, batch_y in CV_Data.iterate_data(norm=True, weighted=use_weight):
     batch_x = batch_x.transpose((0, 2, 3, 1))
 
     [pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, is_training: False})
-    pred = int(pred_prob > 0.5)
-    
-    train_metric.accumulate(Y=batch_y, pred=pred, pred_prob=pred_prob)    
+
+    train_metric.accumulate(Y         = np.array(batch_y.reshape(-1,class_output)[:,1]>0.5, dtype=int),
+                            pred      = np.array(pred_prob.reshape(-1,class_output)[:,1]>0.5, dtype=int), 
+                            pred_prob = pred_prob.reshape(-1,class_output)[:,1])    
     train_cross_entropy_list.append(cross_entropy_cost)
 
 train_metric.print_info()
-AUC_score = skmt.roc_auc_score(train_metric.y_true, train_metric.pred_prob)
-avg_precision_score = skmt.average_precision_score(train_metric.y_true, train_metric.pred_prob)
+AUC_score = skmt.roc_auc_score(np.array(train_metric.y_true).flatten(), np.array(train_metric.pred_prob).flatten())
+avg_precision_score = skmt.average_precision_score(np.array(train_metric.y_true).flatten(), np.array(train_metric.pred_prob).flatten())
 mean_cross_entropy = sum(train_cross_entropy_list)/len(train_cross_entropy_list)
 print("mean_cross_entropy = ", mean_cross_entropy, "balanced_acc = ", balanced_acc, "AUC = ", AUC_score, "avg_precision = ", avg_precision_score)
 
 # plot ROC curve
-fpr, tpr, thr = skmt.roc_curve(train_metric.y_true, train_metric.pred_prob)
+fpr, tpr, thr = skmt.roc_curve(np.array(train_metric.y_true)[:,1].flatten(), np.array(train_metric.pred_prob)[:,1].flatten())
 plt.plot(fpr, tpr)
 plt.savefig(save_path+'Analysis/'+'train_ROC_curve.png', bbox_inches='tight')
 plt.close()
@@ -356,13 +357,13 @@ gc.collect()
 train_pred_road = np.zeros([x for x in train_road_mask.shape] + [2])
 for coord, patch in Train_Data.iterate_raw_image_patches_with_coord(norm=True):
     patch = patch.transpose((0, 2, 3, 1))
-    train_pred_road[coord[0]:coord[0]+size, coord[1]:coord[1]+size, :] += logits.eval(feed_dict={x: batch_x, y: batch_y, is_training: False})
+    train_pred_road[coord[0]:coord[0]+size, coord[1]:coord[1]+size, :] += logits.eval(feed_dict={x: patch, is_training: False})
 
 # Predict road prob on CV
 CV_pred_road = np.zeros([x for x in CV_road_mask.shape] + [2])
 for coord, patch in CV_Data.iterate_raw_image_patches_with_coord(norm=True):
     patch = patch.transpose((0, 2, 3, 1))
-    CV_pred_road[coord[0]:coord[0]+size, coord[1]:coord[1]+size, :] += logits.eval(feed_dict={x: batch_x, y: batch_y, is_training: False})
+    CV_pred_road[coord[0]:coord[0]+size, coord[1]:coord[1]+size, :] += logits.eval(feed_dict={x: patch, is_training: False})
 
 # save prediction
 prediction_name = model_name + '_pred.h5'
