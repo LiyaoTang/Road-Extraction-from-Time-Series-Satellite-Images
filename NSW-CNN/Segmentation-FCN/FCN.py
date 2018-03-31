@@ -402,13 +402,13 @@ gc.collect()
 train_pred_road = np.zeros([x for x in train_road_mask.shape] + [2])
 for coord, patch in Train_Data.iterate_raw_image_patches_with_coord(norm=True):
 	patch = patch.transpose((0, 2, 3, 1))
-	train_pred_road[coord[0]:coord[0]+size, coord[1]:coord[1]+size, :] += logits.eval(feed_dict={x: batch_x, y: batch_y, is_training: False})
+	train_pred_road[coord[0]:coord[0]+size, coord[1]:coord[1]+size, :] += logits.eval(feed_dict={x: patch, is_training: False})
 
 # Predict road prob on CV
 CV_pred_road = np.zeros([x for x in CV_road_mask.shape] + [2])
 for coord, patch in CV_Data.iterate_raw_image_patches_with_coord(norm=True):
 	patch = patch.transpose((0, 2, 3, 1))
-	CV_pred_road[coord[0]:coord[0]+size, coord[1]:coord[1]+size, :] += logits.eval(feed_dict={x: batch_x, y: batch_y, is_training: False})
+	CV_pred_road[coord[0]:coord[0]+size, coord[1]:coord[1]+size, :] += logits.eval(feed_dict={x: patch, is_training: False})
 
 # save prediction
 prediction_name = model_name + '_pred.h5'
