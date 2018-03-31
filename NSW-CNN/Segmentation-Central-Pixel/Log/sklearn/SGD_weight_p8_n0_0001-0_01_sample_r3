@@ -1,0 +1,76 @@
+Train set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_train
+CV set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_cv
+will be saved as  sk-SGD_weight_p8_n0_0056_e15_r3
+will be saved into  ./Result/motor_trunk_pri_sec_tert_uncl_track/sklearn/
+mem usage before data loaded: 83.953125 MB
+
+mu =  [ 144.71187809  191.4973748   363.63933132  368.9204473  2385.57259035
+ 1362.40326606  728.31018062]
+mu =  [ 150.8227309   198.28994142  365.46753706  373.66751856 2370.63525823
+ 1356.64782764  731.00466191]
+train data:
+(7, 7650, 8091) (7650, 8091)
+pos =  304920 neg =  21258076
+cv data:
+(7, 2365, 8091) (2365, 8091)
+pos =  23150 neg =  782418
+mem usage after data loaded: 6360.05859375 MB
+
+SGDClassifier(alpha=0.0056, average=False,
+       class_weight={0: 0.014140892109797729, 1: 0.9858591078902023},
+       epsilon=0.1, eta0=0.0, fit_intercept=True, l1_ratio=0.15,
+       learning_rate='optimal', loss='log', max_iter=1, n_iter=None,
+       n_jobs=1, penalty='l2', power_t=0.5, random_state=None,
+       shuffle=False, tol=None, verbose=0, warm_start=False)
+classes in classifier  [0 1] 1
+mem usage after model created: 6360.05859375 MB
+
+ balanced_acc =  0.5121208822622734 AUC =  0.512145602053361 avg_precision =  0.029675973200739492
+ balanced_acc =  0.5063744709062646 AUC =  0.5063860157231915 avg_precision =  0.029171257924388457
+ balanced_acc =  0.516078120941877 AUC =  0.5160724943128757 avg_precision =  0.029801544311626932
+ balanced_acc =  0.49994939340920147 AUC =  0.49994939340920147 avg_precision =  0.028734662341302973
+ balanced_acc =  0.4990508750557825 AUC =  0.4990508658358733 avg_precision =  0.02868460202750952
+ balanced_acc =  0.49907876329350104 AUC =  0.49907876329350104 avg_precision =  0.02868615287442253
+ balanced_acc =  0.5194206693811956 AUC =  0.5194187147604513 avg_precision =  0.030028580278500798
+ balanced_acc =  0.5058077967383462 AUC =  0.5058072209909042 avg_precision =  0.029103371785516752
+ balanced_acc =  0.5066177242970782 AUC =  0.50661712884001 avg_precision =  0.029192705638888098
+ balanced_acc =  0.5059172961338818 AUC =  0.505936172434871 avg_precision =  0.029105890883121464
+ balanced_acc =  0.4996472186153698 AUC =  0.4996472186153698 avg_precision =  0.02871780719975528
+ balanced_acc =  0.5042871933910233 AUC =  0.5042860644490311 avg_precision =  0.029005547497722998
+ balanced_acc =  0.49990837248744435 AUC =  0.49990837248744435 avg_precision =  0.028732373051402027
+ balanced_acc =  0.49995245938785976 AUC =  0.49995245938785976 avg_precision =  0.028734833461669697
+ balanced_acc =  0.4988329967321164 AUC =  0.4988329967321164 avg_precision =  0.028672489707480948
+/localdata/u6142160/anaconda3/lib/python3.6/site-packages/h5py/__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+/localdata/u6142160/anaconda3/lib/python3.6/site-packages/sklearn/linear_model/base.py:340: RuntimeWarning: overflow encountered in exp
+  np.exp(prob, prob)
+finish
+mem usage after model trained: 6504.3671875 MB
+
+coefficient info:
+shape =  (1, 448)
+74.9409158303148 -53.637026037474534 6.675900633217288 309.48922185851524
+On train set
+true_pos  = 302865
+false_pos = 19791380
+true_neg  = 1466696
+false_neg = 2055
+size = 21562996
+pos_recall    = 0.9932605273514364
+pos_precision = 0.015072225903486296
+pos_F1        = 0.029693862469370683
+neg_recall    = 0.06899476697703029
+neg_precision = 0.9986008520164412
+neg_F1        = 0.12907177935573674
+accuracy      = 0.08206470937526492
+balanced_accuracy = 0.5068365389599637
+Traceback (most recent call last):
+  File "Logistic-Reg.py", line 274, in <module>
+    fpr, tpr, thr = skmt.roc_curve(train_metric.y_true, train_metric.pred_prob)
+  File "/localdata/u6142160/anaconda3/lib/python3.6/site-packages/sklearn/metrics/ranking.py", line 534, in roc_curve
+    y_true, y_score, pos_label=pos_label, sample_weight=sample_weight)
+  File "/localdata/u6142160/anaconda3/lib/python3.6/site-packages/sklearn/metrics/ranking.py", line 315, in _binary_clf_curve
+    y_type = type_of_target(y_true)
+  File "/localdata/u6142160/anaconda3/lib/python3.6/site-packages/sklearn/utils/multiclass.py", line 284, in type_of_target
+    if y.dtype.kind == 'f' and np.any(y != y.astype(int)):
+MemoryError
