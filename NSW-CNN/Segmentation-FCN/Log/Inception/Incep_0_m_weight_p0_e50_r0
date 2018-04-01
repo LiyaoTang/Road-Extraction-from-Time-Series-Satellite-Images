@@ -1,0 +1,402 @@
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/h5py/__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+Train set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_128_18_train
+CV set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_128_18_cv
+will be saved as  Incep_0_m_weight_p0_e50_r0
+will be saved into  ./Result/Inception/Incep_0_m_weight_p0_e50_r0/
+conv_struct =  [[[0]]]
+mem usage before data loaded: 208.78125 MB
+
+mu =  [ 117.08104981  160.62967693  332.04874998  318.74745584 2467.27518735
+ 1220.89931865  612.68672644]
+mu =  [ 125.18494826  167.03448486  341.95574247  332.26629873 2579.6621352
+ 1303.20762282  656.45261794]
+train data:
+(7, 7650, 8091) (7650, 8091)
+pos =  575 neg =  2932
+cv data:
+(7, 2365, 8091) (2365, 8091)
+pos =  5 neg =  21
+mem usage after data loaded: 5156.3125 MB
+
+[0.1639577986883376, 0.8360422013116624] [neg, pos]
+mem usage after model created: 5192.73828125 MB
+
+mean_cross_entropy =  0.2145696414204744 balanced_acc =  0.5438208613179956 AUC =  0.5453817835563517 avg_precision =  0.0140468777715742
+mean_cross_entropy =  0.2524816497014119 balanced_acc =  0.5002425470291556 AUC =  0.50026157032556 avg_precision =  0.012793472440131152
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+finish
+mem usage after model trained: 5273.65625 MB
+
+On training set: 
+true_pos  = 5447
+false_pos = 420537
+true_neg  = 0
+false_neg = 0
+size = 26
+pos_recall    = 1.0
+pos_precision = 0.012786865234375
+pos_F1        = 0.025250851236930123
+neg_recall    = 0.0
+neg_precision = nan
+neg_F1        = nan
+accuracy      = 209.5
+balanced_accuracy = nan
+mean_cross_entropy =  0.25256220881755537 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.012786865234375
+On CV set:
+true_pos  = 5447
+false_pos = 420537
+true_neg  = 0
+false_neg = 0
+size = 26
+pos_recall    = 1.0
+pos_precision = 0.012786865234375
+pos_F1        = 0.025250851236930123
+neg_recall    = 0.0
+neg_precision = nan
+neg_F1        = nan
+accuracy      = 209.5
+balanced_accuracy = nan
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
+  if d.decorator_argspec is not None), _inspect.getargspec(target))
+../Metric/Metric.py:71: RuntimeWarning: invalid value encountered in long_scalars
+  neg_precision = true_neg / (true_neg + false_neg)
+../Metric/Metric.py:81: RuntimeWarning: invalid value encountered in long_scalars
+  balanced_acc = ( (true_pos/(true_pos + false_pos)) + (true_neg/(true_neg+false_neg)) ) / 2
+../Metric/Metric.py:71: RuntimeWarning: invalid value encountered in long_scalars
+  neg_precision = true_neg / (true_neg + false_neg)
+../Metric/Metric.py:81: RuntimeWarning: invalid value encountered in long_scalars
+  balanced_acc = ( (true_pos/(true_pos + false_pos)) + (true_neg/(true_neg+false_neg)) ) / 2
+mem usage after prediction maps calculated: 6188.68359375 MB
+

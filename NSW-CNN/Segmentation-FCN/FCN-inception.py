@@ -29,9 +29,10 @@ parser = OptionParser()
 parser.add_option("--save", dest="save_path")
 parser.add_option("--name", dest="model_name")
 
-parser.add_option("--train", dest="path_train_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_128_train")
-parser.add_option("--cv", dest="path_cv_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_128_cv")
+parser.add_option("--train", dest="path_train_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_128_18_train")
+parser.add_option("--cv", dest="path_cv_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_128_18_cv")
 
+parser.add_option("--norm", default="mean", dest="norm")
 parser.add_option("--pos", type="int", default=0, dest="pos_num")
 parser.add_option("--size", type="int", default=128, dest="size")
 parser.add_option("-e", "--epoch", type="int", default=15, dest="epoch")
@@ -54,6 +55,7 @@ save_path = options.save_path
 model_name = options.model_name
 
 pos_num = options.pos_num
+norm = options.norm
 size = options.size
 epoch = options.epoch
 batch_size = options.batch_size
@@ -76,7 +78,24 @@ os.environ["CUDA_VISIBLE_DEVICES"] = gpu
 if not save_path:
     print("no save path provided")
     sys.exit()
-save_path = save_path.strip('/') + '/'
+
+if norm.startswith('m'): norm = 'mean'
+elif norm.startswith('G'): norm = 'Gaussian'
+else: 
+    print("norm = ", norm, " not in ('mean', 'Gaussian')")
+    sys.exit()
+
+if not model_name:
+    model_name = "Incep_"
+    model_name += conv_struct + "_"
+    model_name += norm[0] + "_"
+    if use_weight: model_name += "weight_"
+    if use_batch_norm: model_name += "bn_"
+    model_name += "p" + str(pos_num) + "_"
+    model_name += "e" + str(epoch) + "_"
+    model_name += "r" + str(rand_seed)
+    
+save_path = save_path.strip('/') + '/' + model_name + '/'
 if not os.path.exists(save_path):
     os.makedirs(save_path)
 if not os.path.exists(save_path+'Analysis'):
@@ -84,28 +103,14 @@ if not os.path.exists(save_path+'Analysis'):
 
 print("Train set:", path_train_set)
 print("CV set:", path_cv_set)
-
-if use_batch_norm:
-    print("sorry, BN not supported yet")
-    sts.exit()
-
-if not model_name:
-    model_name = "Incep_"
-    model_name += conv_struct + "_"
-    if use_weight: model_name += "weight_"
-    model_name += "p" + str(pos_num) + "_"
-    model_name += "e" + str(epoch) + "_"
-    model_name += "r" + str(rand_seed)
-    
-    print("will be saved as ", model_name)
-    print("will be saved into ", save_path)
-
+print("will be saved as ", model_name)
+print("will be saved into ", save_path)
 
 # parse conv_struct: e.g. 3-16;5-8;1-32 | 3-8;1-16 | ...
 # => concat[ 3x3 out_channel=16, 5x5 out_channel=8, 1x1 out_channel=32]
 # => followed by inception concat [3x3 out_channel=8, 1x1 out_channel=16]
 # => ...
-# conv_struct = 1 => use only one 1x1 conv out_channel = classoutput
+# conv_struct = 0 => use only one 1x1 conv out_channel = classoutput
 
 # note that at last layer, out_channel = 2 is requested
 if not conv_struct:
@@ -114,7 +119,7 @@ if not conv_struct:
 else:
     conv_struct = [[[int(x) for x in config.split('-')] for config in layer.split(';')] for layer in conv_struct.split('|')]
     print("conv_struct = ", conv_struct)
-    assert len(conv_struct) == 3
+    assert len(conv_struct) <= 3
 
 # monitor mem usage
 process = psutil.Process(os.getpid())
@@ -148,13 +153,13 @@ CV_set.close()
 
 Train_Data = FCN_Data_Extractor (train_raw_image, train_road_mask, size,
                              pos_topleft_coord = train_pos_topleft_coord,
-                             neg_topleft_coord = train_neg_topleft_coord)
-# run garbage collector
-gc.collect()
+                             neg_topleft_coord = train_neg_topleft_coord,
+                             normalization = norm)
 
 CV_Data = FCN_Data_Extractor (CV_raw_image, CV_road_mask, size,
                           pos_topleft_coord = CV_pos_topleft_coord,
-                          neg_topleft_coord = CV_neg_topleft_coord)
+                          neg_topleft_coord = CV_neg_topleft_coord,
+                          normalization = norm)
 # run garbage collector
 gc.collect()
 
@@ -189,27 +194,41 @@ iteration = int(Train_Data.size/batch_size) + 1
 
 tf.reset_default_graph()
 with tf.variable_scope('input'):
-    x = tf.placeholder(tf.float32, shape=[batch_size, size, size, band], name='x')
-    y = tf.placeholder(tf.float32, shape=[batch_size, size, size, class_output], name='y')
+    x = tf.placeholder(tf.float32, shape=[None, size, size, band], name='x')
+    y = tf.placeholder(tf.float32, shape=[None, size, size, class_output], name='y')
 
     is_training = tf.placeholder(tf.bool, name='is_training') # batch norm
 
+if use_batch_norm:
+    normalizer_fn=tf.contrib.layers.batch_norm
+    normalizer_params={'scale':True, 'is_training':is_training}
+else:
+    normalizer_fn=None
+    normalizer_params=None
 
 with tf.variable_scope('inception'):
-    if conv_struct != 1:
-        net = tf.concat([tf.contrib.layers.conv2d(inputs=x, num_outputs=cfg[1], kernel_size=cfg[0], stride=1, padding='SAME') for cfg in conv_struct],
-                        axis=-1)
+    if conv_struct != [[[0]]]:
+        net = tf.concat([tf.contrib.layers.conv2d(inputs=x, num_outputs=cfg[1], kernel_size=cfg[0], stride=1, padding='SAME',
+                                                  normalizer_fn=normalizer_fn, normalizer_params=normalizer_params) for cfg in conv_struct[0]], axis=-1)
 
-net = tf.contrib.layers.conv2d(inputs=input_fuse_map, num_outputs=class_output, kernel_size=1, stride=1, padding='SAME', scope='output_map')
+        if len(conv_struct) > 1:
+            for layer_cfg in conv_struct[1:]:
+                net = tf.concat([tf.contrib.layers.conv2d(inputs=net, num_outputs=cfg[1], kernel_size=cfg[0], stride=1, padding='SAME',
+                                                          normalizer_fn=normalizer_fn, normalizer_params=normalizer_params) for cfg in layer_cfg], axis=-1)
+
+    else:
+        net = x
+
+net = tf.contrib.layers.conv2d(inputs=net, num_outputs=class_output, kernel_size=1, stride=1, padding='SAME', scope='output_map')
         
 with tf.variable_scope('logits'):
     logits = tf.nn.softmax(net)
 
 with tf.variable_scope('cross_entropy'):
-    logits = tf.reshape(logits, (-1, class_output))
+    flat_logits = tf.reshape(logits, (-1, class_output))
     labels = tf.to_float(tf.reshape(y, (-1, class_output)))
 
-    softmax = tf.nn.softmax(logits) + tf.constant(value=1e-9) # because of the numerical instableness
+    softmax = tf.nn.softmax(flat_logits) + tf.constant(value=1e-9) # because of the numerical instableness
 
     cross_entropy = -tf.reduce_sum(labels * tf.log(softmax), reduction_indices=[1])
     cross_entropy = tf.reduce_mean(cross_entropy, name='mean_cross_entropy')
@@ -290,12 +309,12 @@ plt.plot(AUC_curve, label='AUC')
 plt.plot(avg_precision_curve, label='avg_precision')
 plt.legend()
 plt.title('learning_curve_on_cross_validation')
-plt.savefig(save_path+'Analysis/'+'cv_metrics_curve.png', bbox_inches='tight')
+plt.savefig(save_path+'Analysis/'+'cv_learning_curve.png', bbox_inches='tight')
 plt.close()
 
 plt.figsize=(9,5)
 plt.plot(cross_entropy_curve)
-plt.savefig(save_path+'Analysis/'+'cv_learning_curve.png', bbox_inches='tight')
+plt.savefig(save_path+'Analysis/'+'cv_cross_entropy_curve.png', bbox_inches='tight')
 plt.close()
 
 # save model
@@ -304,6 +323,7 @@ saver.save(sess, save_path + model_name)
 # run garbage collection
 saved_sk_obj = 0
 gc.collect()
+
 
 
 ''' Evaluate model '''
@@ -341,7 +361,7 @@ print("On CV set:")
 cv_metric.print_info()
 
 # plot ROC curve
-fpr, tpr, thr = skmt.roc_curve(cv_metric.y_true, cv_metric.pred_prob)
+fpr, tpr, thr = skmt.roc_curve(np.array(cv_metric.y_true).flatten(), np.array(cv_metric.pred_prob).flatten())
 plt.plot(fpr, tpr)
 plt.savefig(save_path+'Analysis/'+'cv_ROC_curve.png', bbox_inches='tight')
 plt.close()
@@ -352,18 +372,19 @@ train_metric = 0
 cv_metric = 0
 gc.collect()
 
+
 # Predict road mask
 # Predict road prob masks on train
 train_pred_road = np.zeros([x for x in train_road_mask.shape] + [2])
 for coord, patch in Train_Data.iterate_raw_image_patches_with_coord(norm=True):
     patch = patch.transpose((0, 2, 3, 1))
-    train_pred_road[coord[0]:coord[0]+size, coord[1]:coord[1]+size, :] += logits.eval(feed_dict={x: patch, is_training: False})
+    train_pred_road[coord[0]:coord[0]+size, coord[1]:coord[1]+size, :] += logits.eval(feed_dict={x: patch, is_training: False})[0]
 
 # Predict road prob on CV
 CV_pred_road = np.zeros([x for x in CV_road_mask.shape] + [2])
 for coord, patch in CV_Data.iterate_raw_image_patches_with_coord(norm=True):
     patch = patch.transpose((0, 2, 3, 1))
-    CV_pred_road[coord[0]:coord[0]+size, coord[1]:coord[1]+size, :] += logits.eval(feed_dict={x: patch, is_training: False})
+    CV_pred_road[coord[0]:coord[0]+size, coord[1]:coord[1]+size, :] += logits.eval(feed_dict={x: patch, is_training: False})[0]
 
 # save prediction
 prediction_name = model_name + '_pred.h5'

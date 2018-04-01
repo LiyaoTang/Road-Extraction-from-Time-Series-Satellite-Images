@@ -31,6 +31,7 @@ parser.add_option("--name", dest="model_name")
 parser.add_option("--train", dest="path_train_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_128_train")
 parser.add_option("--cv", dest="path_cv_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_128_cv")
 
+parser.add_option("--norm", default="mean", dest="norm")
 parser.add_option("--pos", type="int", default=0, dest="pos_num")
 parser.add_option("--size", type="int", default=128, dest="size")
 parser.add_option("-e", "--epoch", type="int", default=15, dest="epoch")
@@ -54,6 +55,7 @@ path_cv_set = options.path_cv_set
 save_path = options.save_path
 model_name = options.model_name
 
+norm = options.norm
 pos_num = options.pos_num
 size = options.size
 epoch = options.epoch
@@ -76,43 +78,50 @@ assert gpu in set(['0', '1'])
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 os.environ["CUDA_VISIBLE_DEVICES"] = gpu
 
+if norm.startswith('m'): norm = 'mean'
+elif norm.startswith('G'): norm = 'Gaussian'
+else: 
+    print("norm = ", norm, " not in ('mean', 'Gaussian')")
+    sys.exit()
+
+if not model_name:
+    model_name = "Unet_"
+    model_name += norm[0] + "_"
+    if use_weight: model_name += "weight_"
+    if use_batch_norm: model_name += "bn_"
+    if use_conv1d: model_name += "conv1D_"
+    if fuse_input: model_name += "fuseI" + fuse_input + "_"
+    model_name += "p" + str(pos_num) + "_"
+    model_name += "e" + str(epoch) + "_"
+    model_name += "r" + str(rand_seed)
+    
 if not save_path:
-	print("no save path provided")
-	sys.exit()
-save_path = save_path.strip('/') + '/'
+    print("no save path provided")
+    sys.exit()
+save_path = save_path.strip('/') + '/' + model_name + '/'
 if not os.path.exists(save_path):
-	os.makedirs(save_path)
+    os.makedirs(save_path)
 if not os.path.exists(save_path+'Analysis'):
-	os.makedirs(save_path+'Analysis')
+    os.makedirs(save_path+'Analysis')
 
 print("Train set:", path_train_set)
 print("CV set:", path_cv_set)
 
-if not model_name:
-	model_name = "CNN_"
-	if use_weight: model_name += "weight_"
-	if use_batch_norm: model_name += "bn_"
-	if use_conv1d: model_name += "conv1D_"
-	if fuse_input: model_name += "fuseI" + fuse_input + "_"
-	model_name += "p" + str(pos_num) + "_"
-	model_name += "e" + str(epoch) + "_"
-	model_name += "r" + str(rand_seed)
-	
-	print("will be saved as ", model_name)
-	print("will be saved into ", save_path)
+print("will be saved as ", model_name)
+print("will be saved into ", save_path)
 
 if not conv_struct:
-	print("must provide structure for conv")
-	sys.exit()
+    print("must provide structure for conv")
+    sys.exit()
 else:
-	conv_struct = [int(x) for x in conv_struct.split('-')]
-	assert len(conv_struct) == 3
+    conv_struct = [int(x) for x in conv_struct.split('-')]
+    assert len(conv_struct) == 3
 
 # parse fuse input options: e.g. 3-16;5-8;1-32 
 # => concat[ 3x3 out_channel=16, 5x5 out_channel=8, 1x1 out_channel=32] followed by 1x1 conv out_channel = classoutput
 # fuse_input = 1 => use only one 1x1 conv out_channel = classoutput
 if fuse_input:
-	fuse_input = [[int(x) for x in config.split('-')] for config in fuse_input.split(';')]
+    fuse_input = [[int(x) for x in config.split('-')] for config in fuse_input.split(';')]
 
 # monitor mem usage
 process = psutil.Process(os.getpid())
@@ -145,14 +154,14 @@ CV_road_mask = np.array(CV_set['road_mask'])
 CV_set.close()
 
 Train_Data = FCN_Data_Extractor (train_raw_image, train_road_mask, size,
-								 pos_topleft_coord = train_pos_topleft_coord,
-								 neg_topleft_coord = train_neg_topleft_coord)
-# run garbage collector
-gc.collect()
+                                 pos_topleft_coord = train_pos_topleft_coord,
+                                 neg_topleft_coord = train_neg_topleft_coord,
+                                 normalization = norm)
 
 CV_Data = FCN_Data_Extractor (CV_raw_image, CV_road_mask, size,
-							  pos_topleft_coord = CV_pos_topleft_coord,
-							  neg_topleft_coord = CV_neg_topleft_coord)
+                              pos_topleft_coord = CV_pos_topleft_coord,
+                              neg_topleft_coord = CV_neg_topleft_coord,
+                              normalization = norm)
 # run garbage collector
 gc.collect()
 
@@ -179,91 +188,91 @@ band = 7
 
 class_output = 2 # number of possible classifications for the problem
 if use_weight:
-	class_weight = [Train_Data.pos_size/Train_Data.size, Train_Data.neg_size/Train_Data.size]
-	print(class_weight, '[neg, pos]')
+    class_weight = [Train_Data.pos_size/Train_Data.size, Train_Data.neg_size/Train_Data.size]
+    print(class_weight, '[neg, pos]')
 
 iteration = int(Train_Data.size/batch_size) + 1
 
 tf.reset_default_graph()
 with tf.variable_scope('input'):
-	x = tf.placeholder(tf.float32, shape=[batch_size, size, size, band], name='x')
-	y = tf.placeholder(tf.float32, shape=[batch_size, size, size, class_output], name='y')
+    x = tf.placeholder(tf.float32, shape=[None, size, size, band], name='x')
+    y = tf.placeholder(tf.float32, shape=[None, size, size, class_output], name='y')
 
-	is_training = tf.placeholder(tf.bool, name='is_training') # batch norm
+    is_training = tf.placeholder(tf.bool, name='is_training') # batch norm
 
 
 if fuse_input:
-	with tf.variable_scope('fuse_input/inception'):
-		if fuse_input != 1:
-			input_fuse_map = tf.concat([tf.contrib.layers.conv2d(inputs=x, num_outputs=cfg[1], kernel_size=cfg[0], stride=1, padding='SAME') for cfg in fuse_input],
-				  					   axis=-1)
-		input_fuse_map = tf.contrib.layers.conv2d(inputs=input_fuse_map, num_outputs=class_output, kernel_size=1, stride=1, padding='SAME')
-		
+    with tf.variable_scope('fuse_input/inception'):
+        if fuse_input != 1:
+            input_fuse_map = tf.concat([tf.contrib.layers.conv2d(inputs=x, num_outputs=cfg[1], kernel_size=cfg[0], stride=1, padding='SAME') for cfg in fuse_input],
+                                       axis=-1)
+        input_fuse_map = tf.contrib.layers.conv2d(inputs=input_fuse_map, num_outputs=class_output, kernel_size=1, stride=1, padding='SAME')
+        
 
 with tf.variable_scope('down_sampling'):
-	# Convolutional Layer 1
-	net = tf.contrib.layers.conv2d(inputs=x, num_outputs=conv_struct[0], kernel_size=3, 
-								   stride=1, padding='SAME', scope='conv1')
+    # Convolutional Layer 1
+    net = tf.contrib.layers.conv2d(inputs=x, num_outputs=conv_struct[0], kernel_size=3, 
+                                   stride=1, padding='SAME', scope='conv1')
 
-	net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool1')
-	pool_1 = net
-	if use_conv1d:
-		pool_1 = tf.contrib.layers.conv2d(inputs=pool_1, num_outputs=conv_struct[0], kernel_size=1, stride=1, padding='SAME', scope='fuse_with_1')
-	
-	# Convolutional Layer 2
-	net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_struct[1], kernel_size=3, 
-								   stride=1, padding='SAME', scope='conv2')
+    net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool1')
+    pool_1 = net
+    if use_conv1d:
+        pool_1 = tf.contrib.layers.conv2d(inputs=pool_1, num_outputs=conv_struct[0], kernel_size=1, stride=1, padding='SAME', scope='fuse_with_1')
+    
+    # Convolutional Layer 2
+    net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_struct[1], kernel_size=3, 
+                                   stride=1, padding='SAME', scope='conv2')
 
-	net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool2')
-	pool_2 = net
-	if use_conv1d:
-		pool_2 = tf.contrib.layers.conv2d(inputs=pool_2, num_outputs=conv_struct[1], kernel_size=1, stride=1, padding='SAME', scope='fuse_with_2')
-	
-	# Convolutional Layer 3
-	net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_struct[2], kernel_size=3, 
-								   stride=1, padding='SAME', scope='conv3')
+    net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool2')
+    pool_2 = net
+    if use_conv1d:
+        pool_2 = tf.contrib.layers.conv2d(inputs=pool_2, num_outputs=conv_struct[1], kernel_size=1, stride=1, padding='SAME', scope='fuse_with_2')
+    
+    # Convolutional Layer 3
+    net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_struct[2], kernel_size=3, 
+                                   stride=1, padding='SAME', scope='conv3')
 
-	net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool3')
+    net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool3')
 
 
 with tf.variable_scope('up_sampling'):
-	kernel_size = get_kernel_size(2)
-	net = tf.contrib.layers.conv2d_transpose(inputs=net, num_outputs=conv_struct[1], kernel_size=kernel_size, stride=2, 
-											 weights_initializer=tf.constant_initializer(get_bilinear_upsample_weights(2, conv_struct[2], conv_struct[1])), 
-											 scope='conv3_T')
-	with tf.variable_scope('fuse_with_2'):
-		net = net + pool_2
+    kernel_size = get_kernel_size(2)
+    net = tf.contrib.layers.conv2d_transpose(inputs=net, num_outputs=conv_struct[1], kernel_size=kernel_size, stride=2, 
+                                             weights_initializer=tf.constant_initializer(get_bilinear_upsample_weights(2, conv_struct[2], conv_struct[1])), 
+                                             scope='conv3_T')
+    with tf.variable_scope('fuse_with_2'):
+        net = net + pool_2
 
-	net = tf.contrib.layers.conv2d_transpose(inputs=net, num_outputs=conv_struct[0], kernel_size=kernel_size, stride=2, 
-											 weights_initializer=tf.constant_initializer(get_bilinear_upsample_weights(2, conv_struct[1], conv_struct[0])), 
-											 scope='conv2_T')
-	with tf.variable_scope('fuse_with_1'):
-		net = net + pool_1
-	
-	net = tf.contrib.layers.conv2d_transpose(inputs=net, num_outputs=class_output, kernel_size=kernel_size, stride=2, 
-											 weights_initializer=tf.constant_initializer(get_bilinear_upsample_weights(2, conv_struct[0], class_output)), 
-											 scope='conv1_T')
+    net = tf.contrib.layers.conv2d_transpose(inputs=net, num_outputs=conv_struct[0], kernel_size=kernel_size, stride=2, 
+                                             weights_initializer=tf.constant_initializer(get_bilinear_upsample_weights(2, conv_struct[1], conv_struct[0])), 
+                                             scope='conv2_T')
+    with tf.variable_scope('fuse_with_1'):
+        net = net + pool_1
+    
+    net = tf.contrib.layers.conv2d_transpose(inputs=net, num_outputs=class_output, kernel_size=kernel_size, stride=2, 
+                                             weights_initializer=tf.constant_initializer(get_bilinear_upsample_weights(2, conv_struct[0], class_output)), 
+                                             scope='conv1_T')
 
 if fuse_input:
-	with tf.variable_scope('fuse_input/fuse'):
-		net = net + input_fuse_map
+    with tf.variable_scope('fuse_input/fuse'):
+        net = net + input_fuse_map
 
 with tf.variable_scope('logits'):
-	logits = tf.nn.softmax(net)
+    logits = tf.nn.softmax(net)
 
 with tf.variable_scope('cross_entropy'):
-	logits = tf.reshape(logits, (-1, class_output))
-	labels = tf.to_float(tf.reshape(y, (-1, class_output)))
+    flat_logits = tf.reshape(logits, (-1, class_output))
+    labels = tf.to_float(tf.reshape(y, (-1, class_output)))
 
-	softmax = tf.nn.softmax(logits) + tf.constant(value=1e-9) # because of the numerical instableness
+    softmax = tf.nn.softmax(flat_logits) + tf.constant(value=1e-9) # because of the numerical instableness
 
-	cross_entropy = -tf.reduce_sum(labels * tf.log(softmax), reduction_indices=[1])
-	mean_cross_entropy = tf.reduce_mean(cross_entropy, name='mean_cross_entropy')
+    cross_entropy = -tf.reduce_sum(labels * tf.log(softmax), reduction_indices=[1])
+    mean_cross_entropy = tf.reduce_mean(cross_entropy, name='mean_cross_entropy')
 
 # Ensures that we execute the update_ops before performing the train_step
 update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
 with tf.control_dependencies(update_ops):
-	train_step = tf.train.AdamOptimizer(learning_rate).minimize(cross_entropy)
+    train_step = tf.train.AdamOptimizer(learning_rate).minimize(cross_entropy)
 
 # monitor mem usage
 process = psutil.Process(os.getpid())
@@ -289,38 +298,38 @@ AUC_curve = []
 avg_precision_curve = []
 cross_entropy_curve = []
 for epoch_num in range(epoch):
-	for iter_num in range(iteration):
+    for iter_num in range(iteration):
 
-		batch_x, batch_y = Train_Data.get_patches(batch_size=batch_size, positive_num=pos_num, norm=True, weighted=use_weight)
-		batch_x = batch_x.transpose((0, 2, 3, 1))
+        batch_x, batch_y = Train_Data.get_patches(batch_size=batch_size, positive_num=pos_num, norm=True, weighted=use_weight)
+        batch_x = batch_x.transpose((0, 2, 3, 1))
 
-		train_step.run(feed_dict={x: batch_x, y: batch_y, is_training: True})
+        train_step.run(feed_dict={x: batch_x, y: batch_y, is_training: True})
 
-	# snap shot on CV set
-	cv_metric = Metric_Record()
-	cv_cross_entropy_list = []
-	for batch_x, batch_y in CV_Data.iterate_data(norm=True, weighted=use_weight):
-		batch_x = batch_x.transpose((0, 2, 3, 1))
+    # snap shot on CV set
+    cv_metric = Metric_Record()
+    cv_cross_entropy_list = []
+    for batch_x, batch_y in CV_Data.iterate_data(norm=True, weighted=use_weight):
+        batch_x = batch_x.transpose((0, 2, 3, 1))
 
-		[pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, is_training: False})
-		pred = int(pred_prob > 0.5)
+        [pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, is_training: False})
+        pred = int(pred_prob > 0.5)
 
-		cv_metric.accumulate(Y=batch_y, pred=pred, pred_prob=pred_prob)
-		cv_cross_entropy_list.append(cross_entropy_cost)
+        cv_metric.accumulate(Y=batch_y, pred=pred, pred_prob=pred_prob)
+        cv_cross_entropy_list.append(cross_entropy_cost)
 
-	# calculate value
-	balanced_acc = cv_metric.get_balanced_acc()
-	AUC_score = skmt.roc_auc_score(cv_metric.y_true, cv_metric.pred_prob)
-	avg_precision_score = skmt.average_precision_score(cv_metric.y_true, cv_metric.pred_prob)
-	mean_cross_entropy = sum(cv_cross_entropy_list)/len(cv_cross_entropy_list)
+    # calculate value
+    balanced_acc = cv_metric.get_balanced_acc()
+    AUC_score = skmt.roc_auc_score(cv_metric.y_true, cv_metric.pred_prob)
+    avg_precision_score = skmt.average_precision_score(cv_metric.y_true, cv_metric.pred_prob)
+    mean_cross_entropy = sum(cv_cross_entropy_list)/len(cv_cross_entropy_list)
 
-	balanced_acc_curve.append(balanced_acc)
-	AUC_curve.append(AUC_score)
-	avg_precision_curve.append(avg_precision_score)
-	cross_entropy_curve.append(mean_cross_entropy)
+    balanced_acc_curve.append(balanced_acc)
+    AUC_curve.append(AUC_score)
+    avg_precision_curve.append(avg_precision_score)
+    cross_entropy_curve.append(mean_cross_entropy)
 
-	print("mean_cross_entropy = ", mean_cross_entropy, "balanced_acc = ", balanced_acc, "AUC = ", AUC_score, "avg_precision = ", avg_precision_score)
-	sys.stdout.flush()
+    print("mean_cross_entropy = ", mean_cross_entropy, "balanced_acc = ", balanced_acc, "AUC = ", AUC_score, "avg_precision = ", avg_precision_score)
+    sys.stdout.flush()
 print("finish")
 
 # monitor mem usage
@@ -335,12 +344,12 @@ plt.plot(AUC_curve, label='AUC')
 plt.plot(avg_precision_curve, label='avg_precision')
 plt.legend()
 plt.title('learning_curve_on_cross_validation')
-plt.savefig(save_path+'Analysis/'+'cv_metrics_curve.png', bbox_inches='tight')
+plt.savefig(save_path+'Analysis/'+'cv_learning_curve.png', bbox_inches='tight')
 plt.close()
 
 plt.figsize=(9,5)
 plt.plot(cross_entropy_curve)
-plt.savefig(save_path+'Analysis/'+'cv_learning_curve.png', bbox_inches='tight')
+plt.savefig(save_path+'Analysis/'+'cv_cross_entropy_curve.png', bbox_inches='tight')
 plt.close()
 
 # save model
@@ -361,13 +370,13 @@ print("On training set: ")
 train_metric = Metric_Record()
 train_cross_entropy_list = []
 for batch_x, batch_y in CV_Data.iterate_data(norm=True, weighted=use_weight):
-	batch_x = batch_x.transpose((0, 2, 3, 1))
+    batch_x = batch_x.transpose((0, 2, 3, 1))
 
-	[pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, is_training: False})
-	pred = int(pred_prob > 0.5)
-	
-	train_metric.accumulate(Y=batch_y, pred=pred, pred_prob=pred_prob)    
-	train_cross_entropy_list.append(cross_entropy_cost)
+    [pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, is_training: False})
+    pred = int(pred_prob > 0.5)
+    
+    train_metric.accumulate(Y=batch_y, pred=pred, pred_prob=pred_prob)    
+    train_cross_entropy_list.append(cross_entropy_cost)
 
 train_metric.print_info()
 AUC_score = skmt.roc_auc_score(train_metric.y_true, train_metric.pred_prob)
@@ -401,14 +410,14 @@ gc.collect()
 # Predict road prob masks on train
 train_pred_road = np.zeros([x for x in train_road_mask.shape] + [2])
 for coord, patch in Train_Data.iterate_raw_image_patches_with_coord(norm=True):
-	patch = patch.transpose((0, 2, 3, 1))
-	train_pred_road[coord[0]:coord[0]+size, coord[1]:coord[1]+size, :] += logits.eval(feed_dict={x: patch, is_training: False})
+    patch = patch.transpose((0, 2, 3, 1))
+    train_pred_road[coord[0]:coord[0]+size, coord[1]:coord[1]+size, :] += logits.eval(feed_dict={x: patch, is_training: False})[0]
 
 # Predict road prob on CV
 CV_pred_road = np.zeros([x for x in CV_road_mask.shape] + [2])
 for coord, patch in CV_Data.iterate_raw_image_patches_with_coord(norm=True):
-	patch = patch.transpose((0, 2, 3, 1))
-	CV_pred_road[coord[0]:coord[0]+size, coord[1]:coord[1]+size, :] += logits.eval(feed_dict={x: patch, is_training: False})
+    patch = patch.transpose((0, 2, 3, 1))
+    CV_pred_road[coord[0]:coord[0]+size, coord[1]:coord[1]+size, :] += logits.eval(feed_dict={x: patch, is_training: False})[0]
 
 # save prediction
 prediction_name = model_name + '_pred.h5'
