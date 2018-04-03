@@ -93,7 +93,7 @@ if not model_name:
 	print("will be saved into ", save_path)
 
 if norm.startswith('G'): norm = 'Gaussian'
-elif norm == '': norm = 'mean'
+elif norm == 'm': norm = 'mean'
 
 # monitor mem usage
 process = psutil.Process(os.getpid())
