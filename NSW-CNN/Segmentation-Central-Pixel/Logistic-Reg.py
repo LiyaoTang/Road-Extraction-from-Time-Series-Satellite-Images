@@ -37,7 +37,7 @@ parser.add_option("--not_weight", action="store_false", default=True, dest="use_
 parser.add_option("--pos", type="int", default=0, dest="pos_num")
 parser.add_option("--norm_param", dest="norm_param")
 parser.add_option("--sample_norm", type="int", default=0, dest="sample_norm")
-parser.add_option("--norm", default="", dest="norm")
+parser.add_option("--norm", default="m", dest="norm")
 parser.add_option("--size", type="int", default=8, dest="size")
 parser.add_option("-e", "--epoch", type="int", default=15, dest="epoch")
 parser.add_option("--rand", type="int", default=0, dest="rand_seed")
@@ -80,12 +80,12 @@ if sample_norm:
 else:
 	norm_param = float(norm_param)
 
-assert norm in set(['G', ''])
+assert norm in set(['G', 'm'])
 if not model_name:
 	model_name = "sk-SGD_"
 	if use_weight: model_name += "weight_"
+	model_name += norm + str(norm_param).replace('.', '_') + "_"
 	model_name += "p" + str(pos_num) + "_"
-	model_name += "n" + norm + str(norm_param).replace('.', '_') + "_"
 	model_name += "e" + str(epoch) + "_"
 	model_name += "r" + str(rand_seed)
 	
