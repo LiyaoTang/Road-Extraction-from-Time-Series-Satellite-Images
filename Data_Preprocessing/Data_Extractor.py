@@ -72,7 +72,7 @@ class Data_Extractor:
 
 
     def _get_raw_patch(self, coord, norm):
-        patch  = self.raw_image[:, coord[0]:coord[0]+self.img_size, coord[1]:coord[1]+self.img_size]
+        patch  = self.raw_image[:, coord[0]:coord[0]+self.img_size, coord[1]:coord[1]+self.img_size].copy()
         if norm:
             if self.normalization == 'mean':
                 for channel_num in range(self.band):
@@ -83,7 +83,7 @@ class Data_Extractor:
         return patch
 
     def _get_patch_label(self, coord):
-        label = self.road_mask[int(coord[0]+self.img_size/2), int(coord[1]+self.img_size/2)]
+        label = self.road_mask[int(coord[0]+self.img_size/2), int(coord[1]+self.img_size/2)].copy()
         if self.encoding == 'one-hot':
             one_hot_label = np.zeros(2)
             one_hot_label[label] = 1
@@ -199,7 +199,7 @@ class FCN_Data_Extractor (Data_Extractor):
         self.pos_weight = self.neg_size / self.size
         
     def _get_patch_label(self, coord):
-        label = self.road_mask[coord[0]:coord[0]+self.img_size, coord[1]:coord[1]+self.img_size]
+        label = self.road_mask[coord[0]:coord[0]+self.img_size, coord[1]:coord[1]+self.img_size].copy()
         if self.encoding == 'one-hot':
             one_hot_label = np.zeros((self.img_size, self.img_size, 2))
             one_hot_label[:, :, 0][np.where(label == 0)] = 1
@@ -265,7 +265,7 @@ class FCN_Data_Extractor (Data_Extractor):
         for coord in self.topleft_coordinate:
             x = np.array([self._get_raw_patch(coord, norm)])
             y = np.array([self._get_patch_label(coord)])
-            if weighted:
+            if weighted and self.encoding == 'one-hot':
                 y[:,:,:,0] *= self.neg_weight
                 y[:,:,:,1] *= self.pos_weight
             

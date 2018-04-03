@@ -28,6 +28,7 @@ from Data_Extractor import *
 parser = OptionParser()
 parser.add_option("--save", dest="save_path")
 parser.add_option("--name", dest="model_name")
+parser.add_option("--record_summary", action="store_true", default=False, dest="record_summary")
 
 parser.add_option("--train", dest="path_train_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_128_18_train")
 parser.add_option("--cv", dest="path_cv_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_128_18_cv")
@@ -53,6 +54,7 @@ path_train_set = options.path_train_set
 path_cv_set = options.path_cv_set
 save_path = options.save_path
 model_name = options.model_name
+record_summary = options.record_summary
 
 pos_num = options.pos_num
 norm = options.norm
@@ -238,6 +240,31 @@ update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
 with tf.control_dependencies(update_ops):
     train_step = tf.train.AdamOptimizer(learning_rate).minimize(cross_entropy)
 
+if record_summary:
+    conv_scopes = ['output_map']
+    for layer_cfg in conv_struct:
+        for cfg in layer_cfg:
+            conv_scopes.append('inception/' + str(cfg[0])+'-'+str(cfg[1]))
+            
+    with tf.variable_scope('summary'):
+        graph = tf.get_default_graph()
+        for scope_name in conv_scopes:
+            for tensor_name in ['/weights', '/biases']:
+                tensor_name = scope_name + tensor_name + ':0'
+                cur_tensor = graph.get_tensor_by_name(tensor_name)
+                tensor_name = tensor_name.split(':')[0]
+                tf.summary.histogram(tensor_name, cur_tensor)
+                tf.summary.histogram('grad_'+tensor_name, tf.gradients(cross_entropy, [cur_tensor])[0])
+                
+            tensor_name = scope_name+'/Relu:0'
+            cur_tensor = graph.get_tensor_by_name(tensor_name)
+            tensor_name = tensor_name.split(':')[0]
+            tf.summary.tensor_summary(tensor_name, cur_tensor)
+            
+        tf.summary.scalar('cross_entropy', cross_entropy)
+        tf.summary.image('logits', tf.expand_dims(logits[:,:,:,1], axis=-1))
+    merged_summary = tf.summary.merge_all()
+
 # monitor mem usage
 process = psutil.Process(os.getpid())
 print('mem usage after model created:', process.memory_info().rss / 1024/1024, 'MB')
@@ -261,6 +288,7 @@ balanced_acc_curve = []
 AUC_curve = []
 avg_precision_curve = []
 cross_entropy_curve = []
+if record_summary: train_writer = tf.summary.FileWriter('./FCN_Summary/Inception/' + model_name, sess.graph)
 for epoch_num in range(epoch):
     for iter_num in range(iteration):
 
@@ -269,6 +297,16 @@ for epoch_num in range(epoch):
 
         train_step.run(feed_dict={x: batch_x, y: batch_y, is_training: True})
 
+    if record_summary:
+        # tensor board
+        run_options = tf.RunOptions(trace_level=tf.RunOptions.FULL_TRACE)
+        run_metadata = tf.RunMetadata()
+        summary = sess.run(merged_summary, feed_dict={x: batch_x, y: batch_y, is_training: True}, options=run_options, run_metadata=run_metadata)
+
+        global_step = epoch_num*iteration + iter_num
+        train_writer.add_run_metadata(run_metadata, 'step%03d' % global_step)
+        train_writer.add_summary(summary, global_step)
+            
     # snap shot on CV set
     cv_metric = Metric_Record()
     cv_cross_entropy_list = []
