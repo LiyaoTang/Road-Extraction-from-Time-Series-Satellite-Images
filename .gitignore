@@ -12,8 +12,6 @@ Data/
 
 # Result
 **/Result
-<<<<<<< HEAD
 
-
-=======
->>>>>>> 67a6ef80bed03f37b924ed9230de9d7b0b48d073
+# tensorboard summary
+**/Summary

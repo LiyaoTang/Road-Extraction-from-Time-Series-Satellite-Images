@@ -211,12 +211,16 @@ else:
 with tf.variable_scope('inception'):
     if conv_struct != [[[0]]]:
         net = tf.concat([tf.contrib.layers.conv2d(inputs=x, num_outputs=cfg[1], kernel_size=cfg[0], stride=1, padding='SAME',
-                                                  normalizer_fn=normalizer_fn, normalizer_params=normalizer_params) for cfg in conv_struct[0]], axis=-1)
+                                                  normalizer_fn=normalizer_fn, normalizer_params=normalizer_params,
+                                                  scope=str(cfg[0])+'-'+str(cfg[1])) 
+                         for cfg in conv_struct[0]], axis=-1)
 
         if len(conv_struct) > 1:
             for layer_cfg in conv_struct[1:]:
                 net = tf.concat([tf.contrib.layers.conv2d(inputs=net, num_outputs=cfg[1], kernel_size=cfg[0], stride=1, padding='SAME',
-                                                          normalizer_fn=normalizer_fn, normalizer_params=normalizer_params) for cfg in layer_cfg], axis=-1)
+                                                          normalizer_fn=normalizer_fn, normalizer_params=normalizer_params,
+                                                          scope=str(cfg[0])+'-'+str(cfg[1])) 
+                                 for cfg in layer_cfg], axis=-1)
 
     else:
         net = x
@@ -242,25 +246,23 @@ with tf.control_dependencies(update_ops):
 
 if record_summary:
     conv_scopes = ['output_map']
-    for layer_cfg in conv_struct:
-        for cfg in layer_cfg:
-            conv_scopes.append('inception/' + str(cfg[0])+'-'+str(cfg[1]))
+    if conv_struct != [[[0]]]:
+        for layer_cfg in conv_struct:
+            for cfg in layer_cfg:
+                conv_scopes.append('inception/' + str(cfg[0])+'-'+str(cfg[1]))
             
     with tf.variable_scope('summary'):
         graph = tf.get_default_graph()
         for scope_name in conv_scopes:
-            for tensor_name in ['/weights', '/biases']:
-                tensor_name = scope_name + tensor_name + ':0'
+            for tensor_name in ['/weights:0', '/biases:0']:
+                tensor_name = scope_name + tensor_name
                 cur_tensor = graph.get_tensor_by_name(tensor_name)
                 tensor_name = tensor_name.split(':')[0]
                 tf.summary.histogram(tensor_name, cur_tensor)
                 tf.summary.histogram('grad_'+tensor_name, tf.gradients(cross_entropy, [cur_tensor])[0])
-                
-            tensor_name = scope_name+'/Relu:0'
-            cur_tensor = graph.get_tensor_by_name(tensor_name)
-            tensor_name = tensor_name.split(':')[0]
-            tf.summary.tensor_summary(tensor_name, cur_tensor)
-            
+        
+        tf.summary.image('output_pos', tf.expand_dims(net[:,:,:,1], axis=-1))
+        tf.summary.image('output_neg', tf.expand_dims(net[:,:,:,0], axis=-1))
         tf.summary.scalar('cross_entropy', cross_entropy)
         tf.summary.image('logits', tf.expand_dims(logits[:,:,:,1], axis=-1))
     merged_summary = tf.summary.merge_all()
@@ -288,7 +290,7 @@ balanced_acc_curve = []
 AUC_curve = []
 avg_precision_curve = []
 cross_entropy_curve = []
-if record_summary: train_writer = tf.summary.FileWriter('./FCN_Summary/Inception/' + model_name, sess.graph)
+if record_summary: train_writer = tf.summary.FileWriter('./Summary/Inception/' + model_name, sess.graph)
 for epoch_num in range(epoch):
     for iter_num in range(iteration):
 
@@ -301,11 +303,10 @@ for epoch_num in range(epoch):
         # tensor board
         run_options = tf.RunOptions(trace_level=tf.RunOptions.FULL_TRACE)
         run_metadata = tf.RunMetadata()
-        summary = sess.run(merged_summary, feed_dict={x: batch_x, y: batch_y, is_training: True}, options=run_options, run_metadata=run_metadata)
+        summary = sess.run(merged_summary, feed_dict={x: batch_x, y: batch_y, is_training: False}, options=run_options, run_metadata=run_metadata)
 
-        global_step = epoch_num*iteration + iter_num
-        train_writer.add_run_metadata(run_metadata, 'step%03d' % global_step)
-        train_writer.add_summary(summary, global_step)
+        train_writer.add_run_metadata(run_metadata, 'epoch_%03d' % (epoch_num+1))
+        train_writer.add_summary(summary, epoch_num+1)
             
     # snap shot on CV set
     cv_metric = Metric_Record()
