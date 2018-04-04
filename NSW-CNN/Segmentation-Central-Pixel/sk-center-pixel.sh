@@ -9,7 +9,7 @@ for RAND in 0 1; do
 
             name=SGD_weight_${NORM}${norm_param}_p${POS}_e15_r${RAND}
             python Logistic-Reg.py --rand ${RAND} --pos ${POS} --norm_param ${norm_param} --save $save_dir > ./Log/sklearn/${name} 2>&1 &
-
+            
             name=SGD_${NORM}${norm_param}_p${POS}_e15_r${RAND}
             python Logistic-Reg.py --rand ${RAND} --pos ${POS} --norm_param ${norm_param} --save $save_dir --not_weight > ./Log/sklearn/${name} 2>&1 &
             

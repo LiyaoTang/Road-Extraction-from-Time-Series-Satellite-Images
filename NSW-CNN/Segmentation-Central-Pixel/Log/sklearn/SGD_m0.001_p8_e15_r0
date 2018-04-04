@@ -1,0 +1,41 @@
+Train set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_train
+CV set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_cv
+will be saved as  sk-SGD_m0_001_p8_e15_r0
+will be saved into  ./Result/motor_trunk_pri_sec_tert_uncl_track/sklearn/
+mem usage before data loaded: 83.953125 MB
+
+mu =  [ 144.71187809  191.4973748   363.63933132  368.9204473  2385.57259035
+ 1362.40326606  728.31018062]
+mu =  [ 150.8227309   198.28994142  365.46753706  373.66751856 2370.63525823
+ 1356.64782764  731.00466191]
+train data:
+(7, 7650, 8091) (7650, 8091)
+pos =  304920 neg =  21258076
+cv data:
+(7, 2365, 8091) (2365, 8091)
+pos =  23150 neg =  782418
+mem usage after data loaded: 6131.71875 MB
+
+SGDClassifier(alpha=0.001, average=False, class_weight=None, epsilon=0.1,
+       eta0=0.0, fit_intercept=True, l1_ratio=0.15,
+       learning_rate='optimal', loss='log', max_iter=1, n_iter=None,
+       n_jobs=1, penalty='l2', power_t=0.5, random_state=None,
+       shuffle=False, tol=None, verbose=0, warm_start=False)
+classes in classifier  [0 1] 1
+mem usage after model created: 6131.71875 MB
+
+ balanced_acc =  0.5636194128709943 AUC =  0.5790177477841066 avg_precision =  0.046524957932323585
+ balanced_acc =  0.5788475157702819 AUC =  0.6008473862830066 avg_precision =  0.05940106623521667
+ balanced_acc =  0.5402384503702254 AUC =  0.5487113536948346 avg_precision =  0.038008446041141855
+ balanced_acc =  0.5475669495561157 AUC =  0.5585053429401253 avg_precision =  0.03930595226327797
+ balanced_acc =  0.5535840857676364 AUC =  0.5690919364457636 avg_precision =  0.045943448872594786
+ balanced_acc =  0.5584744430218364 AUC =  0.5762519748065486 avg_precision =  0.047016054342318384
+ balanced_acc =  0.5664388920679173 AUC =  0.5864703279555369 avg_precision =  0.0500913222416155
+ balanced_acc =  0.5525419477296628 AUC =  0.5648915846063006 avg_precision =  0.043305285640202015
+ balanced_acc =  0.5650357437383553 AUC =  0.5874861478455939 avg_precision =  0.05768490567027884
+ balanced_acc =  0.5493822240714306 AUC =  0.5576517387117274 avg_precision =  0.039619196164728115
+ balanced_acc =  0.5768400611921507 AUC =  0.6000042830066687 avg_precision =  0.05926784139301367
+ balanced_acc =  0.5660545244890642 AUC =  0.5890921880057408 avg_precision =  0.05718794323794142
+ balanced_acc =  0.583766292483554 AUC =  0.6097992096185934 avg_precision =  0.06343069525392796
+ balanced_acc =  0.5692607621473946 AUC =  0.5925907420562186 avg_precision =  0.058773424565473395
+ balanced_acc =  0.5680349884179998 AUC =  0.5891798120625859 avg_precision =  0.056619344929105565
