@@ -225,27 +225,27 @@ with tf.variable_scope('inception'):
     else:
         net = x
 
-net = tf.contrib.layers.conv2d(inputs=net, num_outputs=class_output, kernel_size=1, stride=1, padding='SAME', scope='output_map')
-        
-with tf.variable_scope('logits'):
-    logits = tf.nn.softmax(net)
+logits = tf.contrib.layers.conv2d(inputs=net, num_outputs=class_output, kernel_size=1, stride=1, padding='SAME', scope='logits')
 
+with tf.variable_scope('prob_out'):
+    prob_out = tf.nn.softmax(logits, name='prob_out')
+    
 with tf.variable_scope('cross_entropy'):
-    flat_logits = tf.reshape(logits, (-1, class_output))
-    labels = tf.to_float(tf.reshape(y, (-1, class_output)))
+    flat_logits = tf.reshape(logits, (-1, class_output), name='flat_logits')
+    flat_softmax = tf.nn.softmax(flat_logits, name='flat_softmax') # + tf.constant(value=1e-9) # because of the numerical instableness
+    
+    flat_labels = tf.to_float(tf.reshape(y, (-1, class_output)), name='flat_labels')
 
-    softmax = tf.nn.softmax(flat_logits) + tf.constant(value=1e-9) # because of the numerical instableness
-
-    cross_entropy = -tf.reduce_sum(labels * tf.log(softmax), reduction_indices=[1])
+    cross_entropy = -tf.reduce_sum(flat_labels * tf.log(flat_softmax), reduction_indices=[1])
     cross_entropy = tf.reduce_mean(cross_entropy, name='mean_cross_entropy')
 
 # Ensures that we execute the update_ops before performing the train_step
 update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
 with tf.control_dependencies(update_ops):
     train_step = tf.train.AdamOptimizer(learning_rate).minimize(cross_entropy)
-
+    
 if record_summary:
-    conv_scopes = ['output_map']
+    conv_scopes = ['logits']
     if conv_struct != [[[0]]]:
         for layer_cfg in conv_struct:
             for cfg in layer_cfg:
@@ -261,10 +261,11 @@ if record_summary:
                 tf.summary.histogram(tensor_name, cur_tensor)
                 tf.summary.histogram('grad_'+tensor_name, tf.gradients(cross_entropy, [cur_tensor])[0])
         
-        tf.summary.image('output_pos', tf.expand_dims(net[:,:,:,1], axis=-1))
-        tf.summary.image('output_neg', tf.expand_dims(net[:,:,:,0], axis=-1))
+        tf.summary.image('prob_out_pos', tf.expand_dims(prob_out[:,:,:,1], axis=-1))
+        tf.summary.image('prob_out_neg', tf.expand_dims(prob_out[:,:,:,0], axis=-1))
+        tf.summary.image('logits_pos', tf.expand_dims(logits[:,:,:,1], axis=-1))
+        tf.summary.image('logits_neg', tf.expand_dims(logits[:,:,:,0], axis=-1))
         tf.summary.scalar('cross_entropy', cross_entropy)
-        tf.summary.image('logits', tf.expand_dims(logits[:,:,:,1], axis=-1))
     merged_summary = tf.summary.merge_all()
 
 # monitor mem usage
@@ -314,7 +315,7 @@ for epoch_num in range(epoch):
     for batch_x, batch_y in CV_Data.iterate_data(norm=True, weighted=use_weight):
         batch_x = batch_x.transpose((0, 2, 3, 1))
 
-        [pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, is_training: False})
+        [pred_prob, cross_entropy_cost] = sess.run([prob_out, cross_entropy], feed_dict={x: batch_x, y: batch_y, is_training: False})
 
         cv_metric.accumulate(Y         = np.array(batch_y.reshape(-1,class_output)[:,1]>0.5, dtype=int), 
                              pred      = np.array(pred_prob.reshape(-1,class_output)[:,1]>0.5, dtype=int), 
@@ -376,7 +377,7 @@ train_cross_entropy_list = []
 for batch_x, batch_y in CV_Data.iterate_data(norm=True, weighted=use_weight):
     batch_x = batch_x.transpose((0, 2, 3, 1))
 
-    [pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, is_training: False})
+    [pred_prob, cross_entropy_cost] = sess.run([prob_out, cross_entropy], feed_dict={x: batch_x, y: batch_y, is_training: False})
 
     train_metric.accumulate(Y         = np.array(batch_y.reshape(-1,class_output)[:,1]>0.5, dtype=int),
                             pred      = np.array(pred_prob.reshape(-1,class_output)[:,1]>0.5, dtype=int), 

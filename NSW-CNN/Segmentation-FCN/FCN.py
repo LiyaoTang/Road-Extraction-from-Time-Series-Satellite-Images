@@ -257,16 +257,18 @@ if fuse_input:
     with tf.variable_scope('fuse_input/fuse'):
         net = net + input_fuse_map
 
-with tf.variable_scope('logits'):
-    logits = tf.nn.softmax(net)
+logits = net
+
+with tf.variable_scope('prob_out'):
+    prob_out = tf.nn.softmax(net, name='prob_out')
 
 with tf.variable_scope('cross_entropy'):
-    flat_logits = tf.reshape(logits, (-1, class_output))
-    labels = tf.to_float(tf.reshape(y, (-1, class_output)))
+    flat_logits = tf.reshape(logits, (-1, class_output), name='flat_logits')
+    flat_labels = tf.to_float(tf.reshape(y, (-1, class_output)), name='flat_labels')
 
-    softmax = tf.nn.softmax(flat_logits) + tf.constant(value=1e-9) # because of the numerical instableness
+    flat_softmax = tf.nn.softmax(flat_logits, name='flat_softmax') # + tf.constant(value=1e-9) # because of the numerical instableness
 
-    cross_entropy = -tf.reduce_sum(labels * tf.log(softmax), reduction_indices=[1])
+    cross_entropy = -tf.reduce_sum(flat_labels * tf.log(flat_softmax), reduction_indices=[1])
     mean_cross_entropy = tf.reduce_mean(cross_entropy, name='mean_cross_entropy')
 
 # Ensures that we execute the update_ops before performing the train_step
