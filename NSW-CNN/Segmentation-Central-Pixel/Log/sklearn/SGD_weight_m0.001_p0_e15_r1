@@ -2,7 +2,7 @@ Train set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posne
 CV set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_cv
 will be saved as  sk-SGD_weight_m0_001_p0_e15_r1
 will be saved into  ./Result/motor_trunk_pri_sec_tert_uncl_track/sklearn/
-mem usage before data loaded: 83.94921875 MB
+mem usage before data loaded: 83.953125 MB
 
 mu =  [ 144.71187809  191.4973748   363.63933132  368.9204473  2385.57259035
  1362.40326606  728.31018062]
@@ -14,7 +14,7 @@ pos =  304920 neg =  21258076
 cv data:
 (7, 2365, 8091) (2365, 8091)
 pos =  23150 neg =  782418
-mem usage after data loaded: 6131.71484375 MB
+mem usage after data loaded: 6131.71875 MB
 
 SGDClassifier(alpha=0.001, average=False,
        class_weight={0: 0.014140892109797729, 1: 0.9858591078902023},
@@ -23,7 +23,7 @@ SGDClassifier(alpha=0.001, average=False,
        n_jobs=1, penalty='l2', power_t=0.5, random_state=None,
        shuffle=False, tol=None, verbose=0, warm_start=False)
 classes in classifier  [0 1] 1
-mem usage after model created: 6131.71484375 MB
+mem usage after model created: 6131.71875 MB
 
  balanced_acc =  0.6371381000561879 AUC =  0.643243874735399 avg_precision =  0.04115736581134349
  balanced_acc =  0.6423892209832082 AUC =  0.6676628368047313 avg_precision =  0.04798883391710984
@@ -40,3 +40,43 @@ mem usage after model created: 6131.71484375 MB
  balanced_acc =  0.6453159810005167 AUC =  0.6928363244402562 avg_precision =  0.05471020381441255
  balanced_acc =  0.6185277464084631 AUC =  0.6595673701716847 avg_precision =  0.05424020087851007
  balanced_acc =  0.6563827396189386 AUC =  0.7048274132655401 avg_precision =  0.057992859391384974
+finish
+mem usage after model trained: 6276.14453125 MB
+
+coefficient info:
+shape =  (1, 448)
+0.5448527308796415 -0.2923132460093061 0.0007977461421601166 0.0018053051909448334
+On train set
+true_pos  = 194249
+false_pos = 8435906
+true_neg  = 12822170
+false_neg = 110671
+size = 21562996
+pos_recall    = 0.6370490620490621
+pos_precision = 0.02250817047897749
+pos_F1        = 0.043480105091451386
+neg_recall    = 0.6031670034484776
+neg_precision = 0.9914426381643445
+neg_F1        = 0.7500337004708004
+accuracy      = 0.6036461259836063
+balanced_accuracy = 0.506975404321661
+On CV set
+true_pos  = 15341
+false_pos = 273778
+true_neg  = 508640
+false_neg = 7809
+size = 805568
+pos_recall    = 0.6626781857451404
+pos_precision = 0.05306119625482933
+pos_F1        = 0.09825503011826343
+neg_recall    = 0.6500872934927366
+neg_precision = 0.984879436304456
+neg_F1        = 0.783205670788464
+accuracy      = 0.6504491240962899
+balanced_accuracy = 0.5189703162796426
+/localdata/u6142160/anaconda3/lib/python3.6/site-packages/h5py/__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+/localdata/u6142160/anaconda3/lib/python3.6/site-packages/sklearn/linear_model/base.py:340: RuntimeWarning: overflow encountered in exp
+  np.exp(prob, prob)
+mem usage after prediction maps calculated: 7602.703125 MB
+

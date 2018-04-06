@@ -1,20 +1,24 @@
 Train set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_train
 CV set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_cv
-will be saved as  sk-SGD_m0_001_p8_e15_r1
+will be saved as  sk-SGD_G0_001_p8_e15_r1
 will be saved into  ./Result/motor_trunk_pri_sec_tert_uncl_track/sklearn/
-mem usage before data loaded: 83.953125 MB
+mem usage before data loaded: 85.953125 MB
 
 mu =  [ 144.71187809  191.4973748   363.63933132  368.9204473  2385.57259035
  1362.40326606  728.31018062]
+std =  [125.65067662 147.07994057 235.16274288 262.88676276 927.00557037
+ 842.7245097  545.23410243]
 mu =  [ 150.8227309   198.28994142  365.46753706  373.66751856 2370.63525823
  1356.64782764  731.00466191]
+std =  [126.38246319 147.99541069 225.10661372 260.4291769  792.72602026
+ 819.12928051 548.31700647]
 train data:
 (7, 7650, 8091) (7650, 8091)
 pos =  304920 neg =  21258076
 cv data:
 (7, 2365, 8091) (2365, 8091)
 pos =  23150 neg =  782418
-mem usage after data loaded: 6131.71484375 MB
+mem usage after data loaded: 6133.7265625 MB
 
 SGDClassifier(alpha=0.001, average=False, class_weight=None, epsilon=0.1,
        eta0=0.0, fit_intercept=True, l1_ratio=0.15,
@@ -22,60 +26,58 @@ SGDClassifier(alpha=0.001, average=False, class_weight=None, epsilon=0.1,
        n_jobs=1, penalty='l2', power_t=0.5, random_state=None,
        shuffle=False, tol=None, verbose=0, warm_start=False)
 classes in classifier  [0 1] 1
-mem usage after model created: 6131.71484375 MB
+mem usage after model created: 6133.7265625 MB
 
- balanced_acc =  0.5105229726265811 AUC =  0.5099828026610337 avg_precision =  0.02948974418287586
- balanced_acc =  0.5492987818506938 AUC =  0.5621880595418643 avg_precision =  0.04230313217557717
- balanced_acc =  0.5591781171451515 AUC =  0.5779303804879292 avg_precision =  0.0521561723954793
- balanced_acc =  0.5771876440386521 AUC =  0.5982395076453667 avg_precision =  0.05833038696667418
- balanced_acc =  0.5613065163386424 AUC =  0.5801283801684568 avg_precision =  0.05183080380100043
- balanced_acc =  0.5743012589973684 AUC =  0.597237638692485 avg_precision =  0.05760676176990703
- balanced_acc =  0.5584525430875202 AUC =  0.5758078182422661 avg_precision =  0.04904612380228619
- balanced_acc =  0.5520553473687183 AUC =  0.5674994687372396 avg_precision =  0.04722794461420733
- balanced_acc =  0.5533485082548579 AUC =  0.5669932192316022 avg_precision =  0.04267420973297263
- balanced_acc =  0.5645818856488675 AUC =  0.587560294327547 avg_precision =  0.05685234935351066
- balanced_acc =  0.56863830399561 AUC =  0.5884461958149596 avg_precision =  0.05571233899212338
- balanced_acc =  0.5615576321036178 AUC =  0.5795110669192215 avg_precision =  0.053581571200268616
- balanced_acc =  0.5650584981981455 AUC =  0.5843800254267428 avg_precision =  0.050571748321764365
- balanced_acc =  0.5681652100286751 AUC =  0.5871955874320757 avg_precision =  0.051739730839822
- balanced_acc =  0.5637914665345978 AUC =  0.5823218679180435 avg_precision =  0.05146915136709258
+ balanced_acc =  0.5405301631067632 AUC =  0.7407090231060696 avg_precision =  0.09095714247682224
+ balanced_acc =  0.5398874637209686 AUC =  0.7390491745070262 avg_precision =  0.0902215034327121
+ balanced_acc =  0.5420880246591384 AUC =  0.7452080288934507 avg_precision =  0.0920901350812923
+ balanced_acc =  0.5385744567871056 AUC =  0.7382720772781648 avg_precision =  0.08932151502659114
+ balanced_acc =  0.5382116445829691 AUC =  0.741399377773174 avg_precision =  0.09053042464542302
+ balanced_acc =  0.5401282327603281 AUC =  0.7433876547193925 avg_precision =  0.09137925001475637
+ balanced_acc =  0.5390071905188284 AUC =  0.7425449092528231 avg_precision =  0.09100966145019046
+ balanced_acc =  0.5403209513873001 AUC =  0.7434038950649122 avg_precision =  0.09114795226621637
+ balanced_acc =  0.5407094617970772 AUC =  0.7447664105370377 avg_precision =  0.0916035764408967
+ balanced_acc =  0.5370344884836075 AUC =  0.738447647039705 avg_precision =  0.08942258692315362
+ balanced_acc =  0.5411600816005024 AUC =  0.7436652664605924 avg_precision =  0.09167653752355646
+ balanced_acc =  0.5383549054639926 AUC =  0.7414779310680613 avg_precision =  0.09020335719791858
+ balanced_acc =  0.5395110951586439 AUC =  0.7434994270157704 avg_precision =  0.09126612682331021
+ balanced_acc =  0.54020977198077 AUC =  0.7451885862029514 avg_precision =  0.09181987575289038
+ balanced_acc =  0.5386277488006705 AUC =  0.7405867778762174 avg_precision =  0.09015615665551362
 finish
-mem usage after model trained: 6249.46875 MB
+mem usage after model trained: 6278.12890625 MB
 
 coefficient info:
 shape =  (1, 448)
-20.396869048210686 -10.479818244306308 0.02454466253247306 2.85078919331389
+1.602001924015925 -0.9567186263417113 -2.7765784800133767e-05 0.014652584594603184
 On train set
-true_pos  = 48413
-false_pos = 624118
-true_neg  = 20633958
-false_neg = 256507
+true_pos  = 24138
+false_pos = 166528
+true_neg  = 21091548
+false_neg = 280782
 size = 21562996
-pos_recall    = 0.15877279286370197
-pos_precision = 0.07198627275173933
-pos_F1        = 0.09905969711013647
-neg_recall    = 0.9706408990164491
-neg_precision = 0.9877213360257897
-neg_F1        = 0.9791066314727241
-accuracy      = 0.9591603597199573
-balanced_accuracy = 0.5298538043887645
+pos_recall    = 0.07916174734356553
+pos_precision = 0.12659834474945716
+pos_F1        = 0.0974119527185998
+neg_recall    = 0.9921663653850894
+neg_precision = 0.986862358947293
+neg_F1        = 0.9895072545168816
+accuracy      = 0.9792556655856172
+balanced_accuracy = 0.556730351848375
 On CV set
-true_pos  = 3658
-false_pos = 23809
-true_neg  = 758609
-false_neg = 19492
+true_pos  = 2096
+false_pos = 10394
+true_neg  = 772024
+false_neg = 21054
 size = 805568
-pos_recall    = 0.15801295896328293
-pos_precision = 0.13317799541267702
-pos_F1        = 0.14453642057016414
-neg_recall    = 0.9695699741059127
-neg_precision = 0.9749492675115441
-neg_F1        = 0.97225218020415
-accuracy      = 0.9462478648605704
-balanced_accuracy = 0.5540636314621106
+pos_recall    = 0.09053995680345572
+pos_precision = 0.16781425140112088
+pos_F1        = 0.11762065095398427
+neg_recall    = 0.9867155407978855
+neg_precision = 0.9734528003550723
+neg_F1        = 0.9800393019087322
+accuracy      = 0.9609617065226027
+balanced_accuracy = 0.5706335258780966
 /localdata/u6142160/anaconda3/lib/python3.6/site-packages/h5py/__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
   from ._conv import register_converters as _register_converters
-/localdata/u6142160/anaconda3/lib/python3.6/site-packages/sklearn/linear_model/base.py:340: RuntimeWarning: overflow encountered in exp
-  np.exp(prob, prob)
-mem usage after prediction maps calculated: 8896.93359375 MB
+mem usage after prediction maps calculated: 9199.84375 MB
 

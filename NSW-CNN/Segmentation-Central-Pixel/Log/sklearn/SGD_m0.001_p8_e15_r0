@@ -2,7 +2,7 @@ Train set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posne
 CV set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_cv
 will be saved as  sk-SGD_m0_001_p8_e15_r0
 will be saved into  ./Result/motor_trunk_pri_sec_tert_uncl_track/sklearn/
-mem usage before data loaded: 83.953125 MB
+mem usage before data loaded: 83.96875 MB
 
 mu =  [ 144.71187809  191.4973748   363.63933132  368.9204473  2385.57259035
  1362.40326606  728.31018062]
@@ -39,3 +39,43 @@ mem usage after model created: 6131.71875 MB
  balanced_acc =  0.583766292483554 AUC =  0.6097992096185934 avg_precision =  0.06343069525392796
  balanced_acc =  0.5692607621473946 AUC =  0.5925907420562186 avg_precision =  0.058773424565473395
  balanced_acc =  0.5680349884179998 AUC =  0.5891798120625859 avg_precision =  0.056619344929105565
+finish
+mem usage after model trained: 6276.13671875 MB
+
+coefficient info:
+shape =  (1, 448)
+20.178008969025957 -10.498087991678192 0.027570296944119617 2.8320495029564845
+On train set
+true_pos  = 49064
+false_pos = 445930
+true_neg  = 20812146
+false_neg = 255856
+size = 21562996
+pos_recall    = 0.16090777908959727
+pos_precision = 0.0991203933785056
+pos_F1        = 0.12267318736764203
+neg_recall    = 0.9790230310588786
+neg_precision = 0.9878557064879717
+neg_F1        = 0.9834195362962759
+accuracy      = 0.9674541515474009
+balanced_accuracy = 0.5434880499332386
+On CV set
+true_pos  = 3740
+false_pos = 19940
+true_neg  = 762478
+false_neg = 19410
+size = 805568
+pos_recall    = 0.1615550755939525
+pos_precision = 0.1579391891891892
+pos_F1        = 0.15972667093743328
+neg_recall    = 0.9745149012420471
+neg_precision = 0.9751754727019727
+neg_F1        = 0.974845075068433
+accuracy      = 0.9511524787479145
+balanced_accuracy = 0.5665573309455809
+/localdata/u6142160/anaconda3/lib/python3.6/site-packages/h5py/__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+/localdata/u6142160/anaconda3/lib/python3.6/site-packages/sklearn/linear_model/base.py:340: RuntimeWarning: overflow encountered in exp
+  np.exp(prob, prob)
+mem usage after prediction maps calculated: 7457.2578125 MB
+
