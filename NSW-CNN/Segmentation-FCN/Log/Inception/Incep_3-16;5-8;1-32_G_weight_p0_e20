@@ -363,7 +363,7 @@ CV set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_s
 will be saved as  Incep_3-16;5-8;1-32_G_weight_p0_e15_r0
 will be saved into  ./Result/Inception/Incep_3-16;5-8;1-32_G_weight_p0_e15_r0/
 conv_struct =  [[[3, 16], [5, 8], [1, 32]]]
-mem usage before data loaded: 205.00390625 MB
+mem usage before data loaded: 209.59375 MB
 
 mu =  [ 117.08104981  160.62967693  332.04874998  318.74745584 2467.27518735
  1220.89931865  612.68672644]
@@ -379,113 +379,59 @@ pos =  575 neg =  2932
 cv data:
 (7, 2365, 8091) (2365, 8091)
 pos =  5 neg =  21
-mem usage after data loaded: 5150.4375 MB
+mem usage after data loaded: 5158.48828125 MB
 
 [0.1639577986883376, 0.8360422013116624] [neg, pos]
-mem usage after model created: 5194.015625 MB
+mem usage after model created: 5200.296875 MB
 
-mean_cross_entropy =  0.0890870842222984 balanced_acc =  0.5012975511257192 AUC =  0.5992949471561739 avg_precision =  0.01543263093823305
-mean_cross_entropy =  0.07948559236067992 balanced_acc =  0.49993460741861 AUC =  0.5922818137532155 avg_precision =  0.014776989243734766
-mean_cross_entropy =  0.07614748280208844 balanced_acc =  0.5 AUC =  0.5883892712608864 avg_precision =  0.014564403811894095
-mean_cross_entropy =  0.07467408034090812 balanced_acc =  0.5 AUC =  0.5852248993965633 avg_precision =  0.01444821062739245
-mean_cross_entropy =  0.07395685650408268 balanced_acc =  0.5 AUC =  0.5825740919251005 avg_precision =  0.01436803562365883
-mean_cross_entropy =  0.07357227716308373 balanced_acc =  0.5 AUC =  0.580845789038124 avg_precision =  0.01433617427222557
-mean_cross_entropy =  0.07336100749671459 balanced_acc =  0.5 AUC =  0.5796625647544097 avg_precision =  0.014338314361543966
-mean_cross_entropy =  0.0732411379710986 balanced_acc =  0.5 AUC =  0.578786763637335 avg_precision =  0.01438688517100324
-mean_cross_entropy =  0.07317677484108852 balanced_acc =  0.49999762208794946 AUC =  0.578095371193204 avg_precision =  0.014443897874377994
-mean_cross_entropy =  0.07314389729155944 balanced_acc =  0.4999952441758989 AUC =  0.5774469653919575 avg_precision =  0.014529955010277689
-mean_cross_entropy =  0.07312856213404582 balanced_acc =  0.5000834709557026 AUC =  0.576738300234738 avg_precision =  0.014581568313996917
-mean_cross_entropy =  0.07312125153839588 balanced_acc =  0.5001609971312789 AUC =  0.5762111618363072 avg_precision =  0.01461837580418825
-mean_cross_entropy =  0.07311645336449146 balanced_acc =  0.5002254447905773 AUC =  0.5759913014501638 avg_precision =  0.014651013758601051
-mean_cross_entropy =  0.07311117735046607 balanced_acc =  0.5002218779225014 AUC =  0.5763300838503782 avg_precision =  0.014713579091253644
-mean_cross_entropy =  0.07310713512393144 balanced_acc =  0.5003077267902547 AUC =  0.5768699639633345 avg_precision =  0.014782629051558667
+mean_cross_entropy =  0.0497724896010298 balanced_acc =  0.499938662354553 AUC =  0.5628476785339369 avg_precision =  0.01383329605447321
+mean_cross_entropy =  0.046834925619455486 balanced_acc =  0.4999952441758989 AUC =  0.5584642775001553 avg_precision =  0.013707533744160408
+mean_cross_entropy =  0.045410511191361226 balanced_acc =  0.5 AUC =  0.5651858732978201 avg_precision =  0.014042068139144243
+mean_cross_entropy =  0.04429100471763657 balanced_acc =  0.5 AUC =  0.5755310156894572 avg_precision =  0.014590997067730472
+mean_cross_entropy =  0.043415513032904036 balanced_acc =  0.5 AUC =  0.5830403283594184 avg_precision =  0.015155367440343315
+mean_cross_entropy =  0.042456494751744546 balanced_acc =  0.5 AUC =  0.6000873652832661 avg_precision =  0.01613564277289286
+mean_cross_entropy =  0.041652409467273034 balanced_acc =  0.5 AUC =  0.6130488066090399 avg_precision =  0.017106555792182402
+mean_cross_entropy =  0.04115319298580289 balanced_acc =  0.5 AUC =  0.6224468611624016 avg_precision =  0.018131463376823146
+mean_cross_entropy =  0.04063336590591531 balanced_acc =  0.5 AUC =  0.6362412876551524 avg_precision =  0.019382833145914727
+mean_cross_entropy =  0.04022847732099203 balanced_acc =  0.5 AUC =  0.6480658065345363 avg_precision =  0.020792429748213232
+mean_cross_entropy =  0.03982120852630872 balanced_acc =  0.4999952441758989 AUC =  0.6608596869147048 avg_precision =  0.02230806763223265
+mean_cross_entropy =  0.03962045334852659 balanced_acc =  0.4999952441758989 AUC =  0.6698834488563563 avg_precision =  0.023837429934354497
+mean_cross_entropy =  0.03920512023166968 balanced_acc =  0.49998454357167144 AUC =  0.6826845258365162 avg_precision =  0.02507336158242258
+mean_cross_entropy =  0.03909639147325204 balanced_acc =  0.500147918615001 AUC =  0.6846394548303926 avg_precision =  0.026376862194128815
+mean_cross_entropy =  0.038963757849370055 balanced_acc =  0.5001098720221923 AUC =  0.6891567148067868 avg_precision =  0.027948570494820323
 finish
-mem usage after model trained: 5479.85546875 MB
+mem usage after model trained: 5484.11328125 MB
 
 On training set: 
-true_pos  = 4
-false_pos = 50
-true_neg  = 420487
-false_neg = 5443
+true_pos  = 2
+false_pos = 62
+true_neg  = 420475
+false_neg = 5445
 size = 26
-pos_recall    = 0.0007343491830365339
-pos_precision = 0.07407407407407407
-pos_F1        = 0.0014542810398109434
-neg_recall    = 0.9998811043974728
-neg_precision = 0.9872209048435189
-neg_F1        = 0.9935106743676954
-accuracy      = 16172.73076923077
-balanced_accuracy = 0.5306474894587965
-mean_cross_entropy =  0.07310713512393144 balanced_acc =  0.5003077267902547 AUC =  0.5768699639633345 avg_precision =  0.014782629051558667
+pos_recall    = 0.00036717459151826694
+pos_precision = 0.03125
+pos_F1        = 0.0007258210851025221
+neg_recall    = 0.9998525694528663
+neg_precision = 0.9872159090909091
+neg_F1        = 0.9934940581742486
+accuracy      = 16172.192307692309
+balanced_accuracy = 0.5092329545454546
+mean_cross_entropy =  0.038963757849370055 balanced_acc =  0.5001098720221923 AUC =  0.6891567148067868 avg_precision =  0.027948570494820323
 On CV set:
-true_pos  = 4
-false_pos = 50
-true_neg  = 420487
-false_neg = 5443
+true_pos  = 2
+false_pos = 62
+true_neg  = 420475
+false_neg = 5445
 size = 26
-pos_recall    = 0.0007343491830365339
-pos_precision = 0.07407407407407407
-pos_F1        = 0.0014542810398109434
-neg_recall    = 0.9998811043974728
-neg_precision = 0.9872209048435189
-neg_F1        = 0.9935106743676954
-accuracy      = 16172.73076923077
-balanced_accuracy = 0.5306474894587965
+pos_recall    = 0.00036717459151826694
+pos_precision = 0.03125
+pos_F1        = 0.0007258210851025221
+neg_recall    = 0.9998525694528663
+neg_precision = 0.9872159090909091
+neg_F1        = 0.9934940581742486
+accuracy      = 16172.192307692309
+balanced_accuracy = 0.5092329545454546
 /home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
   if d.decorator_argspec is not None), _inspect.getargspec(target))
-/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
-  if d.decorator_argspec is not None), _inspect.getargspec(target))
-/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
-  if d.decorator_argspec is not None), _inspect.getargspec(target))
-/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
-  if d.decorator_argspec is not None), _inspect.getargspec(target))
-/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
-  if d.decorator_argspec is not None), _inspect.getargspec(target))
-/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
-  if d.decorator_argspec is not None), _inspect.getargspec(target))
-/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
-  if d.decorator_argspec is not None), _inspect.getargspec(target))
-/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
-  if d.decorator_argspec is not None), _inspect.getargspec(target))
-/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
-  if d.decorator_argspec is not None), _inspect.getargspec(target))
-/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
-  if d.decorator_argspec is not None), _inspect.getargspec(target))
-/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
-  if d.decorator_argspec is not None), _inspect.getargspec(target))
-/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
-  if d.decorator_argspec is not None), _inspect.getargspec(target))
-/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
-  if d.decorator_argspec is not None), _inspect.getargspec(target))
-/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
-  if d.decorator_argspec is not None), _inspect.getargspec(target))
-/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
-  if d.decorator_argspec is not None), _inspect.getargspec(target))
-/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
-  if d.decorator_argspec is not None), _inspect.getargspec(target))
-/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
-  if d.decorator_argspec is not None), _inspect.getargspec(target))
-/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
-  if d.decorator_argspec is not None), _inspect.getargspec(target))
-/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
-  if d.decorator_argspec is not None), _inspect.getargspec(target))
-/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
-  if d.decorator_argspec is not None), _inspect.getargspec(target))
-/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
-  if d.decorator_argspec is not None), _inspect.getargspec(target))
-/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
-  if d.decorator_argspec is not None), _inspect.getargspec(target))
-/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
-  if d.decorator_argspec is not None), _inspect.getargspec(target))
-/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
-  if d.decorator_argspec is not None), _inspect.getargspec(target))
-/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
-  if d.decorator_argspec is not None), _inspect.getargspec(target))
-/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
-  if d.decorator_argspec is not None), _inspect.getargspec(target))
-/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
-  if d.decorator_argspec is not None), _inspect.getargspec(target))
-/home/admin-u6142160/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_inspect.py:45: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() or inspect.getfullargspec()
-  if d.decorator_argspec is not None), _inspect.getargspec(target))
-mem usage after prediction maps calculated: 6198.125 MB
+mem usage after prediction maps calculated: 5954.44140625 MB
 

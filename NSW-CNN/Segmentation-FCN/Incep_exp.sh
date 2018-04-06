@@ -6,8 +6,8 @@ batch=1
 
 CONV="3-16;5-8;1-32"
 for NORM in m G; do
-	name=Incep_${CONV}_${NORM}_weight_p0_e${epoch}
-	python FCN-inception.py --conv ${CONV} --norm ${NORM} --save ${save_dir} --gpu 0 --record_summary >./Log/Inception/${name}  2>&1
+	name=Incep_${CONV}_${NORM}_weight_bn_p0_e${epoch}
+	python FCN-inception.py --conv ${CONV} --norm ${NORM} --save ${save_dir} --gpu 0 --use_batch_norm --record_summary >./Log/Inception/${name}  2>&1
 done
 # for RAND in 0 1
 # do
