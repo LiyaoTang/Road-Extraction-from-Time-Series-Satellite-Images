@@ -1,0 +1,36 @@
+Train set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_train
+CV set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_cv
+will be saved as  sk-SGD_G0_001_p16_e15_r1
+will be saved into  ./Result/motor_trunk_pri_sec_tert_uncl_track/sklearn/
+mem usage before data loaded: 85.96875 MB
+
+mu =  [ 144.71187809  191.4973748   363.63933132  368.9204473  2385.57259035
+ 1362.40326606  728.31018062]
+std =  [125.65067662 147.07994057 235.16274288 262.88676276 927.00557037
+ 842.7245097  545.23410243]
+mu =  [ 150.8227309   198.28994142  365.46753706  373.66751856 2370.63525823
+ 1356.64782764  731.00466191]
+std =  [126.38246319 147.99541069 225.10661372 260.4291769  792.72602026
+ 819.12928051 548.31700647]
+train data:
+(7, 7650, 8091) (7650, 8091)
+pos =  304920 neg =  21258076
+cv data:
+(7, 2365, 8091) (2365, 8091)
+pos =  23150 neg =  782418
+mem usage after data loaded: 6133.7265625 MB
+
+SGDClassifier(alpha=0.001, average=False, class_weight=None, epsilon=0.1,
+       eta0=0.0, fit_intercept=True, l1_ratio=0.15,
+       learning_rate='optimal', loss='log', max_iter=1, n_iter=None,
+       n_jobs=1, penalty='l2', power_t=0.5, random_state=None,
+       shuffle=False, tol=None, verbose=0, warm_start=False)
+classes in classifier  [0 1] 1
+mem usage after model created: 6133.7265625 MB
+
+ balanced_acc =  0.5942506022767644 AUC =  0.7502364396570995 avg_precision =  0.09283992966850657
+ balanced_acc =  0.5923332529876218 AUC =  0.7437604836647309 avg_precision =  0.09151267213126665
+ balanced_acc =  0.5909044640906539 AUC =  0.7467439112313328 avg_precision =  0.09082500628523547
+ balanced_acc =  0.5873881030830234 AUC =  0.7420245132319968 avg_precision =  0.08946671237803937
+ balanced_acc =  0.5921622546999687 AUC =  0.7498964300550335 avg_precision =  0.09230964008009675
+ balanced_acc =  0.5881107907569936 AUC =  0.7452233651357814 avg_precision =  0.09015353339440424
