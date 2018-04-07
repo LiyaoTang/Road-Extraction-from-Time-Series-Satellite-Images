@@ -5,7 +5,7 @@ weight=0.3
 pred_dir=./Result/motor_trunk_pri_sec_tert_uncl_track/sklearn/
 save_dir=${pred_dir}Pred_Map
 
-for file in `cd ${pred_dir} && ls *p16*.h5`
+for file in `cd ${pred_dir} && ls *0_001*p16*.h5`
 do
 	echo ${pred_dir}${file} # test
 

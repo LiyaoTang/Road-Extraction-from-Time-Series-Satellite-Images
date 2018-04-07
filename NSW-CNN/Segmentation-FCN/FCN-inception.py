@@ -261,6 +261,8 @@ if record_summary:
                 tf.summary.histogram(tensor_name, cur_tensor)
                 tf.summary.histogram('grad_'+tensor_name, tf.gradients(cross_entropy, [cur_tensor])[0])
         
+        tf.summary.image('input', tf.reverse(x[:,:,:,1:4], axis=-1))
+        tf.summary.image('label', tf.expand_dims(y[:,:,:,1], axis=-1))
         tf.summary.image('prob_out_pos', tf.expand_dims(prob_out[:,:,:,1], axis=-1))
         tf.summary.image('prob_out_neg', tf.expand_dims(prob_out[:,:,:,0], axis=-1))
         tf.summary.image('logits_pos', tf.expand_dims(logits[:,:,:,1], axis=-1))
