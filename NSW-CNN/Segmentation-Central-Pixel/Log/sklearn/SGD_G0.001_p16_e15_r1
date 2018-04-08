@@ -2,7 +2,7 @@ Train set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posne
 CV set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_cv
 will be saved as  sk-SGD_G0_001_p16_e15_r1
 will be saved into  ./Result/motor_trunk_pri_sec_tert_uncl_track/sklearn/
-mem usage before data loaded: 85.96875 MB
+mem usage before data loaded: 83.95703125 MB
 
 mu =  [ 144.71187809  191.4973748   363.63933132  368.9204473  2385.57259035
  1362.40326606  728.31018062]
@@ -18,7 +18,7 @@ pos =  304920 neg =  21258076
 cv data:
 (7, 2365, 8091) (2365, 8091)
 pos =  23150 neg =  782418
-mem usage after data loaded: 6133.7265625 MB
+mem usage after data loaded: 6131.73046875 MB
 
 SGDClassifier(alpha=0.001, average=False, class_weight=None, epsilon=0.1,
        eta0=0.0, fit_intercept=True, l1_ratio=0.15,
@@ -26,7 +26,7 @@ SGDClassifier(alpha=0.001, average=False, class_weight=None, epsilon=0.1,
        n_jobs=1, penalty='l2', power_t=0.5, random_state=None,
        shuffle=False, tol=None, verbose=0, warm_start=False)
 classes in classifier  [0 1] 1
-mem usage after model created: 6133.7265625 MB
+mem usage after model created: 6131.73046875 MB
 
  balanced_acc =  0.5942506022767644 AUC =  0.7502364396570995 avg_precision =  0.09283992966850657
  balanced_acc =  0.5923332529876218 AUC =  0.7437604836647309 avg_precision =  0.09151267213126665
@@ -34,3 +34,50 @@ mem usage after model created: 6133.7265625 MB
  balanced_acc =  0.5873881030830234 AUC =  0.7420245132319968 avg_precision =  0.08946671237803937
  balanced_acc =  0.5921622546999687 AUC =  0.7498964300550335 avg_precision =  0.09230964008009675
  balanced_acc =  0.5881107907569936 AUC =  0.7452233651357814 avg_precision =  0.09015353339440424
+ balanced_acc =  0.5901439578951151 AUC =  0.7495347944106835 avg_precision =  0.09170164056321092
+ balanced_acc =  0.590269562484448 AUC =  0.7460864797556991 avg_precision =  0.09062165298861788
+ balanced_acc =  0.5907106037960066 AUC =  0.7482102313420411 avg_precision =  0.09163689380380165
+ balanced_acc =  0.5883444225928917 AUC =  0.7459080156603966 avg_precision =  0.0906579903212442
+ balanced_acc =  0.5899808794542313 AUC =  0.7458871407370606 avg_precision =  0.09093939240145953
+ balanced_acc =  0.5903512309492454 AUC =  0.7477753310420809 avg_precision =  0.0913006868238213
+ balanced_acc =  0.5902443956105791 AUC =  0.7469098709766463 avg_precision =  0.09117539174767497
+ balanced_acc =  0.5921930580852567 AUC =  0.7495962065141948 avg_precision =  0.09213465127869919
+ balanced_acc =  0.5905807628516411 AUC =  0.7475940492431594 avg_precision =  0.09135616402782981
+finish
+mem usage after model trained: 4714.859375 MB
+
+coefficient info:
+shape =  (1, 448)
+1.87077229620205 -0.9811181553999624 6.700191484428806e-05 0.01995965606441392
+On train set
+true_pos  = 63192
+false_pos = 562824
+true_neg  = 20695252
+false_neg = 241728
+size = 21562996
+pos_recall    = 0.20724124360487997
+pos_precision = 0.10094310688544701
+pos_F1        = 0.13576013818350563
+neg_recall    = 0.9735242267456378
+neg_precision = 0.9884544953474665
+neg_F1        = 0.9809325528564296
+accuracy      = 0.9626883017554704
+balanced_accuracy = 0.5446988011164567
+On CV set
+true_pos  = 5058
+false_pos = 29205
+true_neg  = 753213
+false_neg = 18092
+size = 805568
+pos_recall    = 0.21848812095032397
+pos_precision = 0.14762280010506962
+pos_F1        = 0.17619702854754152
+neg_recall    = 0.9626734047529582
+neg_precision = 0.9765436500476465
+neg_F1        = 0.9695589239523391
+accuracy      = 0.9412873897672202
+balanced_accuracy = 0.5620832250763581
+/localdata/u6142160/anaconda3/lib/python3.6/site-packages/h5py/__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+mem usage after prediction maps calculated: 7938.86328125 MB
+
