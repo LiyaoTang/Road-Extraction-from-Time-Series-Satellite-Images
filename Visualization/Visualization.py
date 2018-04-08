@@ -139,3 +139,9 @@ def show_pred_prob_with_raw(image, road_prob, true_road=None, light=3.0, pred_we
         plt.show()
         plt.clf()
     plt.close()
+
+def show_log_pred_with_raw(raw_imgae, pred, road_mask=None, light=3.0, pred_weight=0.3, figsize=(20,20), show_plot=True, save_path=None):
+    log_pred = -np.log(-pred + 1 + 1e-9)
+    norm_log_pred = (log_pred - log_pred.min()) / (log_pred.max()-log_pred.min())
+    show_pred_prob_with_raw(raw_imgae, norm_log_pred, road_mask, light=light, pred_weight=pred_weight, 
+                            figsize=figsize, show_plot=show_plot, save_path=save_path)
