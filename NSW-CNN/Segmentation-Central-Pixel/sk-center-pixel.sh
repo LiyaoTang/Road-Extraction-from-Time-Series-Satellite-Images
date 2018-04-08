@@ -39,7 +39,7 @@ for RAND in 0 1; do
                 python Logistic-Reg.py --rand ${RAND} --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir > ./Log/sklearn/${name} 2>&1 &                
                 sleep 10m
 
-                # echo $name
+                echo $name
 
                 if [ $(($job_cnt%6)) -eq 0 ]; then
                     wait
@@ -48,9 +48,6 @@ for RAND in 0 1; do
         done
     done
 done
-wait
-
-echo finish norm param grid search
 
 for RAND in 0 1; do
     for NORM in m G; do
@@ -63,7 +60,7 @@ for RAND in 0 1; do
                 python Logistic-Reg.py --rand ${RAND} --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir > ./Log/sklearn/${name} 2>&1 &                
                 sleep 10m
 
-                # echo $name
+                echo $name
 
                 if [ $(($job_cnt%6)) -eq 0 ]; then
                     wait
@@ -72,9 +69,7 @@ for RAND in 0 1; do
         done
     done
 done
-wait
 
-echo finishing pos increasing search
 # random searching
 
 # for i in `seq 0 1 9`
