@@ -41,7 +41,7 @@ for RAND in 0 1; do
 
                 # echo $name
 
-                if [ $job_cnt%6 == 0 ]; then
+                if [ $(($job_cnt%6)) -eq 0 ]; then
                     wait
                 fi
             done
@@ -65,7 +65,7 @@ for RAND in 0 1; do
 
                 # echo $name
 
-                if [ $job_cnt%6 == 0 ]; then
+                if [ $(($job_cnt%6)) -eq 0 ]; then
                     wait
                 fi
             done
