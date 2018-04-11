@@ -28,47 +28,62 @@ job_cnt=0
 # done
 # wait
 
-for RAND in 0 1; do
-    for NORM in m G; do
-        for NORM_PARM in 0.01 0.1 1 10; do
-            for POS in 8; do # tested: 0 8
+# for RAND in 0 1; do
+#     for NORM in m G; do
+#         for NORM_PARM in 0.01 0.1 1 10; do
+#             for POS in 8; do # tested: 0 8
                 
-                job_cnt=$((job_cnt+1))
+#                 job_cnt=$((job_cnt+1))
 
-                name=SGD_weight_${NORM}${NORM_PARM}_p${POS}_e15_r${RAND}
-                python Logistic-Reg.py --rand ${RAND} --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir > ./Log/sklearn/${name} 2>&1 &                
-                sleep 10m
+#                 name=SGD_weight_${NORM}${NORM_PARM}_p${POS}_e15_r${RAND}
+#                 python Logistic-Reg.py --rand ${RAND} --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir > ./Log/sklearn/${name} 2>&1 &                
+#                 sleep 10m
 
-                echo $name
+#                 echo $name
 
-                if [ $(($job_cnt%6)) -eq 0 ]; then
-                    wait
-                fi
-            done
-        done
-    done
+#                 if [ $(($job_cnt%6)) -eq 0 ]; then
+#                     wait
+#                 fi
+#             done
+#         done
+#     done
+# done
+
+# for RAND in 0 1; do
+#     for NORM in m G; do
+#         for NORM_PARM in 0.001; do
+#             for POS in 2 4 6; do # tested: 0 8
+                
+#                 job_cnt=$((job_cnt+1))
+
+#                 name=SGD_weight_${NORM}${NORM_PARM}_p${POS}_e15_r${RAND}
+#                 python Logistic-Reg.py --rand ${RAND} --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir > ./Log/sklearn/${name} 2>&1 &                
+#                 sleep 10m
+
+#                 echo $name
+
+#                 if [ $(($job_cnt%6)) -eq 0 ]; then
+#                     wait
+#                 fi
+#             done
+#         done
+#     done
+# done
+
+RAND=1
+NORM_PARM=0.001
+
+NORM=G
+for POS in 2 4 6; do
+    name=SGD_weight_${NORM}${NORM_PARM}_p${POS}_e15_r${RAND}
+    python Logistic-Reg.py --rand ${RAND} --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir > ./Log/sklearn/${name} 2>&1 &                
 done
 
-for RAND in 0 1; do
-    for NORM in m G; do
-        for NORM_PARM in 0.001; do
-            for POS in 2 4 6; do # tested: 0 8
-                
-                job_cnt=$((job_cnt+1))
+NORM=m
+POS=6
+name=SGD_weight_${NORM}${NORM_PARM}_p${POS}_e15_r${RAND}
+python Logistic-Reg.py --rand ${RAND} --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir > ./Log/sklearn/${name} 2>&1 &                
 
-                name=SGD_weight_${NORM}${NORM_PARM}_p${POS}_e15_r${RAND}
-                python Logistic-Reg.py --rand ${RAND} --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir > ./Log/sklearn/${name} 2>&1 &                
-                sleep 10m
-
-                echo $name
-
-                if [ $(($job_cnt%6)) -eq 0 ]; then
-                    wait
-                fi
-            done
-        done
-    done
-done
 
 # random searching
 
