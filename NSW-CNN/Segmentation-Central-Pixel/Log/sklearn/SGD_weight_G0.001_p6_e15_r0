@@ -1,0 +1,84 @@
+Train set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_train
+CV set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_cv
+will be saved as  sk-SGD_weight_G0_001_p6_e15_r0
+will be saved into  ./Result/motor_trunk_pri_sec_tert_uncl_track/sklearn/
+mem usage before data loaded: 85.96875 MB
+
+mu =  [ 144.71187809  191.4973748   363.63933132  368.9204473  2385.57259035
+ 1362.40326606  728.31018062]
+std =  [125.65067662 147.07994057 235.16274288 262.88676276 927.00557037
+ 842.7245097  545.23410243]
+mu =  [ 150.8227309   198.28994142  365.46753706  373.66751856 2370.63525823
+ 1356.64782764  731.00466191]
+std =  [126.38246319 147.99541069 225.10661372 260.4291769  792.72602026
+ 819.12928051 548.31700647]
+train data:
+(7, 7650, 8091) (7650, 8091)
+pos =  304920 neg =  21258076
+cv data:
+(7, 2365, 8091) (2365, 8091)
+pos =  23150 neg =  782418
+mem usage after data loaded: 6133.73046875 MB
+
+SGDClassifier(alpha=0.001, average=False,
+       class_weight={0: 0.014140892109797729, 1: 0.9858591078902023},
+       epsilon=0.1, eta0=0.0, fit_intercept=True, l1_ratio=0.15,
+       learning_rate='optimal', loss='log', max_iter=1, n_iter=None,
+       n_jobs=1, penalty='l2', power_t=0.5, random_state=None,
+       shuffle=False, tol=None, verbose=0, warm_start=False)
+classes in classifier  [0 1] 1
+mem usage after model created: 6133.73046875 MB
+
+ balanced_acc =  0.5067262101099043 AUC =  0.7301818749096055 avg_precision =  0.07324246058368136
+ balanced_acc =  0.5065683660930232 AUC =  0.7310712299983249 avg_precision =  0.07333772476146859
+ balanced_acc =  0.5058697610978542 AUC =  0.7337536264262958 avg_precision =  0.07442364102019876
+ balanced_acc =  0.5059184577320193 AUC =  0.7331648221575862 avg_precision =  0.07411649253212152
+ balanced_acc =  0.5065728394052426 AUC =  0.7283409895845556 avg_precision =  0.07262560394836513
+ balanced_acc =  0.5061809758193969 AUC =  0.7310267718171359 avg_precision =  0.07353764653461353
+ balanced_acc =  0.5059279141567051 AUC =  0.7327832696875275 avg_precision =  0.07412674272874702
+ balanced_acc =  0.5059833817927895 AUC =  0.7313631237652947 avg_precision =  0.07373512734608931
+ balanced_acc =  0.5059488733842407 AUC =  0.7332898358998055 avg_precision =  0.07421453958669143
+ balanced_acc =  0.5060724674812838 AUC =  0.731346686323513 avg_precision =  0.07363565621309716
+ balanced_acc =  0.5059546247856654 AUC =  0.7324458219504032 avg_precision =  0.07404082883270241
+ balanced_acc =  0.5064910416960896 AUC =  0.7304077838845782 avg_precision =  0.07326650680753322
+ balanced_acc =  0.50607042110312 AUC =  0.7316081599663296 avg_precision =  0.07376597022732703
+ balanced_acc =  0.5061356036526011 AUC =  0.7309021548622652 avg_precision =  0.07353809887305444
+ balanced_acc =  0.5062315895873702 AUC =  0.7316949190907975 avg_precision =  0.07366004095221307
+finish
+mem usage after model trained: 6277.96875 MB
+
+coefficient info:
+shape =  (1, 448)
+0.5846734077521559 -0.39378526935847913 -0.00010320966347410075 0.002950468722621933
+On train set
+true_pos  = 304629
+false_pos = 21021092
+true_neg  = 236984
+false_neg = 291
+size = 21562996
+pos_recall    = 0.9990456513183786
+pos_precision = 0.014284581515438564
+pos_F1        = 0.02816643297810731
+neg_recall    = 0.011147951489118771
+neg_precision = 0.998773574965757
+neg_F1        = 0.02204979113855829
+accuracy      = 0.025117706277921675
+balanced_accuracy = 0.5065290782405978
+On CV set
+true_pos  = 23143
+false_pos = 772430
+true_neg  = 9988
+false_neg = 7
+size = 805568
+pos_recall    = 0.9996976241900648
+pos_precision = 0.029089725267197355
+pos_F1        = 0.056534383423941924
+neg_recall    = 0.012765554984675711
+neg_precision = 0.9992996498249125
+neg_F1        = 0.025209076580015723
+accuracy      = 0.04112750258202908
+balanced_accuracy = 0.5141946875460549
+/localdata/u6142160/anaconda3/lib/python3.6/site-packages/h5py/__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+mem usage after prediction maps calculated: 9209.1171875 MB
+
