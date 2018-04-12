@@ -40,3 +40,43 @@ mem usage after model created: 6131.72265625 MB
  balanced_acc =  0.5033732292053354 AUC =  0.5065985252164543 avg_precision =  0.029111799224126305
  balanced_acc =  0.5020222314977085 AUC =  0.5049895819443085 avg_precision =  0.029019351549995014
  balanced_acc =  0.5006058358149381 AUC =  0.5016252044314725 avg_precision =  0.028828568022256865
+finish
+mem usage after model trained: 6276.1484375 MB
+
+coefficient info:
+shape =  (1, 448)
+0.673726075932317 -0.37303759578130585 0.0006598649373782708 0.005064947107057349
+On train set
+true_pos  = 304795
+false_pos = 21199020
+true_neg  = 59056
+false_neg = 125
+size = 21562996
+pos_recall    = 0.9995900564082383
+pos_precision = 0.014173996567585799
+pos_F1        = 0.027951644146256078
+neg_recall    = 0.0027780500925859894
+neg_precision = 0.9978878356229195
+neg_F1        = 0.005540675331727717
+accuracy      = 0.01687386112764664
+balanced_accuracy = 0.5060309160952526
+On CV set
+true_pos  = 23135
+false_pos = 780963
+true_neg  = 1455
+false_neg = 15
+size = 805568
+pos_recall    = 0.9993520518358532
+pos_precision = 0.028771368664018564
+pos_F1        = 0.055932441057578865
+neg_recall    = 0.0018596197940231435
+neg_precision = 0.9897959183673469
+neg_F1        = 0.0037122650174514727
+accuracy      = 0.03052504568205291
+balanced_accuracy = 0.5092836435156828
+/localdata/u6142160/anaconda3/lib/python3.6/site-packages/h5py/__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+/localdata/u6142160/anaconda3/lib/python3.6/site-packages/sklearn/linear_model/base.py:340: RuntimeWarning: overflow encountered in exp
+  np.exp(prob, prob)
+mem usage after prediction maps calculated: 9239.94921875 MB
+

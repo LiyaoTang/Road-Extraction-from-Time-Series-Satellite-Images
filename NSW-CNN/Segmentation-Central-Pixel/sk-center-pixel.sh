@@ -84,7 +84,6 @@ POS=6
 name=SGD_weight_${NORM}${NORM_PARM}_p${POS}_e15_r${RAND}
 python Logistic-Reg.py --rand ${RAND} --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir > ./Log/sklearn/${name} 2>&1 &                
 
-
 # random searching
 
 # for i in `seq 0 1 9`
