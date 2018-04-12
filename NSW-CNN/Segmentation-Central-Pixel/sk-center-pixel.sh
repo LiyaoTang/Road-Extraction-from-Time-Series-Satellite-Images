@@ -3,7 +3,6 @@
 save_dir=./Result/motor_trunk_pri_sec_tert_uncl_track/sklearn/
 job_cnt=0
 
-# Done
 # for RAND in 0 1; do
 #     for NORM in m G; do
 #         for NORM_PARM in 0.001; do
@@ -26,7 +25,9 @@ job_cnt=0
 #         done
 #     done
 # done
-# wait
+
+# result:
+# need smaller pos (0-8) , larger norm_param
 
 # for RAND in 0 1; do
 #     for NORM in m G; do
@@ -49,6 +50,11 @@ job_cnt=0
 #     done
 # done
 
+# result:
+# largfer norm_param does help with restricting it from predicting all 1 (roads) 
+#   => norm = G: reduced in a global sense => reduce the pred_prob overall
+#   => norm = m: better result => does filtering out montain area
+
 # for RAND in 0 1; do
 #     for NORM in m G; do
 #         for NORM_PARM in 0.001; do
@@ -70,19 +76,29 @@ job_cnt=0
 #     done
 # done
 
-RAND=1
-NORM_PARM=0.001
+# result:
+# 2,4,6 not good under a small norm_param => even pos=2 causes most pred to be 1 (for both norm=G, m)                
 
-NORM=G
-for POS in 2 4 6; do
-    name=SGD_weight_${NORM}${NORM_PARM}_p${POS}_e15_r${RAND}
-    python Logistic-Reg.py --rand ${RAND} --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir > ./Log/sklearn/${name} 2>&1 &                
+for RAND in 0 1; do
+    for NORM in m; do
+        for NORM_PARM in 0.01 0.1 0.5 1 5 10; do
+            for POS in 0 1; do
+                
+                job_cnt=$((job_cnt+1))
+
+                name=SGD_weight_${NORM}${NORM_PARM}_p${POS}_e15_r${RAND}
+                python Logistic-Reg.py --rand ${RAND} --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir > ./Log/sklearn/${name} 2>&1 &                
+                sleep 10m
+
+                echo $name
+
+                if [ $(($job_cnt%6)) -eq 0 ]; then
+                    wait
+                fi
+            done
+        done
+    done
 done
-
-NORM=m
-POS=6
-name=SGD_weight_${NORM}${NORM_PARM}_p${POS}_e15_r${RAND}
-python Logistic-Reg.py --rand ${RAND} --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir > ./Log/sklearn/${name} 2>&1 &                
 
 # random searching
 

@@ -195,9 +195,45 @@ class FCN_Data_Extractor (Data_Extractor):
     def __init__(self, raw_image, road_mask, img_size, pos_topleft_coord, neg_topleft_coord, normalization='mean', encoding='one-hot'):
 
         super(FCN_Data_Extractor, self).__init__(raw_image, road_mask, img_size, pos_topleft_coord, neg_topleft_coord, normalization, encoding)
-        self.neg_weight = self.pos_size / self.size
-        self.pos_weight = self.neg_size / self.size
-        
+
+    def _cal_norm_param(self):
+        mu = 0
+        img_size = self.img_size
+
+        pos_cnt = 0
+        neg_cnt = 0
+
+        # Careful! norm params & weight not yet calculated
+        for patch, rd_map, _ in self.iterate_data(norm=False, weighted=False):
+            mu += patch[0]
+
+            if self.encoding == 'one-hot':
+                pos_cnt += rd_map[:,:,:,1].sum()
+                neg_cnt += rd_map[:,:,:,0].sum()
+            else:
+                pos_cnt += rd_map.sum()
+                neg_cnt += -(rd_map-1).sum()
+
+        mu = (mu / self.size).mean(axis=(1,2))
+        self.mu = mu
+        self.neg_weight = pos_cnt / (pos_cnt+neg_cnt)
+        self.pos_weight = neg_cnt / (pos_cnt+neg_cnt)
+
+        assert (pos_cnt+neg_cnt) == (self.size * rd_map.shape[1] * rd_map.shape[2])
+
+        print("mu = ", mu)
+        print("class weight [neg= %f, pos= %f]"%(self.neg_weight, self.pos_weight))
+
+        if self.normalization == 'Gaussian':
+            std = 0
+            mu_ext = np.repeat(mu, [np.prod(patch[0][0].shape)]*patch[0].shape[0]).reshape(patch[0].shape)
+            
+            for patch in self.iterate_raw_image_patches(norm = False):
+                std += ((patch[0]-mu_ext)**2).mean(axis=(-1,-2))
+            std = np.sqrt(std / self.size)
+            self.std = std
+            print('std = ', std)
+
     def _get_patch_label(self, coord):
         label = self.road_mask[coord[0]:coord[0]+self.img_size, coord[1]:coord[1]+self.img_size].copy()
         if self.encoding == 'one-hot':
@@ -241,32 +277,36 @@ class FCN_Data_Extractor (Data_Extractor):
 
         X = np.array(X)
         Y = np.array(Y)
+        W = Y.copy()
     
         if weighted:
-            Y[:,:,:,0] *= self.neg_weight
-            Y[:,:,:,1] *= self.pos_weight
+            W[:,:,:,0] *= self.neg_weight
+            W[:,:,:,1] *= self.pos_weight
             
-        return X, Y
+        return X, Y, W.sum(axis=-1)
 
 
     def iterate_data (self, norm=True, weighted=True):
         for coord in self.topleft_coordinate:
             x = np.array([self._get_raw_patch(coord, norm)])
             y = np.array([self._get_patch_label(coord)])
+            weight = y.copy()
 
             if weighted:
-                y[:,:,:,0] *= self.neg_weight
-                y[:,:,:,1] *= self.pos_weight
+                weight[:,:,:,0] *= self.neg_weight
+                weight[:,:,:,1] *= self.pos_weight
 
-            yield x, y
+            yield x, y, weight.sum(axis=-1)
 
 
     def iterate_data_with_coord (self, norm=True, weighted=True):
         for coord in self.topleft_coordinate:
             x = np.array([self._get_raw_patch(coord, norm)])
             y = np.array([self._get_patch_label(coord)])
+            weight = y.copy()
+
             if weighted and self.encoding == 'one-hot':
-                y[:,:,:,0] *= self.neg_weight
-                y[:,:,:,1] *= self.pos_weight
+                weight[:,:,:,0] *= self.neg_weight
+                weight[:,:,:,1] *= self.pos_weight
             
-            yield coord, x, y
+            yield coord, x, y, weight.sum(axis=-1)

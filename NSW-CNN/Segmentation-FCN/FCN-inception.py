@@ -87,6 +87,8 @@ else:
     print("norm = ", norm, " not in ('mean', 'Gaussian')")
     sys.exit()
 
+if conv_struct == '0': assert not use_batch_norm
+
 if not model_name:
     model_name = "Incep_"
     model_name += conv_struct + "_"
@@ -196,9 +198,9 @@ iteration = int(Train_Data.size/batch_size) + 1
 
 tf.reset_default_graph()
 with tf.variable_scope('input'):
-    x = tf.placeholder(tf.float32, shape=[None, size, size, band], name='x')
-    y = tf.placeholder(tf.float32, shape=[None, size, size, class_output], name='y')
-
+    x           = tf.placeholder(tf.float32, shape=[None, size, size, band], name='x')
+    y           = tf.placeholder(tf.float32, shape=[None, size, size, class_output], name='y')
+    weight      = tf.placeholder(tf.float32, shape=[None, size, size], name='weight')
     is_training = tf.placeholder(tf.bool, name='is_training') # batch norm
 
 if use_batch_norm:
@@ -231,36 +233,49 @@ with tf.variable_scope('prob_out'):
     prob_out = tf.nn.softmax(logits, name='prob_out')
     
 with tf.variable_scope('cross_entropy'):
-    flat_logits = tf.reshape(logits, (-1, class_output), name='flat_logits')
-    flat_softmax = tf.nn.softmax(flat_logits, name='flat_softmax') + tf.constant(value=1e-9) # numerical stableness => avoid log(0.0) = -inf
-    
+    flat_logits = tf.reshape(logits, (-1, class_output), name='flat_logits')    
     flat_labels = tf.to_float(tf.reshape(y, (-1, class_output)), name='flat_labels')
+    flat_weight = tf.reshape(weight, [-1], name='flat_weight')
 
-    cross_entropy = -tf.reduce_sum(flat_labels * tf.log(flat_softmax), reduction_indices=[1])
-    cross_entropy = tf.reduce_mean(cross_entropy, name='mean_cross_entropy')
+    cross_entropy = tf.losses.softmax_cross_entropy(flat_labels, flat_logits, weights=flat_weight)
 
 # Ensures that we execute the update_ops before performing the train_step
 update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
 with tf.control_dependencies(update_ops):
     train_step = tf.train.AdamOptimizer(learning_rate).minimize(cross_entropy)
     
-if record_summary:
-    conv_scopes = ['logits']
-    if conv_struct != [[[0]]]:
-        for layer_cfg in conv_struct:
-            for cfg in layer_cfg:
-                conv_scopes.append('inception/' + str(cfg[0])+'-'+str(cfg[1]))
-            
+if record_summary:            
     with tf.variable_scope('summary'):
         graph = tf.get_default_graph()
+
+        # conv layers params
+        conv_scopes = []
+        if conv_struct != [[[0]]]:
+            for layer_cfg in conv_struct:
+                for cfg in layer_cfg:
+                    conv_scopes.append('inception/' + str(cfg[0])+'-'+str(cfg[1]))
         for scope_name in conv_scopes:
-            for tensor_name in ['/weights:0', '/biases:0']:
+            target_tensors = ['/weights:0']
+            if use_batch_norm: target_tensors.extend(['/BatchNorm/gamma:0', '/BatchNorm/beta:0'])
+            else: target_tensors.append('/biases:0')
+            for tensor_name in target_tensors:
                 tensor_name = scope_name + tensor_name
                 cur_tensor = graph.get_tensor_by_name(tensor_name)
                 tensor_name = tensor_name.split(':')[0]
                 tf.summary.histogram(tensor_name, cur_tensor)
                 tf.summary.histogram('grad_'+tensor_name, tf.gradients(cross_entropy, [cur_tensor])[0])
-        
+
+        # logits layer params
+        scope_name = 'logits'
+        target_tensors = ['/weights:0', '/biases:0']
+        for tensor_name in target_tensors:
+            tensor_name = scope_name + tensor_name
+            cur_tensor = graph.get_tensor_by_name(tensor_name)
+            tensor_name = tensor_name.split(':')[0]
+            tf.summary.histogram(tensor_name, cur_tensor)
+            tf.summary.histogram('grad_'+tensor_name, tf.gradients(cross_entropy, [cur_tensor])[0])
+
+        # output layer
         tf.summary.image('input', tf.reverse(x[:,:,:,1:4], axis=[-1])) # axis must be of rank 1
         tf.summary.image('label', tf.expand_dims(y[:,:,:,1], axis=-1))
         tf.summary.image('prob_out_pos', tf.expand_dims(prob_out[:,:,:,1], axis=-1))
@@ -297,16 +312,15 @@ if record_summary: train_writer = tf.summary.FileWriter('./Summary/Inception/' +
 for epoch_num in range(epoch):
     for iter_num in range(iteration):
 
-        batch_x, batch_y = Train_Data.get_patches(batch_size=batch_size, positive_num=pos_num, norm=True, weighted=use_weight)
+        batch_x, batch_y, batch_w = Train_Data.get_patches(batch_size=batch_size, positive_num=pos_num, norm=True, weighted=use_weight)
         batch_x = batch_x.transpose((0, 2, 3, 1))
-
-        train_step.run(feed_dict={x: batch_x, y: batch_y, is_training: True})
+        train_step.run(feed_dict={x: batch_x, y: batch_y, weight: batch_w, is_training: True})
 
     if record_summary:
         # tensor board
         run_options = tf.RunOptions(trace_level=tf.RunOptions.FULL_TRACE)
         run_metadata = tf.RunMetadata()
-        summary = sess.run(merged_summary, feed_dict={x: batch_x, y: batch_y, is_training: False}, options=run_options, run_metadata=run_metadata)
+        summary = sess.run(merged_summary, feed_dict={x: batch_x, y: batch_y, weight: batch_w, is_training: False}, options=run_options, run_metadata=run_metadata)
 
         train_writer.add_run_metadata(run_metadata, 'epoch_%03d' % (epoch_num+1))
         train_writer.add_summary(summary, epoch_num+1)
@@ -314,10 +328,10 @@ for epoch_num in range(epoch):
     # snap shot on CV set
     cv_metric = Metric_Record()
     cv_cross_entropy_list = []
-    for batch_x, batch_y in CV_Data.iterate_data(norm=True, weighted=use_weight):
+    for batch_x, batch_y, batch_w in CV_Data.iterate_data(norm=True, weighted=use_weight):
         batch_x = batch_x.transpose((0, 2, 3, 1))
 
-        [pred_prob, cross_entropy_cost] = sess.run([prob_out, cross_entropy], feed_dict={x: batch_x, y: batch_y, is_training: False})
+        [pred_prob, cross_entropy_cost] = sess.run([prob_out, cross_entropy], feed_dict={x: batch_x, y: batch_y, weight: batch_w, is_training: False})
 
         cv_metric.accumulate(Y         = np.array(batch_y.reshape(-1,class_output)[:,1]>0.5, dtype=int), 
                              pred      = np.array(pred_prob.reshape(-1,class_output)[:,1]>0.5, dtype=int), 
@@ -376,10 +390,10 @@ gc.collect()
 print("On training set: ")
 train_metric = Metric_Record()
 train_cross_entropy_list = []
-for batch_x, batch_y in CV_Data.iterate_data(norm=True, weighted=use_weight):
+for batch_x, batch_y, batch_w in CV_Data.iterate_data(norm=True, weighted=use_weight):
     batch_x = batch_x.transpose((0, 2, 3, 1))
 
-    [pred_prob, cross_entropy_cost] = sess.run([prob_out, cross_entropy], feed_dict={x: batch_x, y: batch_y, is_training: False})
+    [pred_prob, cross_entropy_cost] = sess.run([prob_out, cross_entropy], feed_dict={x: batch_x, y: batch_y, weight: batch_w, is_training: False})
 
     train_metric.accumulate(Y         = np.array(batch_y.reshape(-1,class_output)[:,1]>0.5, dtype=int),
                             pred      = np.array(pred_prob.reshape(-1,class_output)[:,1]>0.5, dtype=int), 

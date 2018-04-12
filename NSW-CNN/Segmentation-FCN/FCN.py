@@ -23,13 +23,14 @@ sys.path.append('../../Data_Preprocessing/')
 from Metric import *
 from Visualization import *
 from Data_Extractor import *
+from Bilinear_Kernel import *
 
 parser = OptionParser()
 parser.add_option("--save", dest="save_path")
 parser.add_option("--name", dest="model_name")
 
-parser.add_option("--train", dest="path_train_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_128_train")
-parser.add_option("--cv", dest="path_cv_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_128_cv")
+parser.add_option("--train", dest="path_train_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_128_18_train")
+parser.add_option("--cv", dest="path_cv_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_128_18_cv")
 
 parser.add_option("--norm", default="mean", dest="norm")
 parser.add_option("--pos", type="int", default=0, dest="pos_num")
@@ -40,10 +41,9 @@ parser.add_option("--batch", type="int", default=2, dest="batch_size")
 parser.add_option("--rand", type="int", default=0, dest="rand_seed")
 
 parser.add_option("--conv", dest="conv_struct")
-parser.add_option("--fuse_input", dest="fuse_input")
+parser.add_option("--concat_input", dest="concat_input")
 parser.add_option("--not_weight", action="store_false", default=True, dest="use_weight")
 parser.add_option("--use_batch_norm", action="store_true", default=False, dest="use_batch_norm")
-parser.add_option("--use_conv1d", action="store_true", default=False, dest="use_conv1d")
 
 parser.add_option("--gpu", dest="gpu")
 parser.add_option("--gpu_max_mem", type="float", default=0.8, dest="gpu_max_mem")
@@ -67,8 +67,7 @@ conv_struct = options.conv_struct
 
 use_weight = options.use_weight
 use_batch_norm = options.use_batch_norm
-use_conv1d = options.use_conv1d
-fuse_input = options.fuse_input
+concat_input = options.concat_input
 
 gpu = options.gpu
 gpu_max_mem = options.gpu_max_mem
@@ -86,11 +85,11 @@ else:
 
 if not model_name:
     model_name = "Unet_"
+    model_name += conv_struct + "_"
     model_name += norm[0] + "_"
     if use_weight: model_name += "weight_"
     if use_batch_norm: model_name += "bn_"
-    if use_conv1d: model_name += "conv1D_"
-    if fuse_input: model_name += "fuseI" + fuse_input + "_"
+    if concat_input: model_name += "concatI" + concat_input + "_"
     model_name += "p" + str(pos_num) + "_"
     model_name += "e" + str(epoch) + "_"
     model_name += "r" + str(rand_seed)
@@ -115,13 +114,13 @@ if not conv_struct:
     sys.exit()
 else:
     conv_struct = [int(x) for x in conv_struct.split('-')]
-    assert len(conv_struct) == 3
+    assert len(conv_struct) == 4
 
-# parse fuse input options: e.g. 3-16;5-8;1-32 
+# parse concat_input options (if not None): e.g. 3-16;5-8;1-32 
 # => concat[ 3x3 out_channel=16, 5x5 out_channel=8, 1x1 out_channel=32] followed by 1x1 conv out_channel = classoutput
-# fuse_input = 1 => use only one 1x1 conv out_channel = classoutput
-if fuse_input:
-    fuse_input = [[int(x) for x in config.split('-')] for config in fuse_input.split(';')]
+# concat_input = 0 => concat the raw input before the calculation of logits
+if concat_input:
+    concat_input = [[int(x) for x in config.split('-')] for config in concat_input.split(';')]
 
 # monitor mem usage
 process = psutil.Process(os.getpid())
@@ -165,12 +164,8 @@ CV_Data = FCN_Data_Extractor (CV_raw_image, CV_road_mask, size,
 # run garbage collector
 gc.collect()
 
-print("train data:")
-print(train_raw_image.shape, train_road_mask.shape)
-print("pos = ", Train_Data.pos_size, "neg = ", Train_Data.neg_size)
-print("cv data:")
-print(CV_raw_image.shape, CV_road_mask.shape)
-print("pos = ", CV_Data.pos_size, "neg = ", CV_Data.neg_size)
+print("train data:", train_raw_image.shape, train_road_mask.shape)
+print("cv data:", CV_raw_image.shape, CV_road_mask.shape)
 
 # monitor mem usage
 process = psutil.Process(os.getpid())
@@ -197,16 +192,19 @@ tf.reset_default_graph()
 with tf.variable_scope('input'):
     x = tf.placeholder(tf.float32, shape=[None, size, size, band], name='x')
     y = tf.placeholder(tf.float32, shape=[None, size, size, class_output], name='y')
-
+    weight      = tf.placeholder(tf.float32, shape=[None, size, size], name='weight')
     is_training = tf.placeholder(tf.bool, name='is_training') # batch norm
 
+with tf.variable_scope('input_bridge'):
+    if concat_input:
+        if concat_input == [[[0]]]:
+            input_map = x
+        else:
+            input_map = tf.concat([tf.contrib.layers.conv2d(inputs=x, num_outputs=cfg[1], kernel_size=cfg[0], 
+                                                            stride=1, padding='SAME', scope=str(cfg[0])+'-'+str(cfg[1])) 
+                                   for cfg in concat_input], 
+                                  axis=-1)
 
-if fuse_input:
-    with tf.variable_scope('fuse_input/inception'):
-        if fuse_input != 1:
-            input_fuse_map = tf.concat([tf.contrib.layers.conv2d(inputs=x, num_outputs=cfg[1], kernel_size=cfg[0], stride=1, padding='SAME') for cfg in fuse_input],
-                                       axis=-1)
-        input_fuse_map = tf.contrib.layers.conv2d(inputs=input_fuse_map, num_outputs=class_output, kernel_size=1, stride=1, padding='SAME')
         
 
 with tf.variable_scope('down_sampling'):
@@ -214,50 +212,52 @@ with tf.variable_scope('down_sampling'):
     net = tf.contrib.layers.conv2d(inputs=x, num_outputs=conv_struct[0], kernel_size=3, 
                                    stride=1, padding='SAME', scope='conv1')
 
+    conv1 = net
     net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool1')
-    pool_1 = net
-    if use_conv1d:
-        pool_1 = tf.contrib.layers.conv2d(inputs=pool_1, num_outputs=conv_struct[0], kernel_size=1, stride=1, padding='SAME', scope='fuse_with_1')
     
     # Convolutional Layer 2
     net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_struct[1], kernel_size=3, 
                                    stride=1, padding='SAME', scope='conv2')
-
+    conv2 = net
     net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool2')
-    pool_2 = net
-    if use_conv1d:
-        pool_2 = tf.contrib.layers.conv2d(inputs=pool_2, num_outputs=conv_struct[1], kernel_size=1, stride=1, padding='SAME', scope='fuse_with_2')
     
     # Convolutional Layer 3
     net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_struct[2], kernel_size=3, 
                                    stride=1, padding='SAME', scope='conv3')
-
+    conv3 = net
     net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool3')
+
+
+net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_struct[3], kernel_size=3, 
+                               stride=1, padding='SAME', scope='bridge')
 
 
 with tf.variable_scope('up_sampling'):
     kernel_size = get_kernel_size(2)
+    net = tf.contrib.layers.conv2d_transpose(inputs=net, num_outputs=conv_struct[2], kernel_size=kernel_size, stride=2, 
+                                             weights_initializer=tf.constant_initializer(get_bilinear_upsample_weights(2, conv_struct[3], conv_struct[2])), 
+                                             scope='conv3_T')
+    with tf.variable_scope('concat3'):
+        net = tf.concat([net, conv3], axis=-1)
+
     net = tf.contrib.layers.conv2d_transpose(inputs=net, num_outputs=conv_struct[1], kernel_size=kernel_size, stride=2, 
                                              weights_initializer=tf.constant_initializer(get_bilinear_upsample_weights(2, conv_struct[2], conv_struct[1])), 
-                                             scope='conv3_T')
-    with tf.variable_scope('fuse_with_2'):
-        net = net + pool_2
-
+                                             scope='conv2_T')
+    with tf.variable_scope('concat2'):
+        net = tf.concat([net, conv2], axis=-1)
+    
     net = tf.contrib.layers.conv2d_transpose(inputs=net, num_outputs=conv_struct[0], kernel_size=kernel_size, stride=2, 
                                              weights_initializer=tf.constant_initializer(get_bilinear_upsample_weights(2, conv_struct[1], conv_struct[0])), 
-                                             scope='conv2_T')
-    with tf.variable_scope('fuse_with_1'):
-        net = net + pool_1
-    
-    net = tf.contrib.layers.conv2d_transpose(inputs=net, num_outputs=class_output, kernel_size=kernel_size, stride=2, 
-                                             weights_initializer=tf.constant_initializer(get_bilinear_upsample_weights(2, conv_struct[0], class_output)), 
                                              scope='conv1_T')
 
-if fuse_input:
-    with tf.variable_scope('fuse_input/fuse'):
-        net = net + input_fuse_map
+    with tf.variable_scope('concat1'):
+        net = tf.concat([net, conv1], axis=-1)
 
-logits = net
+        if concat_input:
+            with tf.variable_scope('concat_input'):
+                net = tf.concat([net, input_map], axis=-1)
+
+logits = tf.contrib.layers.conv2d(inputs=net, num_outputs=class_output, kernel_size=3, stride=1, padding='SAME', scope='logits')
 
 with tf.variable_scope('prob_out'):
     prob_out = tf.nn.softmax(net, name='prob_out')
@@ -265,11 +265,9 @@ with tf.variable_scope('prob_out'):
 with tf.variable_scope('cross_entropy'):
     flat_logits = tf.reshape(logits, (-1, class_output), name='flat_logits')
     flat_labels = tf.to_float(tf.reshape(y, (-1, class_output)), name='flat_labels')
+    flat_weight = tf.reshape(weight, [-1], name='flat_weight')
 
-    flat_softmax = tf.nn.softmax(flat_logits, name='flat_softmax') # + tf.constant(value=1e-9) # because of the numerical instableness
-
-    cross_entropy = -tf.reduce_sum(flat_labels * tf.log(flat_softmax), reduction_indices=[1])
-    mean_cross_entropy = tf.reduce_mean(cross_entropy, name='mean_cross_entropy')
+    cross_entropy = tf.losses.softmax_cross_entropy(flat_labels, flat_logits, weights=flat_weight)
 
 # Ensures that we execute the update_ops before performing the train_step
 update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
@@ -351,6 +349,7 @@ plt.close()
 
 plt.figsize=(9,5)
 plt.plot(cross_entropy_curve)
+plt.title('cv_cross_entropy_curve')
 plt.savefig(save_path+'Analysis/'+'cv_cross_entropy_curve.png', bbox_inches='tight')
 plt.close()
 
