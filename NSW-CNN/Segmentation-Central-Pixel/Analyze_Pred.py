@@ -25,6 +25,8 @@ parser.add_option("--cv", dest="path_cv_set", default="../../Data/090085/Road_Da
 parser.add_option("--pred_weight", type="float", default=0.5, dest="pred_weight")
 parser.add_option("--analyze_train", action='store_true', default=False, dest="analyze_train")
 parser.add_option("--analyze_CV", action='store_true', default=False, dest="analyze_CV")
+parser.add_option("--print_log", action='store_true', default=False, dest="print_log")
+
 
 parser.add_option("--save", dest="save_path")
 
@@ -38,6 +40,7 @@ pred_weight = options.pred_weight
 
 analyze_train = options.analyze_train
 analyze_CV = options.analyze_CV
+print_log = options.print_log
 
 save_path = options.save_path
 
@@ -59,10 +62,17 @@ if analyze_train:
     train_raw_image = np.array(train_set['raw_image'])
     train_road_mask = np.array(train_set['road_mask'])
     train_set.close()
-
-    show_pred_prob_with_raw(train_raw_image, train_pred, train_road_mask, pred_weight=pred_weight, figsize=(150,150), 
-    						show_plot=False, save_path=save_path + save_name + '_train_' + str(pred_weight).replace('.', '_') + '.png')
+    gc.collect()
+    
+    if print_log:
+        show_log_pred_with_raw(train_raw_image, train_pred, train_road_mask, pred_weight=pred_weight, figsize=(150,150), 
+                               show_plot=False, save_path=save_path + save_name + '_train_' + str(pred_weight).replace('.', '_') + '_log.png')
+    else:
+        show_pred_prob_with_raw(train_raw_image, train_pred, train_road_mask, pred_weight=pred_weight, figsize=(150,150), 
+                                show_plot=False, save_path=save_path + save_name + '_train_' + str(pred_weight).replace('.', '_') + '.png')
     plt.close()
+
+gc.collect()
 
 if analyze_CV:
     # Load cross-validation set
@@ -72,6 +82,12 @@ if analyze_CV:
     CV_set.close()
     gc.collect()
 
-    show_pred_prob_with_raw(CV_raw_image, CV_pred, CV_road_mask, pred_weight=pred_weight, figsize=(150,150), 
-    						show_plot=False, save_path=save_path + save_name + '_CV_' + str(pred_weight).replace('.', '_') + '.png')
+    if print_log:
+        show_log_pred_with_raw(CV_raw_image, CV_pred, CV_road_mask, pred_weight=pred_weight, figsize=(150,150), 
+                               show_plot=False, save_path=save_path + save_name + '_CV_' + str(pred_weight).replace('.', '_') + '_log.png')
+    else:
+        show_pred_prob_with_raw(CV_raw_image, CV_pred, CV_road_mask, pred_weight=pred_weight, figsize=(150,150), 
+                                show_plot=False, save_path=save_path + save_name + '_CV_' + str(pred_weight).replace('.', '_') + '.png')
     plt.close()
+
+gc.collect()

@@ -96,7 +96,7 @@ def create_set_with_name(raw_image, combined_road_mask, name, step, divide, save
 
 # create segmentation data set => determine to belong pos/neg by passed in func
 def create_segment_set_with_name(raw_image, combined_road_mask, name, size, step, divide, save_dir_path, save_img=True,
-                                 is_pos_exmp=lambda rd_mask: True):
+                                 is_pos_exmp=lambda rd_mask: True, is_valid_patch=lambda patch: (patch != -9999).all()):
     if divide:
         # record the top-left coordinate of each possible patches & divide into pos/neg groups
         pos_topleft_coordinate = []
@@ -109,7 +109,8 @@ def create_segment_set_with_name(raw_image, combined_road_mask, name, size, step
                 cur_img_patch = raw_image         [:,row_offset:row_offset+size, col_offset:col_offset+size]
                 cur_road_mask = combined_road_mask[  row_offset:row_offset+size, col_offset:col_offset+step]
 
-                if (cur_img_patch != -9999).all():
+                if is_valid_patch(cur_img_patch): # valid to be included into dataset
+                    
                     if is_pos_exmp(cur_road_mask): # positive example
                         pos_topleft_coordinate.append((row_offset, col_offset))
                     else: # negative example

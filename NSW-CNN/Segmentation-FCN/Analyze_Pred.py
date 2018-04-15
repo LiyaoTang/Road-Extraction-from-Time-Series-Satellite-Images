@@ -40,8 +40,6 @@ parser.add_option("--save", dest="save_path")
 
 (options, args) = parser.parse_args()
 
-print(args)
-
 pred_dir  = options.pred_dir
 pred_name = options.pred_name
 step = options.step
@@ -69,15 +67,6 @@ if not os.path.exists(save_path):
 
 save_name = pred_name.split('.')[0]
 
-# choose a way to normalize
-# normalization
-def pred_normalization(pred):
-    return pred[:,:,1]/pred.sum(axis=-1)
-
-# softmax
-def pred_softmax(pred):
-    return np.exp(pred[:,:,1])/np.exp(pred).sum(axis=-1)
-
 h5f = h5py.File(pred_dir + pred_name, 'r')
 train_pred = np.array(h5f['train_pred'])
 CV_pred = np.array(h5f['CV_pred'])
@@ -85,6 +74,7 @@ h5f.close()
 
 
 # choose a way to normalize
+# std
 def pred_normalization(pred):
     return pred[:,:,1]/pred.sum(axis=-1)
 
@@ -96,17 +86,17 @@ def pred_softmax(pred):
     
     for x, y in zip(inf_idx[0], inf_idx[1]):
         while((pred_exp[x,y] > threshold).any()):
-            pred_exp[x,y] = pred[x,y] / 10
+            pred_exp[x,y] = pred_exp[x,y] / 10
     pred_exp = np.exp(pred_exp[:,:,1])/np.exp(pred_exp).sum(axis=-1)
     pred_exp[np.where(pred[:,:,1] == 0)] = 0 # softmax([0,0]) = (0.5, 0.5)
     return pred_exp
 
 if norm == 'softmax':
-    norm_train_pred = pred_softmax(train_pred_road)
-    norm_CV_pred    = pred_softmax(CV_pred_road)
+    norm_train_pred = pred_softmax(train_pred)
+    norm_CV_pred    = pred_softmax(CV_pred)
 elif norm == 'std':
-    norm_train_pred = pred_normalization(train_pred_road)
-    norm_CV_pred    = pred_normalization(CV_pred_road)
+    norm_train_pred = pred_normalization(train_pred)
+    norm_CV_pred    = pred_normalization(CV_pred)
 
 
 if analyze_train:
@@ -116,11 +106,11 @@ if analyze_train:
     train_road_mask = np.array(train_set['road_mask'])
     train_set.close()
 
-    show_pred_prob_with_raw(train_raw_image, train_pred, train_road_mask, pred_weight=pred_weight, figsize=(150,150), 
+    show_pred_prob_with_raw(train_raw_image, norm_train_pred, train_road_mask, pred_weight=pred_weight, figsize=(150,150), 
                             show_plot=False, save_path=save_path + save_name + '_train_' + str(pred_weight).replace('.', '_') + '.png')
 
     if print_log:
-        show_log_pred_with_raw(train_raw_image, train_pred, train_road_mask, pred_weight=pred_weight, figsize=(150,150), 
+        show_log_pred_with_raw(train_raw_image, norm_train_pred, train_road_mask, pred_weight=pred_weight, figsize=(150,150), 
                             show_plot=False, save_path=save_path + save_name + '_train_' + str(pred_weight).replace('.', '_') + '_log.png')
     plt.close()
 
@@ -132,28 +122,28 @@ if analyze_CV:
     CV_set.close()
     gc.collect()
 
-    show_pred_prob_with_raw(CV_raw_image, CV_pred, CV_road_mask, pred_weight=pred_weight, figsize=(150,150), 
+    show_pred_prob_with_raw(CV_raw_image, norm_CV_pred, CV_road_mask, pred_weight=pred_weight, figsize=(150,150), 
                             show_plot=False, save_path=save_path + save_name + '_CV_' + str(pred_weight).replace('.', '_') + '.png')
 
     if print_log:
-        show_log_pred_with_raw(CV_raw_image, CV_pred, CV_road_mask, pred_weight=pred_weight, figsize=(150,150), 
+        show_log_pred_with_raw(CV_raw_image, norm_CV_pred, CV_road_mask, pred_weight=pred_weight, figsize=(150,150), 
                             show_plot=False, save_path=save_path + save_name + '_train_' + str(pred_weight).replace('.', '_') + '_log.png')
     plt.close()
 
 
 if analyze_test:
     # Load cross-validation set
-    test_set = h5py.File(path_cv_set, 'r')
-    test_raw_image = np.array(CV_set['raw_image'])
-    test_road_mask = np.array(CV_set['road_mask'])
+    test_set = h5py.File(path_test_set, 'r')
+    test_raw_image = np.array(test_set['raw_image'])
+    test_road_mask = np.array(test_set['road_mask'])
     test_set.close()
     gc.collect()
 
-    show_pred_prob_with_raw(test_raw_image, test_pred, test_road_mask, pred_weight=pred_weight, figsize=(150,150), 
+    show_pred_prob_with_raw(test_raw_image, norm_test_pred, test_road_mask, pred_weight=pred_weight, figsize=(150,150), 
                             show_plot=False, save_path=save_path + save_name + '_CV_' + str(pred_weight).replace('.', '_') + '.png')
 
     if print_log:
-        show_log_pred_with_raw(test_raw_image, test_pred, test_road_mask, pred_weight=pred_weight, figsize=(150,150), 
+        show_log_pred_with_raw(test_raw_image, norm_test_pred, test_road_mask, pred_weight=pred_weight, figsize=(150,150), 
                             show_plot=False, save_path=save_path + save_name + '_train_' + str(pred_weight).replace('.', '_') + '_log.png')
 
     plt.close()
