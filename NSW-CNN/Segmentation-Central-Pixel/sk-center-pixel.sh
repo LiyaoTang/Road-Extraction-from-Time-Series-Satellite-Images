@@ -79,26 +79,52 @@ job_cnt=0
 # result:
 # 2,4,6 not good under a small norm_param => even pos=2 causes most pred to be 1 (for both norm=G, m)                
 
-for RAND in 0 1; do
-    for NORM in m; do
-        for NORM_PARM in 0.01 0.1 0.5 1 5 10; do
-            for POS in 0 1; do
+# for RAND in 0 1; do
+#     for NORM in m; do
+#         for NORM_PARM in 0.01 0.1 0.5 1 5 10; do
+#             for POS in 0 1; do
                 
-                job_cnt=$((job_cnt+1))
+#                 job_cnt=$((job_cnt+1))
 
-                name=SGD_weight_${NORM}${NORM_PARM}_p${POS}_e15_r${RAND}
-                python Logistic-Reg.py --rand ${RAND} --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir > ./Log/sklearn/${name} 2>&1 &                
-                sleep 10m
+#                 name=SGD_weight_${NORM}${NORM_PARM}_p${POS}_e15_r${RAND}
+#                 python Logistic-Reg.py --rand ${RAND} --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir > ./Log/sklearn/${name} 2>&1 &                
+#                 sleep 10m
 
-                echo $name
+#                 echo $name
 
-                if [ $(($job_cnt%6)) -eq 0 ]; then
-                    wait
-                fi
-            done
-        done
-    done
+#                 if [ $(($job_cnt%6)) -eq 0 ]; then
+#                     wait
+#                 fi
+#             done
+#         done
+#     done
+# done
+
+NORM=m
+
+NORM_PARM=0.01 
+POS=1
+for RAND in 0 1; do
+    name=SGD_weight_${NORM}${NORM_PARM}_p${POS}_e15_r${RAND}
+    python Logistic-Reg.py --rand ${RAND} --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir > ./Log/sklearn/${name} 2>&1 &
+    echo $name
 done
+
+NORM_PARM = 1
+POS=0
+for RAND in 0 1; do
+    name=SGD_weight_${NORM}${NORM_PARM}_p${POS}_e15_r${RAND}
+    python Logistic-Reg.py --rand ${RAND} --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir > ./Log/sklearn/${name} 2>&1 &
+    echo $name
+done
+
+POS=1
+name=SGD_weight_${NORM}${NORM_PARM}_p${POS}_e15_r${RAND}
+python Logistic-Reg.py --rand ${RAND} --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir > ./Log/sklearn/${name} 2>&1 &
+echo $name
+
+
+
 
 # random searching
 
