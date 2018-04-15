@@ -1,0 +1,80 @@
+Train set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_train
+CV set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_cv
+will be saved as  sk-SGD_weight_m0_1_p0_e15_r0
+will be saved into  ./Result/motor_trunk_pri_sec_tert_uncl_track/sklearn/
+mem usage before data loaded: 83.953125 MB
+
+mu =  [ 144.71187809  191.4973748   363.63933132  368.9204473  2385.57259035
+ 1362.40326606  728.31018062]
+mu =  [ 150.8227309   198.28994142  365.46753706  373.66751856 2370.63525823
+ 1356.64782764  731.00466191]
+train data:
+(7, 7650, 8091) (7650, 8091)
+pos =  304920 neg =  21258076
+cv data:
+(7, 2365, 8091) (2365, 8091)
+pos =  23150 neg =  782418
+mem usage after data loaded: 6131.4765625 MB
+
+SGDClassifier(alpha=0.1, average=False,
+       class_weight={0: 0.014140892109797729, 1: 0.9858591078902023},
+       epsilon=0.1, eta0=0.0, fit_intercept=True, l1_ratio=0.15,
+       learning_rate='optimal', loss='log', max_iter=1, n_iter=None,
+       n_jobs=1, penalty='l2', power_t=0.5, random_state=None,
+       shuffle=False, tol=None, verbose=0, warm_start=False)
+classes in classifier  [0 1] 1
+mem usage after model created: 6131.4765625 MB
+
+ balanced_acc =  0.642326049367689 AUC =  0.7048911233624013 avg_precision =  0.07694109555335749
+ balanced_acc =  0.5702926387025055 AUC =  0.6131984198930703 avg_precision =  0.05148093754777287
+ balanced_acc =  0.5851401147112391 AUC =  0.6346886253378772 avg_precision =  0.061201490531023715
+ balanced_acc =  0.5657543306506876 AUC =  0.614365176597395 avg_precision =  0.050299592665974426
+ balanced_acc =  0.6217542183444646 AUC =  0.6670721650075329 avg_precision =  0.06642081614308575
+ balanced_acc =  0.5465218298436834 AUC =  0.5662208274413559 avg_precision =  0.04371891696013716
+ balanced_acc =  0.6763108722488447 AUC =  0.7462630405746615 avg_precision =  0.09279853477451969
+ balanced_acc =  0.6426422178856996 AUC =  0.704790545498797 avg_precision =  0.07564989933835349
+ balanced_acc =  0.6144365039126893 AUC =  0.6566752548740373 avg_precision =  0.07060169388195481
+ balanced_acc =  0.6461848157735443 AUC =  0.7124586392252136 avg_precision =  0.0770137556084208
+ balanced_acc =  0.620933521434939 AUC =  0.6848083456100289 avg_precision =  0.07310068179799299
+ balanced_acc =  0.6484725175514635 AUC =  0.7217266170281111 avg_precision =  0.08213496853631898
+ balanced_acc =  0.6065809589430985 AUC =  0.6666047648589974 avg_precision =  0.06980099746057983
+ balanced_acc =  0.6749714987487396 AUC =  0.7411893224596264 avg_precision =  0.09253658751917813
+ balanced_acc =  0.6387754224295998 AUC =  0.6822704669520169 avg_precision =  0.07729265578250455
+finish
+mem usage after model trained: 6276.125 MB
+
+coefficient info:
+shape =  (1, 448)
+0.011375432506186483 -0.005686272324902527 2.401761745498553e-05 7.435319990229412e-07
+On train set
+true_pos  = 169529
+false_pos = 6747047
+true_neg  = 14511029
+false_neg = 135391
+size = 21562996
+pos_recall    = 0.5559786173422537
+pos_precision = 0.024510538162235185
+pos_F1        = 0.046951213432784564
+neg_recall    = 0.6826125280575721
+neg_precision = 0.990756034580464
+neg_F1        = 0.8083126414029039
+accuracy      = 0.680821811588705
+balanced_accuracy = 0.5076332863713496
+On CV set
+true_pos  = 13277
+false_pos = 231572
+true_neg  = 550846
+false_neg = 9873
+size = 805568
+pos_recall    = 0.5735205183585314
+pos_precision = 0.0542252571993351
+pos_F1        = 0.0990824592629077
+neg_recall    = 0.7040303265006684
+neg_precision = 0.98239224995051
+neg_F1        = 0.8202379950816634
+accuracy      = 0.7002798025740844
+balanced_accuracy = 0.5183087535749226
+/localdata/u6142160/anaconda3/lib/python3.6/site-packages/h5py/__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+mem usage after prediction maps calculated: 8788.73828125 MB
+
