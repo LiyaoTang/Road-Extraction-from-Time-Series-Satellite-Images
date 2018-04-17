@@ -100,16 +100,26 @@ job_cnt=0
 #     done
 # done
 
-NORM=m
-NORM_PARM=1
+# result: little / no upsampling & there norm_param search
+# the coefficient under large regularization is much smaller, yet gives similar prediction => too small coefficents give blur result (image not sharp at all)
+
+RAND=0
 POS=0
-for RAND in 0 1; do
+
+
+NORM=m
+for NORM_PARM in 0.02 0.05 0.08; do
     name=SGD_weight_${NORM}${NORM_PARM}_p${POS}_e15_r${RAND}
-    python Logistic-Reg.py --rand ${RAND} --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir > ./Log/sklearn/${name} 2>&1 &
-    echo $name
+    python Logistic-Reg.py --rand ${RAND} --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir > ./Log/sklearn/${name} 2>&1 &                
+    sleep 10m
 done
 
-
+NORM=G
+for NORM_PARM in 0.1 0.5 1; do
+    name=SGD_weight_${NORM}${NORM_PARM}_p${POS}_e15_r${RAND}
+    python Logistic-Reg.py --rand ${RAND} --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir > ./Log/sklearn/${name} 2>&1 &                
+    sleep 10m
+done
 
 # random searching
 
