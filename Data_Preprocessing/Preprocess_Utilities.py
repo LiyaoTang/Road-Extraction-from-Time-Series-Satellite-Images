@@ -94,7 +94,7 @@ def create_set_with_name(raw_image, combined_road_mask, name, step, divide, save
         h5f.close()
     print("saved into ", h5_path)
 
-# create segmentation data set => determine to belong pos/neg by passed in func
+# create segmentation data set => determine to belong pos/neg by passed in func => used for FCN data
 def create_segment_set_with_name(raw_image, combined_road_mask, name, size, step, divide, save_dir_path, save_img=True,
                                  is_pos_exmp=lambda rd_mask: True, is_valid_patch=lambda patch: (patch != -9999).all()):
     if divide:
