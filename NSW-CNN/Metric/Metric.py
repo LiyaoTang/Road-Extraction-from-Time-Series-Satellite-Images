@@ -40,7 +40,7 @@ class Metric:
         true_neg  = self.true_neg
         false_neg = self.false_neg
 
-        return ( (true_pos/(true_pos + false_pos)) + (true_neg/(true_neg+false_neg)) ) / 2
+        return ( (true_pos/(true_pos + false_neg)) + (true_neg/(true_neg+false_pos)) ) / 2
 
     def cal_metric(self, true_pos=None, false_pos=None, true_neg=None, false_neg=None, size = None):
         if true_pos is None:
@@ -78,7 +78,7 @@ class Metric:
             
         try: # accuracy
             accuracy = (true_pos + true_neg) / size
-            balanced_acc = ( (true_pos/(true_pos + false_neg)) + (true_neg/(true_neg+false_pos)) ) / 2
+            balanced_acc = self.get_balanced_acc()
 
             result['accuracy'] = accuracy
             result['balanced_accuracy'] = balanced_acc
