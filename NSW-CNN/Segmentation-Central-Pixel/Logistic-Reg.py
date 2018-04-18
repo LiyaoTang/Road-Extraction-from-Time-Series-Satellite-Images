@@ -57,7 +57,7 @@ size = options.size
 epoch = options.epoch
 rand_seed = options.rand_seed
 
-if not (rand_seed is None)
+if not (rand_seed is None):
 	np.random.seed(rand_seed)
 
 if not save_path:
