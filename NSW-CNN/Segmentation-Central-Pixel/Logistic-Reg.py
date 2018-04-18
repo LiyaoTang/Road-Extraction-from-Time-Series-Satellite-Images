@@ -40,7 +40,7 @@ parser.add_option("--sample_norm", type="int", default=0, dest="sample_norm")
 parser.add_option("--norm", default="m", dest="norm")
 parser.add_option("--size", type="int", default=8, dest="size")
 parser.add_option("-e", "--epoch", type="int", default=15, dest="epoch")
-parser.add_option("--rand", type="int", default=0, dest="rand_seed")
+parser.add_option("--rand", type="int", dest="rand_seed")
 (options, args) = parser.parse_args()
 
 path_train_set = options.path_train_set
@@ -57,7 +57,8 @@ size = options.size
 epoch = options.epoch
 rand_seed = options.rand_seed
 
-np.random.seed(rand_seed)
+if not (rand_seed is None)
+	np.random.seed(rand_seed)
 
 if not save_path:
 	print("no save path provided")

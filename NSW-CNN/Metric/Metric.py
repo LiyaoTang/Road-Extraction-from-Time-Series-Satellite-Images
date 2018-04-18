@@ -78,7 +78,7 @@ class Metric:
             
         try: # accuracy
             accuracy = (true_pos + true_neg) / size
-            balanced_acc = ( (true_pos/(true_pos + false_pos)) + (true_neg/(true_neg+false_neg)) ) / 2
+            balanced_acc = ( (true_pos/(true_pos + false_neg)) + (true_neg/(true_neg+false_pos)) ) / 2
 
             result['accuracy'] = accuracy
             result['balanced_accuracy'] = balanced_acc
