@@ -23,7 +23,7 @@ parser = OptionParser()
 parser.add_option("--path", dest="pred_dir")
 parser.add_option("--name", dest="pred_name")
 
-parser.add_option("--step", type="int", default=18, dest="step")
+parser.add_option("--step", type="int", default=16, dest="step")
 parser.add_option("--size", type="int", default=128, dest="size")
 parser.add_option("--train", dest="path_train_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_;_train")
 parser.add_option("--cv", dest="path_cv_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_;_cv")
@@ -76,7 +76,10 @@ h5f.close()
 # choose a way to normalize
 # std
 def pred_normalization(pred):
-    return pred[:,:,1]/pred.sum(axis=-1)
+    pred_norm = pred[:,:,1]/pred.sum(axis=-1)
+    pred_norm[np.where(pred_norm != pred_norm)] = 0
+    pred_norm[np.where(pred_norm == np.float('inf'))] = 1
+    return pred_norm
 
 # softmax
 def pred_softmax(pred):

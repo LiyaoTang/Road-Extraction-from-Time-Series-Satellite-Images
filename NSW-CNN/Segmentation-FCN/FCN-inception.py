@@ -30,8 +30,8 @@ parser.add_option("--save", dest="save_path")
 parser.add_option("--name", dest="model_name")
 parser.add_option("--record_summary", action="store_true", default=False, dest="record_summary")
 
-parser.add_option("--train", dest="path_train_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_128_18_train")
-parser.add_option("--cv", dest="path_cv_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_128_18_cv")
+parser.add_option("--train", dest="path_train_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_128_16_train")
+parser.add_option("--cv", dest="path_cv_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_128_16_cv")
 
 parser.add_option("--norm", default="mean", dest="norm")
 parser.add_option("--pos", type="int", default=0, dest="pos_num")
@@ -43,7 +43,9 @@ parser.add_option("--rand", type="int", default=0, dest="rand_seed")
 
 parser.add_option("--conv", dest="conv_struct")
 parser.add_option("--not_weight", action="store_false", default=True, dest="use_weight")
+parser.add_option("--no_biases", action="store_false", default=True, dest="no_biases")
 parser.add_option("--use_batch_norm", action="store_true", default=False, dest="use_batch_norm")
+parser.add_option("--scale_xen", action="store_true", default=False, dest="scale_xen")
 
 parser.add_option("--gpu", dest="gpu")
 parser.add_option("--gpu_max_mem", type="float", default=0.8, dest="gpu_max_mem")
@@ -68,6 +70,8 @@ conv_struct = options.conv_struct
 
 use_weight = options.use_weight
 use_batch_norm = options.use_batch_norm
+scale_xen = options.scale_xen
+no_biases = options.no_biases
 
 gpu = options.gpu
 gpu_max_mem = options.gpu_max_mem
@@ -94,6 +98,8 @@ if not model_name:
     model_name += conv_struct + "_"
     model_name += norm[0] + "_"
     if use_weight: model_name += "weight_"
+    if scale_xen: model_name += "scale_"
+    if no_biases: model_name += "noB_"
     if use_batch_norm: model_name += "bn_"
     model_name += "p" + str(pos_num) + "_"
     model_name += "e" + str(epoch) + "_"
@@ -210,17 +216,20 @@ else:
     normalizer_fn=None
     normalizer_params=None
 
+if no_biases: biases_initializer = None
+else: biases_initializer = tf.zeros_initializer()
+
 with tf.variable_scope('inception'):
     if conv_struct != [[[0]]]:
         net = tf.concat([tf.contrib.layers.conv2d(inputs=x, num_outputs=cfg[1], kernel_size=cfg[0], stride=1, padding='SAME',
-                                                  normalizer_fn=normalizer_fn, normalizer_params=normalizer_params,
+                                                  normalizer_fn=normalizer_fn, normalizer_params=normalizer_params,biases_initializer=biases_initializer,
                                                   scope=str(cfg[0])+'-'+str(cfg[1])) 
                          for cfg in conv_struct[0]], axis=-1)
 
         if len(conv_struct) > 1:
             for layer_cfg in conv_struct[1:]:
                 net = tf.concat([tf.contrib.layers.conv2d(inputs=net, num_outputs=cfg[1], kernel_size=cfg[0], stride=1, padding='SAME',
-                                                          normalizer_fn=normalizer_fn, normalizer_params=normalizer_params,
+                                                          normalizer_fn=normalizer_fn, normalizer_params=normalizer_params,biases_initializer=biases_initializer,
                                                           scope=str(cfg[0])+'-'+str(cfg[1])) 
                                  for cfg in layer_cfg], axis=-1)
 
@@ -238,6 +247,8 @@ with tf.variable_scope('cross_entropy'):
     flat_weight = tf.reshape(weight, [-1], name='flat_weight')
 
     cross_entropy = tf.losses.softmax_cross_entropy(flat_labels, flat_logits, weights=flat_weight)
+    if scale_xen: cross_entropy = cross_entropy * size * size * band
+
 
 # Ensures that we execute the update_ops before performing the train_step
 update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
@@ -257,7 +268,7 @@ if record_summary:
         for scope_name in conv_scopes:
             target_tensors = ['/weights:0']
             if use_batch_norm: target_tensors.extend(['/BatchNorm/gamma:0', '/BatchNorm/beta:0'])
-            else: target_tensors.append('/biases:0')
+            elif not no_biases: target_tensors.append('/biases:0')
             for tensor_name in target_tensors:
                 tensor_name = scope_name + tensor_name
                 cur_tensor = graph.get_tensor_by_name(tensor_name)
@@ -267,7 +278,8 @@ if record_summary:
 
         # logits layer params
         scope_name = 'logits'
-        target_tensors = ['/weights:0', '/biases:0']
+        target_tensors = ['/weights:0']
+        if not no_biases: target_tensors.append('/biases:0')
         for tensor_name in target_tensors:
             tensor_name = scope_name + tensor_name
             cur_tensor = graph.get_tensor_by_name(tensor_name)
@@ -314,6 +326,7 @@ for epoch_num in range(epoch):
 
         batch_x, batch_y, batch_w = Train_Data.get_patches(batch_size=batch_size, positive_num=pos_num, norm=True, weighted=use_weight)
         batch_x = batch_x.transpose((0, 2, 3, 1))
+        assert (np.equal((batch_w > 0.5), batch_y[:,:,:,1])).all()
         train_step.run(feed_dict={x: batch_x, y: batch_y, weight: batch_w, is_training: True})
 
     if record_summary:
