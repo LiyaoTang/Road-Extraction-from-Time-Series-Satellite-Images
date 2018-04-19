@@ -1,0 +1,36 @@
+/localdata/u6142160/anaconda3/lib/python3.6/site-packages/h5py/__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+Train set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_train
+CV set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_cv
+will be saved as  sk-SGD_weight_G0_0_p0_e15_r0
+will be saved into  ./Result/motor_trunk_pri_sec_tert_uncl_track/sklearn/
+mem usage before data loaded: 85.9765625 MB
+
+mu =  [ 144.71187809  191.4973748   363.63933132  368.9204473  2385.57259035
+ 1362.40326606  728.31018062]
+std =  [125.65067662 147.07994057 235.16274288 262.88676276 927.00557037
+ 842.7245097  545.23410243]
+mu =  [ 150.8227309   198.28994142  365.46753706  373.66751856 2370.63525823
+ 1356.64782764  731.00466191]
+std =  [126.38246319 147.99541069 225.10661372 260.4291769  792.72602026
+ 819.12928051 548.31700647]
+train data:
+(7, 7650, 8091) (7650, 8091)
+pos =  304920 neg =  21258076
+cv data:
+(7, 2365, 8091) (2365, 8091)
+pos =  23150 neg =  782418
+mem usage after data loaded: 6133.48046875 MB
+
+Traceback (most recent call last):
+  File "Logistic-Reg.py", line 169, in <module>
+    1:Train_Data.neg_size/Train_Data.size})
+  File "/localdata/u6142160/anaconda3/lib/python3.6/site-packages/sklearn/linear_model/stochastic_gradient.py", line 789, in __init__
+    average=average, n_iter=n_iter)
+  File "/localdata/u6142160/anaconda3/lib/python3.6/site-packages/sklearn/linear_model/stochastic_gradient.py", line 357, in __init__
+    n_iter=n_iter)
+  File "/localdata/u6142160/anaconda3/lib/python3.6/site-packages/sklearn/linear_model/stochastic_gradient.py", line 74, in __init__
+    self._validate_params(set_max_iter=False)
+  File "/localdata/u6142160/anaconda3/lib/python3.6/site-packages/sklearn/linear_model/stochastic_gradient.py", line 99, in _validate_params
+    raise ValueError("alpha must be > 0 since "
+ValueError: alpha must be > 0 since learning_rate is 'optimal'. alpha is used to compute the optimal learning rate.

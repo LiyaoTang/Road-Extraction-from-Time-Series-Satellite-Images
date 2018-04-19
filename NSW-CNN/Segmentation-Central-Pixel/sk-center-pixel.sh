@@ -126,12 +126,18 @@ job_cnt=0
 
 # result: smaller regularization the better => small input with small coefficient cannot make difference in decision
 
-RAND=0
+RAND=None
 POS=0
-NORM_PARM=0
+NORM_PARM=0.0001
 for NORM in m G; do
     name=SGD_weight_${NORM}${NORM_PARM}_p${POS}_e15_r${RAND}
-    python Logistic-Reg.py --rand ${RAND} --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir > ./Log/sklearn/${name} 2>&1 &                
+    python Logistic-Reg.py --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir > ./Log/sklearn/${name} 2>&1 &                
+    echo $name
+
+    name=SGD_weight_${NORM}${NORM_PARM}_p${POS}_e15_r0
+    python Logistic-Reg.py --rand 0 --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir > ./Log/sklearn/${name} 2>&1 &
+    echo $name
+
 done
 
 
