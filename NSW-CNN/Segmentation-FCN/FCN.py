@@ -88,12 +88,12 @@ else:
     sys.exit()
 
 if not model_name:
-    model_name = "Unet_"
+    model_name = "FCN_"
     model_name += conv_struct + "_" + str(output_conv) + "_"
-    model_name += norm[0] + "_"
+    if concat_input: model_name += "cat" + concat_input + "_"
     if use_weight: model_name += "weight_"
     if use_batch_norm: model_name += "bn_"
-    if concat_input: model_name += "catI" + concat_input + "_"
+    model_name += norm[0] + "_"
     model_name += "p" + str(pos_num) + "_"
     model_name += "e" + str(epoch) + "_"
     model_name += "r" + str(rand_seed)
