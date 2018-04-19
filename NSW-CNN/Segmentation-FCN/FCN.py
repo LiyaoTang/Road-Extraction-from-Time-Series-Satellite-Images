@@ -350,6 +350,7 @@ balanced_acc_curve = []
 AUC_curve = []
 avg_precision_curve = []
 cross_entropy_curve = []
+if record_summary: train_writer = tf.summary.FileWriter('./Summary/FCN/' + model_name, sess.graph)
 for epoch_num in range(epoch):
     for iter_num in range(iteration):
 
