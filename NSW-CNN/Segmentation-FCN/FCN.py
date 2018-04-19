@@ -209,7 +209,7 @@ else:
 
 with tf.variable_scope('input_bridge'):
     if concat_input:
-        if concat_input == [[[0]]]:
+        if concat_input == [[0]]:
             input_map = x
         else:
             input_map = tf.concat([tf.contrib.layers.conv2d(inputs=x, num_outputs=cfg[1], kernel_size=cfg[0], 
