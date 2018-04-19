@@ -353,18 +353,27 @@ cross_entropy_curve = []
 for epoch_num in range(epoch):
     for iter_num in range(iteration):
 
-        batch_x, batch_y = Train_Data.get_patches(batch_size=batch_size, positive_num=pos_num, norm=True, weighted=use_weight)
+        batch_x, batch_y, batch_w = Train_Data.get_patches(batch_size=batch_size, positive_num=pos_num, norm=True, weighted=use_weight)
         batch_x = batch_x.transpose((0, 2, 3, 1))
 
-        train_step.run(feed_dict={x: batch_x, y: batch_y, is_training: True})
+        train_step.run(feed_dict={x: batch_x, y: batch_y, weight: batch_w, is_training: True})
+
+    if record_summary:
+        # tensor board
+        run_options = tf.RunOptions(trace_level=tf.RunOptions.FULL_TRACE)
+        run_metadata = tf.RunMetadata()
+        summary = sess.run(merged_summary, feed_dict={x: batch_x, y: batch_y, weight: batch_w, is_training: False}, options=run_options, run_metadata=run_metadata)
+
+        train_writer.add_run_metadata(run_metadata, 'epoch_%03d' % (epoch_num+1))
+        train_writer.add_summary(summary, epoch_num+1)
 
     # snap shot on CV set
     cv_metric = Metric_Record()
     cv_cross_entropy_list = []
-    for batch_x, batch_y in CV_Data.iterate_data(norm=True, weighted=use_weight):
+    for batch_x, batch_y, batch_w in CV_Data.iterate_data(norm=True, weighted=use_weight):
         batch_x = batch_x.transpose((0, 2, 3, 1))
 
-        [pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, is_training: False})
+        [pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, weight: batch_w, is_training: False})
         pred = int(pred_prob > 0.5)
 
         cv_metric.accumulate(Y=batch_y, pred=pred, pred_prob=pred_prob)
@@ -423,10 +432,10 @@ gc.collect()
 print("On training set: ")
 train_metric = Metric_Record()
 train_cross_entropy_list = []
-for batch_x, batch_y in CV_Data.iterate_data(norm=True, weighted=use_weight):
+for batch_x, batch_y, batch_w in CV_Data.iterate_data(norm=True, weighted=use_weight):
     batch_x = batch_x.transpose((0, 2, 3, 1))
 
-    [pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, is_training: False})
+    [pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, weight: batch_w, is_training: False})
     pred = int(pred_prob > 0.5)
     
     train_metric.accumulate(Y=batch_y, pred=pred, pred_prob=pred_prob)    
