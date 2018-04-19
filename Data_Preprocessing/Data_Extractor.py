@@ -197,42 +197,68 @@ class FCN_Data_Extractor (Data_Extractor):
         super(FCN_Data_Extractor, self).__init__(raw_image, road_mask, img_size, pos_topleft_coord, neg_topleft_coord, normalization, encoding)
 
     def _cal_norm_param(self):
-        mu = 0
         img_size = self.img_size
+        mu = np.zeros((self.band, img_size, img_size))
+        pixel_cnt = np.zeros((self.band, img_size, img_size))
 
         pos_cnt = 0
         neg_cnt = 0
 
         # Careful! norm params & weight not yet calculated
         for patch, rd_map, _ in self.iterate_data(norm=False, weighted=False):
-            mu += patch[0]
+            patch = patch[0]
+            valid_img_mask = np.where(patch != -9999)
+            valid_rd_mask = np.where(patch[0] != -9999)
+
+            pixel_cnt[valid_img_mask] = pixel_cnt[valid_img_mask] + 1
+            mu[valid_img_mask] = mu[valid_img_mask] + patch[valid_img_mask]
 
             if self.encoding == 'one-hot':
-                pos_cnt += rd_map[:,:,:,1].sum()
-                neg_cnt += rd_map[:,:,:,0].sum()
+                pos_cnt += rd_map[0,:,:,1][valid_rd_mask].sum()
+                neg_cnt += rd_map[0,:,:,0][valid_rd_mask].sum()
             else:
-                pos_cnt += rd_map.sum()
-                neg_cnt += -(rd_map-1).sum()
-
-        mu = (mu / self.size).mean(axis=(1,2))
+                pos_cnt += rd_map[valid_rd_mask].sum()
+                neg_cnt += -(rd_map[valid_rd_mask]-1).sum()
+    
+        mu = mu.sum(axis=(1,2)) / pixel_cnt.sum(axis=(1,2))
         self.mu = mu
         self.neg_weight = pos_cnt / (pos_cnt+neg_cnt)
         self.pos_weight = neg_cnt / (pos_cnt+neg_cnt)
 
-        assert (pos_cnt+neg_cnt) == (self.size * rd_map.shape[1] * rd_map.shape[2])
+        assert (pos_cnt+neg_cnt) == pixel_cnt[0].sum()
 
         print("mu = ", mu)
         print("class weight [neg= %f, pos= %f]"%(self.neg_weight, self.pos_weight))
 
         if self.normalization == 'Gaussian':
-            std = 0
-            mu_ext = np.repeat(mu, [np.prod(patch[0][0].shape)]*patch[0].shape[0]).reshape(patch[0].shape)
-            
+            std = np.zeros((self.band, img_size, img_size))
+            mu_ext = np.repeat(mu, [np.prod(patch[0].shape)]*patch.shape[0]).reshape(patch.shape)
+
             for patch in self.iterate_raw_image_patches(norm = False):
-                std += ((patch[0]-mu_ext)**2).mean(axis=(-1,-2))
-            std = np.sqrt(std / self.size)
+                patch = patch[0]
+                valid_mask = np.where(patch != -9999)
+                
+                std[valid_mask] = std[valid_mask] + ((patch-mu_ext)**2)[valid_mask]
+            
+            std = np.sqrt(std.sum(axis=(1,2)) / pixel_cnt.sum(axis=(1,2)))
             self.std = std
             print('std = ', std)
+
+
+    def _get_raw_patch(self, coord, norm):
+        patch  = self.raw_image[:, coord[0]:coord[0]+self.img_size, coord[1]:coord[1]+self.img_size].copy()
+        invalid_mask = np.where(patch == -9999)
+
+        if norm:
+            if self.normalization == 'mean':
+                for channel_num in range(self.band):
+                    patch[channel_num] = patch[channel_num] - self.mu[channel_num]
+            elif self.normalization == 'Gaussian':
+                for channel_num in range(self.band):
+                    patch[channel_num] = (patch[channel_num] - self.mu[channel_num]) / self.std[channel_num]
+        patch[invalid_mask] = 0
+        return patch
+
 
     def _get_patch_label(self, coord):
         label = self.road_mask[coord[0]:coord[0]+self.img_size, coord[1]:coord[1]+self.img_size].copy()
