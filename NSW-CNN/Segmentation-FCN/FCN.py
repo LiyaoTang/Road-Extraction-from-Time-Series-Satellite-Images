@@ -193,20 +193,19 @@ if use_weight:
 
 iteration = int(Train_Data.size/batch_size) + 1
 
-if use_batch_norm:
-    normalizer_fn=tf.contrib.layers.batch_norm
-    normalizer_params={'scale':True, 'is_training':is_training}
-else:
-    normalizer_fn=None
-    normalizer_params=None
-
-
 tf.reset_default_graph()
 with tf.variable_scope('input'):
     x = tf.placeholder(tf.float32, shape=[None, size, size, band], name='x')
     y = tf.placeholder(tf.float32, shape=[None, size, size, class_output], name='y')
     weight      = tf.placeholder(tf.float32, shape=[None, size, size], name='weight')
     is_training = tf.placeholder(tf.bool, name='is_training') # batch norm
+
+if use_batch_norm:
+    normalizer_fn=tf.contrib.layers.batch_norm
+    normalizer_params={'scale':True, 'is_training':is_training}
+else:
+    normalizer_fn=None
+    normalizer_params=None
 
 with tf.variable_scope('input_bridge'):
     if concat_input:
