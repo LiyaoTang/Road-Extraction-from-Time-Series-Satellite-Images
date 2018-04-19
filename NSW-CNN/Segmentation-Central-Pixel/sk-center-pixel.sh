@@ -134,22 +134,28 @@ for NORM in m G; do
     python Logistic-Reg.py --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir > ./Log/sklearn/${name} 2>&1 &                
     echo $name
 
-    name=SGD_weight_${NORM}${NORM_PARM}_p${POS}_e15_r0
-    python Logistic-Reg.py --rand 0 --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir > ./Log/sklearn/${name} 2>&1 &
+    name=SGD_weight_${NORM}${NORM_PARM}_p${POS}_e15_r1
+    python Logistic-Reg.py --rand 1 --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir > ./Log/sklearn/${name} 2>&1 &
     echo $name
-
 done
 
+# test for no normalization
+POS=0
+for RAND in 0 1; do
+    name=SGD_weight_p${POS}_e15_r${RAND}
+    python Logistic-Reg.py --rand ${RAND} --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir --not_norm > ./Log/sklearn/${name} 2>&1 &
+    echo $name
+done
 
-# random searching
+wait
 
-# for i in `seq 0 1 9`
-# do
-#         name=SGD_weight_p0_nG5-20_sample_r${i}
-#         python Logistic-Reg.py --rand $i --pos 0 --norm G --norm_param 5-20 --sample_norm 1 --save $save_dir > ./Log/sklearn/${name} 2>&1 &
-#         if [ $i == 4 ]
-#         then
-#                 wait
-#         fi
-# done
-# wait
+# test for 0.5 upsampling (pos=32)
+RAND=0
+for NORM_PARM in 0.0001 0.001; do
+	for NORM in m G; do
+		for POS in 32; do
+		    name=SGD_weight_${NORM}${NORM_PARM}_p${POS}_e15_r${RAND}
+		    echo $name
+		    python Logistic-Reg.py --rand {RAND} --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir --not_weight > ./Log/sklearn/${name} 2>&1 &
+	done
+done

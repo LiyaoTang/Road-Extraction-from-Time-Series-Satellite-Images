@@ -38,6 +38,7 @@ parser.add_option("--pos", type="int", default=0, dest="pos_num")
 parser.add_option("--norm_param", dest="norm_param")
 parser.add_option("--sample_norm", type="int", default=0, dest="sample_norm")
 parser.add_option("--norm", default="m", dest="norm")
+parser.add_option("--not_norm", action="store_false", default=True, dest="use_norm")
 parser.add_option("--size", type="int", default=8, dest="size")
 parser.add_option("-e", "--epoch", type="int", default=15, dest="epoch")
 parser.add_option("--rand", type="int", dest="rand_seed")
@@ -51,6 +52,7 @@ model_name = options.model_name
 use_weight = options.use_weight
 pos_num = options.pos_num
 norm = str(options.norm)
+use_norm = options.use_norm
 norm_param = options.norm_param
 sample_norm = options.sample_norm
 size = options.size
@@ -85,7 +87,7 @@ assert norm in set(['G', 'm'])
 if not model_name:
 	model_name = "sk-SGD_"
 	if use_weight: model_name += "weight_"
-	model_name += norm + str(norm_param).replace('.', '_') + "_"
+	if use_norm: model_name += norm + str(norm_param).replace('.', '_') + "_"
 	model_name += "p" + str(pos_num) + "_"
 	model_name += "e" + str(epoch) + "_"
 	model_name += "r" + str(rand_seed)
@@ -196,7 +198,7 @@ avg_precision_curve = []
 for epoch_num in range(epoch):
 	for iter_num in range(iteration):
 		
-		batch_x, batch_y = Train_Data.get_patches(batch_size=batch_size, positive_num=pos_num, norm=True)
+		batch_x, batch_y = Train_Data.get_patches(batch_size=batch_size, positive_num=pos_num, norm=use_norm)
 		batch_x = batch_x.reshape((batch_size, -1))
 		
 		log_classifier.partial_fit(batch_x, batch_y)
@@ -204,7 +206,7 @@ for epoch_num in range(epoch):
 	# snap shot on CV set
 	cv_metric = Metric_Record()
 	# record info
-	for x, y in CV_Data.iterate_data(norm=True):
+	for x, y in CV_Data.iterate_data(norm=use_norm):
 		x = x.reshape((1, -1))
 
 		pred = log_classifier.predict(x)
@@ -264,7 +266,7 @@ print(log_classifier.coef_.max(), log_classifier.coef_.min(), log_classifier.coe
 # train set eva
 print("On train set")
 train_metric = Metric_Record()
-for x, y in Train_Data.iterate_data(norm=True):
+for x, y in Train_Data.iterate_data(norm=use_norm):
 	x = x.reshape((1, -1))
 
 	pred = log_classifier.predict(x)
@@ -295,13 +297,13 @@ gc.collect()
 # Predict road mask
 # Predict road prob masks on train
 train_pred_road = np.zeros(train_road_mask.shape)
-for coord, patch in Train_Data.iterate_raw_image_patches_with_coord(norm=True):
+for coord, patch in Train_Data.iterate_raw_image_patches_with_coord(norm=use_norm):
 	patch = patch.reshape([1,-1])
 	train_pred_road[int(coord[0]+size/2), int(coord[1]+size/2)] = log_classifier.predict_proba(patch)[0, pos_class_index]
 
 # Predict road prob on CV
 CV_pred_road = np.zeros(CV_road_mask.shape)
-for coord, patch in CV_Data.iterate_raw_image_patches_with_coord(norm=True):
+for coord, patch in CV_Data.iterate_raw_image_patches_with_coord(norm=use_norm):
 	patch = patch.reshape([1,-1])
 	CV_pred_road[int(coord[0]+size/2), int(coord[1]+size/2)] = log_classifier.predict_proba(patch)[0, pos_class_index]
 
