@@ -28,22 +28,24 @@ from Bilinear_Kernel import *
 parser = OptionParser()
 parser.add_option("--save", dest="save_path")
 parser.add_option("--name", dest="model_name")
+parser.add_option("--record_summary", action="store_true", default=False, dest="record_summary")
 
-parser.add_option("--train", dest="path_train_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_128_18_train")
-parser.add_option("--cv", dest="path_cv_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_128_18_cv")
+parser.add_option("--train", dest="path_train_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_thr1_128_16_train")
+parser.add_option("--cv", dest="path_cv_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_thr1_128_16_cv")
 
 parser.add_option("--norm", default="mean", dest="norm")
 parser.add_option("--pos", type="int", default=0, dest="pos_num")
 parser.add_option("--size", type="int", default=128, dest="size")
 parser.add_option("-e", "--epoch", type="int", default=15, dest="epoch")
 parser.add_option("--learning_rate", type="float", default=9e-6, dest="learning_rate")
-parser.add_option("--batch", type="int", default=2, dest="batch_size")
-parser.add_option("--rand", type="int", default=0, dest="rand_seed")
+parser.add_option("--batch", type="int", default=1, dest="batch_size")
+parser.add_option("--rand", type="int", dest="rand_seed")
 
 parser.add_option("--conv", dest="conv_struct")
 parser.add_option("--concat_input", dest="concat_input")
 parser.add_option("--not_weight", action="store_false", default=True, dest="use_weight")
 parser.add_option("--use_batch_norm", action="store_true", default=False, dest="use_batch_norm")
+parser.add_option("--output_conv", type="int", default=3, dest="output_conv")
 
 parser.add_option("--gpu", dest="gpu")
 parser.add_option("--gpu_max_mem", type="float", default=0.8, dest="gpu_max_mem")
@@ -54,6 +56,7 @@ path_train_set = options.path_train_set
 path_cv_set = options.path_cv_set
 save_path = options.save_path
 model_name = options.model_name
+record_summary = options.record_summary
 
 norm = options.norm
 pos_num = options.pos_num
@@ -68,6 +71,7 @@ conv_struct = options.conv_struct
 use_weight = options.use_weight
 use_batch_norm = options.use_batch_norm
 concat_input = options.concat_input
+output_conv = options.output_conv
 
 gpu = options.gpu
 gpu_max_mem = options.gpu_max_mem
@@ -85,11 +89,11 @@ else:
 
 if not model_name:
     model_name = "Unet_"
-    model_name += conv_struct + "_"
+    model_name += conv_struct + "_" + str(output_conv) + "_"
     model_name += norm[0] + "_"
     if use_weight: model_name += "weight_"
     if use_batch_norm: model_name += "bn_"
-    if concat_input: model_name += "concatI" + concat_input + "_"
+    if concat_input: model_name += "catI" + concat_input + "_"
     model_name += "p" + str(pos_num) + "_"
     model_name += "e" + str(epoch) + "_"
     model_name += "r" + str(rand_seed)
@@ -134,7 +138,8 @@ print()
 
 
 # set random seed
-np.random.seed(rand_seed)
+if not (rand_seed is None):
+    np.random.seed(rand_seed)
 
 # Load training set
 train_set = h5py.File(path_train_set, 'r')
@@ -188,6 +193,14 @@ if use_weight:
 
 iteration = int(Train_Data.size/batch_size) + 1
 
+if use_batch_norm:
+    normalizer_fn=tf.contrib.layers.batch_norm
+    normalizer_params={'scale':True, 'is_training':is_training}
+else:
+    normalizer_fn=None
+    normalizer_params=None
+
+
 tf.reset_default_graph()
 with tf.variable_scope('input'):
     x = tf.placeholder(tf.float32, shape=[None, size, size, band], name='x')
@@ -210,45 +223,45 @@ with tf.variable_scope('input_bridge'):
 with tf.variable_scope('down_sampling'):
     # Convolutional Layer 1
     net = tf.contrib.layers.conv2d(inputs=x, num_outputs=conv_struct[0], kernel_size=3, 
-                                   stride=1, padding='SAME', scope='conv1')
+                                   stride=1, padding='SAME', normalizer_fn=normalizer_fn, normalizer_params=normalizer_params, scope='conv1')
 
     conv1 = net
     net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool1')
     
     # Convolutional Layer 2
     net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_struct[1], kernel_size=3, 
-                                   stride=1, padding='SAME', scope='conv2')
+                                   stride=1, padding='SAME', normalizer_fn=normalizer_fn, normalizer_params=normalizer_params, scope='conv2')
     conv2 = net
     net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool2')
     
     # Convolutional Layer 3
     net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_struct[2], kernel_size=3, 
-                                   stride=1, padding='SAME', scope='conv3')
+                                   stride=1, padding='SAME', normalizer_fn=normalizer_fn, normalizer_params=normalizer_params, scope='conv3')
     conv3 = net
     net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool3')
 
 
 net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_struct[3], kernel_size=3, 
-                               stride=1, padding='SAME', scope='bridge')
+                               stride=1, padding='SAME', normalizer_fn=normalizer_fn, normalizer_params=normalizer_params, scope='bridge')
 
 
 with tf.variable_scope('up_sampling'):
     kernel_size = get_kernel_size(2)
     net = tf.contrib.layers.conv2d_transpose(inputs=net, num_outputs=conv_struct[2], kernel_size=kernel_size, stride=2, 
                                              weights_initializer=tf.constant_initializer(get_bilinear_upsample_weights(2, conv_struct[3], conv_struct[2])), 
-                                             scope='conv3_T')
+                                             normalizer_fn=normalizer_fn, normalizer_params=normalizer_params, scope='conv3_T')
     with tf.variable_scope('concat3'):
         net = tf.concat([net, conv3], axis=-1)
 
     net = tf.contrib.layers.conv2d_transpose(inputs=net, num_outputs=conv_struct[1], kernel_size=kernel_size, stride=2, 
                                              weights_initializer=tf.constant_initializer(get_bilinear_upsample_weights(2, conv_struct[2], conv_struct[1])), 
-                                             scope='conv2_T')
+                                             normalizer_fn=normalizer_fn, normalizer_params=normalizer_params, scope='conv2_T')
     with tf.variable_scope('concat2'):
         net = tf.concat([net, conv2], axis=-1)
     
     net = tf.contrib.layers.conv2d_transpose(inputs=net, num_outputs=conv_struct[0], kernel_size=kernel_size, stride=2, 
                                              weights_initializer=tf.constant_initializer(get_bilinear_upsample_weights(2, conv_struct[1], conv_struct[0])), 
-                                             scope='conv1_T')
+                                             normalizer_fn=normalizer_fn, normalizer_params=normalizer_params, scope='conv1_T')
 
     with tf.variable_scope('concat1'):
         net = tf.concat([net, conv1], axis=-1)
@@ -257,10 +270,10 @@ with tf.variable_scope('up_sampling'):
             with tf.variable_scope('concat_input'):
                 net = tf.concat([net, input_map], axis=-1)
 
-logits = tf.contrib.layers.conv2d(inputs=net, num_outputs=class_output, kernel_size=3, stride=1, padding='SAME', scope='logits')
+logits = tf.contrib.layers.conv2d(inputs=net, num_outputs=class_output, kernel_size=output_conv, stride=1, padding='SAME', scope='logits')
 
 with tf.variable_scope('prob_out'):
-    prob_out = tf.nn.softmax(net, name='prob_out')
+    prob_out = tf.nn.softmax(logits, name='prob_out')
 
 with tf.variable_scope('cross_entropy'):
     flat_logits = tf.reshape(logits, (-1, class_output), name='flat_logits')
@@ -273,6 +286,45 @@ with tf.variable_scope('cross_entropy'):
 update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
 with tf.control_dependencies(update_ops):
     train_step = tf.train.AdamOptimizer(learning_rate).minimize(cross_entropy)
+
+if record_summary:            
+    with tf.variable_scope('summary'):
+        graph = tf.get_default_graph()
+
+        # conv layers params
+        conv_scopes = ['conv1', 'conv2', 'conv3', 'bridge', 'conv3_T', 'conv2_T', 'conv1_T']
+
+        for scope_name in conv_scopes:
+            target_tensors = ['/weights:0']
+            if use_batch_norm: target_tensors.extend(['/BatchNorm/gamma:0', '/BatchNorm/beta:0'])
+            else: target_tensors.append('/biases:0')
+            for tensor_name in target_tensors:
+                tensor_name = scope_name + tensor_name
+                cur_tensor = graph.get_tensor_by_name(tensor_name)
+                tensor_name = tensor_name.split(':')[0]
+                tf.summary.histogram(tensor_name, cur_tensor)
+                tf.summary.histogram('grad_'+tensor_name, tf.gradients(cross_entropy, [cur_tensor])[0])
+
+        # logits layer params
+        scope_name = 'logits'
+        target_tensors = ['/weights:0', '/biases:0']
+        for tensor_name in target_tensors:
+            tensor_name = scope_name + tensor_name
+            cur_tensor = graph.get_tensor_by_name(tensor_name)
+            tensor_name = tensor_name.split(':')[0]
+            tf.summary.histogram(tensor_name, cur_tensor)
+            tf.summary.histogram('grad_'+tensor_name, tf.gradients(cross_entropy, [cur_tensor])[0])
+
+        # output layer
+        tf.summary.image('input', tf.reverse(x[:,:,:,1:4], axis=[-1])) # axis must be of rank 1
+        tf.summary.image('label', tf.expand_dims(y[:,:,:,1], axis=-1))
+        tf.summary.image('prob_out_pos', tf.expand_dims(prob_out[:,:,:,1], axis=-1))
+        tf.summary.image('prob_out_neg', tf.expand_dims(prob_out[:,:,:,0], axis=-1))
+        tf.summary.image('logits_pos', tf.expand_dims(logits[:,:,:,1], axis=-1))
+        tf.summary.image('logits_neg', tf.expand_dims(logits[:,:,:,0], axis=-1))
+        tf.summary.scalar('cross_entropy', cross_entropy)
+    merged_summary = tf.summary.merge_all()
+
 
 # monitor mem usage
 process = psutil.Process(os.getpid())
@@ -290,6 +342,7 @@ saver = tf.train.Saver()
 
 config = tf.ConfigProto()
 config.gpu_options.per_process_gpu_memory_fraction = gpu_max_mem
+config.gpu_options.allow_growth = True
 sess = tf.InteractiveSession(config=config)
 sess.run(tf.global_variables_initializer())
 

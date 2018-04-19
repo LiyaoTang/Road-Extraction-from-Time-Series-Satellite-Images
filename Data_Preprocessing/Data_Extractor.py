@@ -269,6 +269,12 @@ class FCN_Data_Extractor (Data_Extractor):
             return one_hot_label
         return label
 
+    # def _get_weight(self, X, Y):
+    #     W = Y.copy()
+    #     for idx in range(len(W)):
+            
+
+
     def get_patches(self, batch_size, positive_num = 0, norm = True, wrap_around=True, weighted=True):
         X = []
         Y = []

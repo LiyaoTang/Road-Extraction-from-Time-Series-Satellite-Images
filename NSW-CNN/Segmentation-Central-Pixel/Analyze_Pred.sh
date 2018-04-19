@@ -16,8 +16,9 @@ for file in `cd ${pred_dir} && ls *.h5`; do
 		# path + name => get the h5 file; save => save the pred in png (name inherit the --name opt)
 		python Analyze_Pred.py --path ${pred_dir} --name ${file} --pred_weight ${weight} --save ${save_dir} --analyze_train
 		# python Analyze_Pred.py --path ${pred_dir} --name ${file} --pred_weight ${weight} --save ${save_dir} --analyze_train --print_log --pred_weight 0.5
-		# python Analyze_Pred.py --path ${pred_dir} --name ${file} --pred_weight ${weight} --save ${save_dir} --analyze_CV --print_log --pred_weight 0.5
+
 		# python Analyze_Pred.py --path ${pred_dir} --name ${file} --pred_weight ${weight} --save ${save_dir} --analyze_CV
+		# python Analyze_Pred.py --path ${pred_dir} --name ${file} --pred_weight ${weight} --save ${save_dir} --analyze_CV --print_log --pred_weight 0.5
 
     else
         printf "%-90s %s\n" "skip ${sub_pred_name}" "- exists"
