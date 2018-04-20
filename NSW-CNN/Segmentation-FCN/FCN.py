@@ -374,10 +374,11 @@ for epoch_num in range(epoch):
     for batch_x, batch_y, batch_w in CV_Data.iterate_data(norm=True, weighted=use_weight):
         batch_x = batch_x.transpose((0, 2, 3, 1))
 
-        [pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, weight: batch_w, is_training: False})
-        pred = int(pred_prob > 0.5)
+        [pred_prob, cross_entropy_cost] = sess.run([prob_out, cross_entropy], feed_dict={x: batch_x, y: batch_y, weight: batch_w, is_training: False})
 
-        cv_metric.accumulate(Y=batch_y, pred=pred, pred_prob=pred_prob)
+        cv_metric.accumulate(Y         = np.array(batch_y.reshape(-1,class_output)[:,1]>0.5, dtype=int), 
+                             pred      = np.array(pred_prob.reshape(-1,class_output)[:,1]>0.5, dtype=int), 
+                             pred_prob = pred_prob.reshape(-1,class_output)[:,1])
         cv_cross_entropy_list.append(cross_entropy_cost)
 
     # calculate value
@@ -436,15 +437,16 @@ train_cross_entropy_list = []
 for batch_x, batch_y, batch_w in CV_Data.iterate_data(norm=True, weighted=use_weight):
     batch_x = batch_x.transpose((0, 2, 3, 1))
 
-    [pred_prob, cross_entropy_cost] = sess.run([logits, cross_entropy], feed_dict={x: batch_x, y: batch_y, weight: batch_w, is_training: False})
-    pred = int(pred_prob > 0.5)
-    
-    train_metric.accumulate(Y=batch_y, pred=pred, pred_prob=pred_prob)    
+    [pred_prob, cross_entropy_cost] = sess.run([prob_out, cross_entropy], feed_dict={x: batch_x, y: batch_y, weight: batch_w, is_training: False})
+
+    train_metric.accumulate(Y         = np.array(batch_y.reshape(-1,class_output)[:,1]>0.5, dtype=int),
+                            pred      = np.array(pred_prob.reshape(-1,class_output)[:,1]>0.5, dtype=int), 
+                            pred_prob = pred_prob.reshape(-1,class_output)[:,1])    
     train_cross_entropy_list.append(cross_entropy_cost)
 
 train_metric.print_info()
-AUC_score = skmt.roc_auc_score(train_metric.y_true, train_metric.pred_prob)
-avg_precision_score = skmt.average_precision_score(train_metric.y_true, train_metric.pred_prob)
+AUC_score = skmt.roc_auc_score(np.array(train_metric.y_true).flatten(), np.array(train_metric.pred_prob).flatten())
+avg_precision_score = skmt.average_precision_score(np.array(train_metric.y_true).flatten(), np.array(train_metric.pred_prob).flatten())
 mean_cross_entropy = sum(train_cross_entropy_list)/len(train_cross_entropy_list)
 print("mean_cross_entropy = ", mean_cross_entropy, "balanced_acc = ", balanced_acc, "AUC = ", AUC_score, "avg_precision = ", avg_precision_score)
 
