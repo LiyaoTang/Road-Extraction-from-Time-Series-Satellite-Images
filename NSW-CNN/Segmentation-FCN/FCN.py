@@ -383,8 +383,8 @@ for epoch_num in range(epoch):
 
     # calculate value
     balanced_acc = cv_metric.get_balanced_acc()
-    AUC_score = skmt.roc_auc_score(cv_metric.y_true, cv_metric.pred_prob)
-    avg_precision_score = skmt.average_precision_score(cv_metric.y_true, cv_metric.pred_prob)
+    AUC_score = skmt.roc_auc_score(np.array(cv_metric.y_true).flatten(), np.array(cv_metric.pred_prob).flatten())
+    avg_precision_score = skmt.average_precision_score(np.array(cv_metric.y_true).flatten(), np.array(cv_metric.pred_prob).flatten())
     mean_cross_entropy = sum(cv_cross_entropy_list)/len(cv_cross_entropy_list)
 
     balanced_acc_curve.append(balanced_acc)
