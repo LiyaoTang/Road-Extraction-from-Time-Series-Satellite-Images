@@ -137,6 +137,7 @@ for NORM in m G; do
     name=SGD_weight_${NORM}${NORM_PARM}_p${POS}_e15_r1
     python Logistic-Reg.py --rand 1 --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir > ./Log/sklearn/${name} 2>&1 &
     echo $name
+    sleep 10m
 done
 
 # test for no normalization
