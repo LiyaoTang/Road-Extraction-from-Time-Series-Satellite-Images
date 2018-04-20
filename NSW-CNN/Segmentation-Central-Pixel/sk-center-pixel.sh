@@ -131,21 +131,26 @@ POS=0
 NORM_PARM=0.0001
 for NORM in m G; do
     name=SGD_weight_${NORM}${NORM_PARM}_p${POS}_e15_r${RAND}
-    python Logistic-Reg.py --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir > ./Log/sklearn/${name} 2>&1 &                
     echo $name
+    python Logistic-Reg.py --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir > ./Log/sklearn/${name} 2>&1 &                
+
+    wait
 
     name=SGD_weight_${NORM}${NORM_PARM}_p${POS}_e15_r1
-    python Logistic-Reg.py --rand 1 --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir > ./Log/sklearn/${name} 2>&1 &
     echo $name
-    sleep 10m
+    python Logistic-Reg.py --rand 1 --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir > ./Log/sklearn/${name} 2>&1 &
+    
+    wait
+    #sleep 10m
 done
 
 # test for no normalization
 POS=0
 for RAND in 0 1; do
     name=SGD_weight_p${POS}_e15_r${RAND}
-    python Logistic-Reg.py --rand ${RAND} --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir --not_norm > ./Log/sklearn/${name} 2>&1 &
     echo $name
+    python Logistic-Reg.py --rand ${RAND} --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir --not_norm > ./Log/sklearn/${name} 2>&1 &
+    wait
 done
 
 wait
@@ -153,10 +158,12 @@ wait
 # test for 0.5 upsampling (pos=32)
 RAND=0
 for NORM_PARM in 0.0001 0.001; do
-	for NORM in m G; do
-		for POS in 32; do
-		    name=SGD_weight_${NORM}${NORM_PARM}_p${POS}_e15_r${RAND}
-		    echo $name
-		    python Logistic-Reg.py --rand {RAND} --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir --not_weight > ./Log/sklearn/${name} 2>&1 &
-	done
+    for NORM in m G; do
+        for POS in 32; do
+            name=SGD_weight_${NORM}${NORM_PARM}_p${POS}_e15_r${RAND}
+	    echo $name
+	    python Logistic-Reg.py --rand ${RAND} --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir --not_weight > ./Log/sklearn/${name} 2>&1 &
+            wait
+        done
+    done
 done
