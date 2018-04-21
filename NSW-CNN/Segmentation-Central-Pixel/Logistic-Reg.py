@@ -60,40 +60,40 @@ epoch = options.epoch
 rand_seed = options.rand_seed
 
 if not (rand_seed is None):
-	np.random.seed(rand_seed)
+    np.random.seed(rand_seed)
 
 if not save_path:
-	print("no save path provided")
-	sys.exit()
+    print("no save path provided")
+    sys.exit()
 save_path = save_path.strip('/') + '/'
 if not os.path.exists(save_path):
-	os.makedirs(save_path)
+    os.makedirs(save_path)
 if not os.path.exists(save_path+'Analysis'):
-	os.makedirs(save_path+'Analysis')
+    os.makedirs(save_path+'Analysis')
 
 print("Train set:", path_train_set)
 print("CV set:", path_cv_set)
 
 if sample_norm:
-	norm_param = norm_param.split('-')
-	norm_param = [float(x) for x in norm_param]
-	assert len(norm_param) == 2
-	norm_param = np.random.uniform(norm_param[0], norm_param[1])
-	norm_param = np.around(norm_param, decimals=sample_norm)
+    norm_param = norm_param.split('-')
+    norm_param = [float(x) for x in norm_param]
+    assert len(norm_param) == 2
+    norm_param = np.random.uniform(norm_param[0], norm_param[1])
+    norm_param = np.around(norm_param, decimals=sample_norm)
 else:
-	norm_param = float(norm_param)
+    norm_param = float(norm_param)
 
 assert norm in set(['G', 'm'])
 if not model_name:
-	model_name = "sk-SGD_"
-	if use_weight: model_name += "weight_"
-	if use_norm: model_name += norm + str(norm_param).replace('.', '_') + "_"
-	model_name += "p" + str(pos_num) + "_"
-	model_name += "e" + str(epoch) + "_"
-	model_name += "r" + str(rand_seed)
-	
-	print("will be saved as ", model_name)
-	print("will be saved into ", save_path)
+    model_name = "sk-SGD_"
+    if use_weight: model_name += "weight_"
+    if use_norm: model_name += norm + str(norm_param).replace('.', '_') + "_"
+    model_name += "p" + str(pos_num) + "_"
+    model_name += "e" + str(epoch) + "_"
+    model_name += "r" + str(rand_seed)
+    
+    print("will be saved as ", model_name)
+    print("will be saved into ", save_path)
 
 if norm.startswith('G'): norm = 'Gaussian'
 elif norm == 'm': norm = 'mean'
@@ -127,16 +127,16 @@ CV_road_mask = np.array(CV_set['road_mask'])
 CV_set.close()
 
 Train_Data = Data_Extractor (train_raw_image, train_road_mask, size,
-							 pos_topleft_coord = train_pos_topleft_coord,
-							 neg_topleft_coord = train_neg_topleft_coord,
-							 normalization = norm)
+                             pos_topleft_coord = train_pos_topleft_coord,
+                             neg_topleft_coord = train_neg_topleft_coord,
+                             normalization = norm)
 # run garbage collector
 gc.collect()
 
 CV_Data = Data_Extractor (CV_raw_image, CV_road_mask, size,
-						  pos_topleft_coord = CV_pos_topleft_coord,
-						  neg_topleft_coord = CV_neg_topleft_coord,
-						  normalization = norm)
+                          pos_topleft_coord = CV_pos_topleft_coord,
+                          neg_topleft_coord = CV_neg_topleft_coord,
+                          normalization = norm)
 # run garbage collector
 gc.collect()
 
@@ -167,11 +167,11 @@ iteration = int(Train_Data.size / batch_size) + 1
 
 # create SGD classifier
 if use_weight:
-	log_classifier = sklm.SGDClassifier(loss='log', max_iter=1, shuffle=False, alpha=norm_param,
-										class_weight={0:Train_Data.pos_size/Train_Data.size,
-													  1:Train_Data.neg_size/Train_Data.size})
+    log_classifier = sklm.SGDClassifier(loss='log', max_iter=1, shuffle=False, alpha=norm_param,
+                                        class_weight={0:Train_Data.pos_size/Train_Data.size,
+                                                      1:Train_Data.neg_size/Train_Data.size})
 else:
-	log_classifier = sklm.SGDClassifier(loss='log', max_iter=1, shuffle=False, alpha=norm_param,)
+    log_classifier = sklm.SGDClassifier(loss='log', max_iter=1, shuffle=False, alpha=norm_param,)
 print(log_classifier)
 
 all_classes = np.array([0, 1])
@@ -196,34 +196,34 @@ balanced_acc_curve = []
 AUC_curve = []
 avg_precision_curve = []
 for epoch_num in range(epoch):
-	for iter_num in range(iteration):
-		
-		batch_x, batch_y = Train_Data.get_patches(batch_size=batch_size, positive_num=pos_num, norm=use_norm)
-		batch_x = batch_x.reshape((batch_size, -1))
-		
-		log_classifier.partial_fit(batch_x, batch_y)
+    for iter_num in range(iteration):
+        
+        batch_x, batch_y = Train_Data.get_patches(batch_size=batch_size, positive_num=pos_num, norm=use_norm)
+        batch_x = batch_x.reshape((batch_size, -1))
+        
+        log_classifier.partial_fit(batch_x, batch_y)
 
-	# snap shot on CV set
-	cv_metric = Metric_Record()
-	# record info
-	for x, y in CV_Data.iterate_data(norm=use_norm):
-		x = x.reshape((1, -1))
+    # snap shot on CV set
+    cv_metric = Metric_Record()
+    # record info
+    for x, y in CV_Data.iterate_data(norm=use_norm):
+        x = x.reshape((1, -1))
 
-		pred = log_classifier.predict(x)
-		pred_prob = log_classifier.predict_proba(x)[0, pos_class_index]
-		cv_metric.accumulate(Y=y, pred=pred, pred_prob=pred_prob)
+        pred = log_classifier.predict(x)
+        pred_prob = log_classifier.predict_proba(x)[0, pos_class_index]
+        cv_metric.accumulate(Y=y, pred=pred, pred_prob=pred_prob)
 
-	# calculate value
-	balanced_acc = cv_metric.get_balanced_acc()
-	AUC_score = skmt.roc_auc_score(cv_metric.y_true, cv_metric.pred_prob)
-	avg_precision_score = skmt.average_precision_score(cv_metric.y_true, cv_metric.pred_prob)
+    # calculate value
+    balanced_acc = cv_metric.get_balanced_acc()
+    AUC_score = skmt.roc_auc_score(cv_metric.y_true, cv_metric.pred_prob)
+    avg_precision_score = skmt.average_precision_score(cv_metric.y_true, cv_metric.pred_prob)
 
-	balanced_acc_curve.append(balanced_acc)
-	AUC_curve.append(AUC_score)
-	avg_precision_curve.append(avg_precision_score)
+    balanced_acc_curve.append(balanced_acc)
+    AUC_curve.append(AUC_score)
+    avg_precision_curve.append(avg_precision_score)
 
-	print(" balanced_acc = ", balanced_acc, "AUC = ", AUC_score, "avg_precision = ", avg_precision_score)
-	sys.stdout.flush()
+    print(" balanced_acc = ", balanced_acc, "AUC = ", AUC_score, "avg_precision = ", avg_precision_score)
+    sys.stdout.flush()
 
 print("finish")
 
@@ -267,11 +267,11 @@ print(log_classifier.coef_.max(), log_classifier.coef_.min(), log_classifier.coe
 print("On train set")
 train_metric = Metric_Record()
 for x, y in Train_Data.iterate_data(norm=use_norm):
-	x = x.reshape((1, -1))
+    x = x.reshape((1, -1))
 
-	pred = log_classifier.predict(x)
-	pred_prob = log_classifier.predict_proba(x)[0, pos_class_index]
-	train_metric.accumulate(Y=y, pred=pred, pred_prob=pred_prob)    
+    pred = log_classifier.predict(x)
+    pred_prob = log_classifier.predict_proba(x)[0, pos_class_index]
+    train_metric.accumulate(Y=y, pred=pred, pred_prob=pred_prob)    
 train_metric.print_info()
 # plot ROC curve
 fpr, tpr, thr = skmt.roc_curve(train_metric.y_true, train_metric.pred_prob)
@@ -298,14 +298,14 @@ gc.collect()
 # Predict road prob masks on train
 train_pred_road = np.zeros(train_road_mask.shape)
 for coord, patch in Train_Data.iterate_raw_image_patches_with_coord(norm=use_norm):
-	patch = patch.reshape([1,-1])
-	train_pred_road[int(coord[0]+size/2), int(coord[1]+size/2)] = log_classifier.predict_proba(patch)[0, pos_class_index]
+    patch = patch.reshape([1,-1])
+    train_pred_road[int(coord[0]+size/2), int(coord[1]+size/2)] = log_classifier.predict_proba(patch)[0, pos_class_index]
 
 # Predict road prob on CV
 CV_pred_road = np.zeros(CV_road_mask.shape)
 for coord, patch in CV_Data.iterate_raw_image_patches_with_coord(norm=use_norm):
-	patch = patch.reshape([1,-1])
-	CV_pred_road[int(coord[0]+size/2), int(coord[1]+size/2)] = log_classifier.predict_proba(patch)[0, pos_class_index]
+    patch = patch.reshape([1,-1])
+    CV_pred_road[int(coord[0]+size/2), int(coord[1]+size/2)] = log_classifier.predict_proba(patch)[0, pos_class_index]
 
 # save prediction
 prediction_name = model_name + '_pred.h5'
