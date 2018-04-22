@@ -161,8 +161,8 @@ for NORM_PARM in 0.0001 0.001; do
     for NORM in m G; do
         for POS in 32; do
             name=SGD_weight_${NORM}${NORM_PARM}_p${POS}_e15_r${RAND}
-	    echo $name
-	    python Logistic-Reg.py --rand ${RAND} --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir --not_weight > ./Log/sklearn/${name} 2>&1 &
+            echo $name
+            python Logistic-Reg.py --rand ${RAND} --pos ${POS} --norm ${NORM} --norm_param ${NORM_PARM} --save $save_dir --not_weight > ./Log/sklearn/${name} 2>&1 &
             wait
         done
     done
