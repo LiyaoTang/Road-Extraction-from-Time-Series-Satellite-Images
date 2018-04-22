@@ -78,7 +78,6 @@ gpu = options.gpu
 gpu_max_mem = options.gpu_max_mem
 
 # restrict to single gpu
-assert gpu in set(['0', '1'])
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 os.environ["CUDA_VISIBLE_DEVICES"] = gpu
 
