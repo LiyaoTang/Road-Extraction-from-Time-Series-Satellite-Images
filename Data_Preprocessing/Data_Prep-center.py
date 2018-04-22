@@ -27,6 +27,7 @@ parser.add_option("--sliced_road_data", dest="sliced_road_data")
 parser.add_option("--image_dir", dest="image_dir")
 parser.add_option("--image_name", dest="image_name")
 parser.add_option("--sliced_image_data", dest="sliced_image_data")
+parser.add_option("--split_line_path", dest="split_line_path")
 parser.add_option("--save_dir", dest="save_dir_path")
 
 (options, args) = parser.parse_args()
@@ -35,6 +36,7 @@ size    = options.size
 
 sliced_image_data = options.sliced_image_data
 sliced_road_data  = options.sliced_road_data
+split_line_path   = options.split_line_path
 
 image_dir = options.image_dir
 image_name = options.image_name
@@ -47,10 +49,7 @@ assert (sliced_image_data is None) or (sliced_road_data is None) or (sliced_imag
 
 
 # read in splitted lines to split
-data_dir = "../Data/090085/"
-
-split_line_name = "img_split_lines.h5"
-h5f = h5py.File(data_dir + split_line_name, 'r')
+h5f = h5py.File(split_line_path, 'r')
 line_1 = list(h5f['line_cv_test'])
 line_2 = list(h5f['line_train_cv'])
 h5f.close()
@@ -183,8 +182,8 @@ if not (image_path is None) and not (rd_type is None): # slice the image & road
                                                        line_1 = line_1, line_2 = line_2,
                                                        base_func = lambda i: i+int(min(line_2)),
                                                        cmp_func = lambda img_x, j: img_x > line_2[j])
-    # CV
-    raw_image_CV, road_mask_CV = copy_into_slice(raw_image, combined_road_mask, 
+    # cv
+    raw_image_cv, road_mask_cv = copy_into_slice(raw_image, combined_road_mask, 
                                                  height= int(combined_road_mask.shape[0]-min(line_2))+1,
                                                  width=combined_road_mask.shape[1], 
                                                  line_1 = line_1, line_2 = line_2,
@@ -209,8 +208,8 @@ elif not (image_path is None): # slice the image
                                                        line_1 = line_1, line_2 = line_2,
                                                        base_func = lambda i: i+int(min(line_2)),
                                                        cmp_func = lambda img_x, j: img_x > line_2[j])
-    # CV
-    raw_image_CV = copy_image_into_slice(raw_image, 
+    # cv
+    raw_image_cv = copy_image_into_slice(raw_image, 
                                                  height= int(raw_image[0].shape[0]-min(line_2))+1,
                                                  width=raw_image[0].shape[1], 
                                                  line_1 = line_1, line_2 = line_2,
@@ -234,8 +233,8 @@ elif not (rd_type is None): # slice the road
                                            line_1 = line_1, line_2 = line_2,
                                            base_func = lambda i: i+int(min(line_2)),
                                            cmp_func = lambda img_x, j: img_x > line_2[j])
-    # CV
-    road_mask_CV = copy_road_into_slice(combined_road_mask, 
+    # cv
+    road_mask_cv = copy_road_into_slice(combined_road_mask, 
                                          height= int(combined_road_mask.shape[0]-min(line_2))+1,
                                          width=combined_road_mask.shape[1], 
                                          line_1 = line_1, line_2 = line_2,
@@ -269,7 +268,7 @@ train_h5f = h5f['train']
 create_set_with_name(raw_image=raw_image_train, combined_road_mask=road_mask_train,
                      divide = divide, step = size, h5f=train_h5f)
 
-# CV
+# cv
 cv_h5f = h5f['cv']
 create_set_with_name(raw_image=raw_image_cv, combined_road_mask=road_mask_cv,
                      divide = divide, step = size, h5f=cv_h5f)
@@ -278,3 +277,5 @@ create_set_with_name(raw_image=raw_image_cv, combined_road_mask=road_mask_cv,
 test_h5f = h5f['test']
 create_set_with_name(raw_image=raw_image_test, combined_road_mask=road_mask_test,
                      divide = divide, step = size, h5f=test_h5f)
+
+h5f.close()

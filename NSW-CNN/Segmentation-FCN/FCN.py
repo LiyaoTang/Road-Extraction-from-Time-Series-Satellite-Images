@@ -32,6 +32,7 @@ parser.add_option("--record_summary", action="store_true", default=False, dest="
 
 parser.add_option("--train", dest="path_train_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_thr1_128_16_train")
 parser.add_option("--cv", dest="path_cv_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_thr1_128_16_cv")
+parser.add_option("--test", dest="path_test_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_thr1_128_16_cv")
 
 parser.add_option("--norm", default="mean", dest="norm")
 parser.add_option("--pos", type="int", default=0, dest="pos_num")
@@ -485,11 +486,43 @@ for coord, patch in CV_Data.iterate_raw_image_patches_with_coord(norm=True):
     patch = patch.transpose((0, 2, 3, 1))
     CV_pred_road[coord[0]:coord[0]+size, coord[1]:coord[1]+size, :] += logits.eval(feed_dict={x: patch, is_training: False})[0]
 
+# Predict road prob on test
+
+# load test
+
+CV_set = h5py.File(path_cv_set, 'r')
+CV_pos_topleft_coord = np.array(CV_set['positive_example'])
+CV_neg_topleft_coord = np.array(CV_set['negative_example'])
+CV_raw_image = np.array(CV_set['raw_image'])
+CV_road_mask = np.array(CV_set['road_mask'])
+CV_set.close()
+
+Train_Data = FCN_Data_Extractor (train_raw_image, train_road_mask, size,
+                                 pos_topleft_coord = train_pos_topleft_coord,
+                                 neg_topleft_coord = train_neg_topleft_coord,
+                                 normalization = norm)
+
+CV_Data = FCN_Data_Extractor (CV_raw_image, CV_road_mask, size,
+                              pos_topleft_coord = CV_pos_topleft_coord,
+                              neg_topleft_coord = CV_neg_topleft_coord,
+                              normalization = norm)
+# run garbage collector
+
+Test_Data = FCN_Data_Extractor (test_raw_image, test_road_mask, size,
+                                pos_topleft_coord = test_pos_topleft_coord,
+                                neg_topleft_coord = test_neg_topleft_coord,
+                                normalization = norm)
+test_pred_road = np.zeros([x for x in test_road_mask.shape] + [2])
+for coord, patch in Test_Data.iterate_raw_image_patches_with_coord(norm=True):
+    patch = patch.transpose((0, 2, 3, 1))
+    test_pred_road[coord[0]:coord[0]+size, coord[1]:coord[1]+size, :] += logits.eval(feed_dict={x: patch, is_training: False})[0]
+
 # save prediction
 prediction_name = model_name + '_pred.h5'
 h5f_file = h5py.File(save_path + prediction_name, 'w')
 h5f_file.create_dataset (name='train_pred', data=train_pred_road)
 h5f_file.create_dataset (name='CV_pred', data=CV_pred_road)
+h5f_file.create_dataset (name='test_pred_road', data=test_pred_road)
 h5f_file.close()
 
 # monitor mem usage
