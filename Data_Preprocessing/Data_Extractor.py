@@ -90,11 +90,11 @@ class Data_Extractor:
             return one_hot_label
         return label
 
-    def iterate_raw_image_patches (self, norm):
+    def iterate_raw_image_patches (self, norm=True):
         for coord in self.topleft_coordinate:
             yield np.array([self._get_raw_patch(coord, norm)])
                 
-    def iterate_raw_image_patches_with_coord (self, norm):
+    def iterate_raw_image_patches_with_coord (self, norm=True):
         for coord in self.topleft_coordinate:
             yield coord, np.array([self._get_raw_patch(coord, norm)])
 
@@ -342,3 +342,68 @@ class FCN_Data_Extractor (Data_Extractor):
                 weight[:,:,:,1] *= self.pos_weight
             
             yield coord, x, y, weight.sum(axis=-1)
+
+
+class Pred_Data_Extractor ():
+
+    def __init__(self, raw_image, step, size, mu=None, std=None, normalization='mean', is_valid=lambda patch: (patch != -9999).all()):
+        self.raw_image = raw_image
+        self.band = raw_image.shape[0]
+        self.step = step
+        self.size = size
+
+        self.is_valid = is_valid
+
+        self.mu = mu
+        self.std  = std
+        self.normalization = normalization
+
+        assert self.band == 7
+        assert self.normalization in set(['mean', 'Gaussian'])
+
+
+    def norm_fn (self, patch):
+        if self.normalization == 'mean':
+            for channel_num in range(self.band):
+                patch[channel_num] = patch[channel_num] - self.mu[channel_num]
+        else:
+            for channel_num in range(self.band):
+                patch[channel_num] = (patch[channel_num] - self.mu[channel_num]) / self.std[channel_num]
+        return patch
+
+    def iterate_raw_image_patches (self, norm=True):
+        raw_image = self.raw_image
+        size = self.size
+        step = self.step
+
+        row_idx = 0
+        while(row_idx+size <= raw_image.shape[1]):
+            col_idx = 0
+            while(col_idx+size <= raw_image.shape[2]):
+                patch = raw_image[:, row_idx:row_idx+size, col_idx:col_idx+size].copy()
+                if self.is_valid(patch):
+                    if norm:
+                        patch = self.norm_fn(patch)
+
+                    yield np.array([patch])
+
+                col_idx += step
+            row_idx += step
+
+    def iterate_raw_image_patches_with_coord (self, norm=True):
+        raw_image = self.raw_image
+        size = self.size
+        step = self.step
+
+        row_idx = 0
+        while(row_idx+size <= raw_image.shape[1]):
+            col_idx = 0
+            while(col_idx+size <= raw_image.shape[2]):
+                patch = raw_image[:, row_idx:row_idx+size, col_idx:col_idx+size].copy()                
+                if self.is_valid(patch):
+                    if norm:
+                        patch = self.norm_fn(patch)
+                    yield (row_idx, col_idx), np.array([patch])
+
+                col_idx += step
+            row_idx += step
