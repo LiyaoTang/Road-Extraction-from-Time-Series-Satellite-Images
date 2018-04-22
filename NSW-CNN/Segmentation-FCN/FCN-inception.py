@@ -47,7 +47,7 @@ parser.add_option("--no_biases", action="store_false", default=True, dest="no_bi
 parser.add_option("--use_batch_norm", action="store_true", default=False, dest="use_batch_norm")
 parser.add_option("--scale_xen", action="store_true", default=False, dest="scale_xen")
 
-parser.add_option("--gpu", dest="gpu")
+parser.add_option("--gpu", default="", dest="gpu")
 parser.add_option("--gpu_max_mem", type="float", default=0.8, dest="gpu_max_mem")
 
 (options, args) = parser.parse_args()
