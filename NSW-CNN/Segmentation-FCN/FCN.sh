@@ -8,7 +8,7 @@ epoch=20
 POS=0
 for CONV in "16-32-64-128"; do
     for OUT_CONV in "3"; do
-        for catIn in "0" "1-16;1-32"; do
+        for catIn in "1-16;1-32"; do
             for NORM in m G ; do
                 for RAND in 0; do
 
@@ -24,7 +24,7 @@ for CONV in "16-32-64-128"; do
 
                     sleep 10m
                     job_cnt=$((job_cnt+2))
-                    if [ $(($job_cnt%6)) -eq 0 ]; then
+                    if [ $(($job_cnt%4)) -eq 0 ]; then
                         wait
                     fi
                 done
