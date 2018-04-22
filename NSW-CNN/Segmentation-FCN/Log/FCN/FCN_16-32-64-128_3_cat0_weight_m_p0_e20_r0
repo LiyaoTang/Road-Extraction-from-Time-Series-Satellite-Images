@@ -1,0 +1,41 @@
+/localdata/u6142160/anaconda3/envs/tf_cpu/lib/python3.6/site-packages/h5py/__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+WARNING:tensorflow:From /localdata/u6142160/anaconda3/envs/tf_cpu/lib/python3.6/site-packages/tensorflow/contrib/learn/python/learn/datasets/base.py:198: retry (from tensorflow.contrib.learn.python.learn.datasets.base) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use the retry module or similar alternatives.
+Train set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_thr1_128_16_train
+CV set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_thr1_128_16_cv
+will be saved as  FCN_16-32-64-128_3_cat0_weight_m_p0_e20_r0
+will be saved into  ./Result/FCN/FCN_16-32-64-128_3_cat0_weight_m_p0_e20_r0/
+mem usage before data loaded: 140.91015625 MB
+
+mu =  [ 140.42133132  186.22724995  365.92096392  358.74944958 2449.2505917
+ 1352.83568307  708.04858695]
+class weight [neg= 0.014629, pos= 0.985371]
+mu =  [ 145.02183288  190.77598344  361.33590698  366.91707464 2380.64990791
+ 1375.52599508  734.46670819]
+class weight [neg= 0.025683, pos= 0.974317]
+train data: (7, 7650, 8091) (7650, 8091)
+cv data: (7, 2365, 8091) (2365, 8091)
+mem usage after data loaded: 5090.4765625 MB
+
+[0.13264859577316138, 0.8673514042268387] [neg, pos]
+mem usage after model created: 5143.21875 MB
+
+mean_cross_entropy =  0.04258402887196666 balanced_acc =  0.5006566918248269 AUC =  0.5013180772350366 avg_precision =  0.025771383941762253
+mean_cross_entropy =  0.034689977641593026 balanced_acc =  0.5 AUC =  0.5000002595748061 avg_precision =  0.02568316836691252
+mean_cross_entropy =  0.03469089529276388 balanced_acc =  0.5 AUC =  0.5000000920699564 avg_precision =  0.02568315998409392
+mean_cross_entropy =  0.034695371928835775 balanced_acc =  0.5 AUC =  0.5000007897826512 avg_precision =  0.025683194903962214
+mean_cross_entropy =  0.03468989539191703 balanced_acc =  0.5 AUC =  0.5000032014226083 avg_precision =  0.025683315598744285
+mean_cross_entropy =  0.034696941402900285 balanced_acc =  0.5 AUC =  0.4999990592487266 avg_precision =  0.02568310829616209
+mean_cross_entropy =  0.03468960202530603 balanced_acc =  0.5 AUC =  0.5000126326405627 avg_precision =  0.025683787618056196
+mean_cross_entropy =  0.03468875335889626 balanced_acc =  0.5 AUC =  0.5000376383468823 avg_precision =  0.025685039202788668
+mean_cross_entropy =  0.034688393451602746 balanced_acc =  0.5 AUC =  0.5000481078640611 avg_precision =  0.025685563258921917
+mean_cross_entropy =  0.03470557395018925 balanced_acc =  0.5 AUC =  0.500036558940546 avg_precision =  0.025684985205375415
+mean_cross_entropy =  0.0346911313753184 balanced_acc =  0.5 AUC =  0.5000636938753 avg_precision =  0.02568634347472866
+mean_cross_entropy =  0.0346881046489869 balanced_acc =  0.5 AUC =  0.5000557220583728 avg_precision =  0.02568594440408717
+mean_cross_entropy =  0.03468381340270708 balanced_acc =  0.5 AUC =  0.5001812697395824 avg_precision =  0.02569223059943703
+mean_cross_entropy =  0.03466553869271311 balanced_acc =  0.5 AUC =  0.5007118406432194 avg_precision =  0.025718830394032804
+mean_cross_entropy =  0.0345956699984426 balanced_acc =  0.5 AUC =  0.5027512333696911 avg_precision =  0.025821588683639218
+mean_cross_entropy =  0.03459870074849926 balanced_acc =  0.5 AUC =  0.5026639297099114 avg_precision =  0.0258171729189759
+mean_cross_entropy =  0.03456894329424886 balanced_acc =  0.5 AUC =  0.5036065241393162 avg_precision =  0.02586492901809843
