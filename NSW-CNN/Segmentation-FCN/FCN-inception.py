@@ -43,7 +43,7 @@ parser.add_option("--rand", type="int", default=0, dest="rand_seed")
 
 parser.add_option("--conv", dest="conv_struct")
 parser.add_option("--not_weight", action="store_false", default=True, dest="use_weight")
-parser.add_option("--no_biases", action="store_false", default=True, dest="no_biases")
+parser.add_option("--no_biases", action="store_true", default=False, dest="no_biases")
 parser.add_option("--use_batch_norm", action="store_true", default=False, dest="use_batch_norm")
 parser.add_option("--scale_xen", action="store_true", default=False, dest="scale_xen")
 
@@ -77,7 +77,7 @@ gpu = options.gpu
 gpu_max_mem = options.gpu_max_mem
 
 # restrict to single gpu
-os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"z
+os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 os.environ["CUDA_VISIBLE_DEVICES"] = gpu
 
 if not save_path:
