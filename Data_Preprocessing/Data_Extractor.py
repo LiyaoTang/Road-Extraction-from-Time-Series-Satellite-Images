@@ -43,6 +43,8 @@ class Data_Extractor:
         
         self.size = self.topleft_coordinate.shape[0]
         
+        self.mu = None
+        self.std = None
         if normalization: 
             self.normalization = normalization
             assert normalization in set(['mean', 'Gaussian'])
@@ -360,7 +362,6 @@ class Pred_Data_Extractor ():
 
         assert self.band == 7
         assert self.normalization in set(['mean', 'Gaussian'])
-
 
     def norm_fn (self, patch):
         if self.normalization == 'mean':
