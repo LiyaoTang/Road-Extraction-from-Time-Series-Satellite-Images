@@ -325,7 +325,7 @@ for epoch_num in range(epoch):
 
         batch_x, batch_y, batch_w = Train_Data.get_patches(batch_size=batch_size, positive_num=pos_num, norm=True, weighted=use_weight)
         batch_x = batch_x.transpose((0, 2, 3, 1))
-        assert (np.equal((batch_w > 0.5), batch_y[:,:,:,1])).all()
+
         train_step.run(feed_dict={x: batch_x, y: batch_y, weight: batch_w, is_training: True})
 
     if record_summary:
@@ -419,7 +419,7 @@ mean_cross_entropy = sum(train_cross_entropy_list)/len(train_cross_entropy_list)
 print("mean_cross_entropy = ", mean_cross_entropy, "balanced_acc = ", balanced_acc, "AUC = ", AUC_score, "avg_precision = ", avg_precision_score)
 
 # plot ROC curve
-fpr, tpr, thr = skmt.roc_curve(np.array(train_metric.y_true)[:,1].flatten(), np.array(train_metric.pred_prob)[:,1].flatten())
+fpr, tpr, thr = skmt.roc_curve(np.array(train_metric.y_true).flatten(), np.array(train_metric.pred_prob).flatten())
 plt.plot(fpr, tpr)
 plt.savefig(save_path+'Analysis/'+'train_ROC_curve.png', bbox_inches='tight')
 plt.close()

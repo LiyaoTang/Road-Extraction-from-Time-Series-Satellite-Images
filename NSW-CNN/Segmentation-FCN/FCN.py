@@ -451,7 +451,7 @@ mean_cross_entropy = sum(train_cross_entropy_list)/len(train_cross_entropy_list)
 print("mean_cross_entropy = ", mean_cross_entropy, "balanced_acc = ", balanced_acc, "AUC = ", AUC_score, "avg_precision = ", avg_precision_score)
 
 # plot ROC curve
-fpr, tpr, thr = skmt.roc_curve(train_metric.y_true, train_metric.pred_prob)
+fpr, tpr, thr = skmt.roc_curve(np.array(train_metric.y_true).flatten(), np.array(train_metric.pred_prob).flatten())
 plt.plot(fpr, tpr)
 plt.savefig(save_path+'Analysis/'+'train_ROC_curve.png', bbox_inches='tight')
 plt.close()
@@ -461,7 +461,7 @@ print("On CV set:")
 cv_metric.print_info()
 
 # plot ROC curve
-fpr, tpr, thr = skmt.roc_curve(cv_metric.y_true, cv_metric.pred_prob)
+fpr, tpr, thr = skmt.roc_curve(np.array(cv_metric.y_true).flatten(), np.array(cv_metric.pred_prob).flatten())
 plt.plot(fpr, tpr)
 plt.savefig(save_path+'Analysis/'+'cv_ROC_curve.png', bbox_inches='tight')
 plt.close()
