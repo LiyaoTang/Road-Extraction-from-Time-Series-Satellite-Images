@@ -361,7 +361,7 @@ class Pred_Data_Extractor ():
         self.normalization = normalization
 
         assert self.band == 7
-        assert self.normalization in set(['mean', 'Gaussian'])
+        assert self.normalization in set(['mean', 'Gaussian', None])
 
         if normalization:
             self._cal_norm_param()

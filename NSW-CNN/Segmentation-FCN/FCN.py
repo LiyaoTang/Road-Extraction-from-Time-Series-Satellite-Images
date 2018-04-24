@@ -102,10 +102,9 @@ if not save_path:
     print("no save path provided")
     sys.exit()
 save_path = save_path.strip('/') + '/' + model_name + '/'
-if not os.path.exists(save_path):
-    os.makedirs(save_path)
-if not os.path.exists(save_path+'Analysis'):
-    os.makedirs(save_path+'Analysis')
+
+os.makedirs(save_path, exist_ok=True)
+os.makedirs(save_path+'Analysis', exist_ok=True)
 
 print("Train set:", path_train_set)
 print("CV set:", path_cv_set)
