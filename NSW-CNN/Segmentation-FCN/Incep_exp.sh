@@ -1,7 +1,7 @@
 #!usr/bin
 
 save_dir=./Result/Inception/
-epoch=30
+epoch=20
 
 # for CONV in "3-16;5-8;1-32|3-8;1-16" "3-8;5-8;1-8|3-4;1-4"; do
 #     for RAND in 0; do

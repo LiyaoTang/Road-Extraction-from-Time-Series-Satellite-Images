@@ -348,7 +348,7 @@ class FCN_Data_Extractor (Data_Extractor):
 
 class Pred_Data_Extractor ():
 
-    def __init__(self, raw_image, step, size, mu=None, std=None, normalization='mean', is_valid=lambda patch: (patch != -9999).all()):
+    def __init__(self, raw_image, step, size, normalization='mean', is_valid=lambda patch: (patch != -9999).all()):
         self.raw_image = raw_image
         self.band = raw_image.shape[0]
         self.step = step
@@ -356,12 +356,36 @@ class Pred_Data_Extractor ():
 
         self.is_valid = is_valid
 
-        self.mu = mu
-        self.std  = std
+        self.mu = None
+        self.std  = None
         self.normalization = normalization
 
         assert self.band == 7
         assert self.normalization in set(['mean', 'Gaussian'])
+
+        if normalization:
+            self._cal_norm_param()
+
+    def _cal_norm_param(self):
+        mu = 0
+        img_cnt = 0
+        # Careful! norm params not yet calculated
+        for patch in self.iterate_raw_image_patches(norm = False):
+            mu += patch[0]
+            img_cnt += 1
+        mu = (mu / img_cnt).mean(axis=(1,2))
+        self.mu = mu
+        print("mu = ", mu)
+
+        if self.normalization == 'Gaussian':
+            std = 0
+            mu_ext = np.repeat(mu, [np.prod(patch[0][0].shape)]*patch[0].shape[0]).reshape(patch[0].shape)
+            
+            for patch in self.iterate_raw_image_patches(norm = False):
+                std += ((patch[0]-mu_ext)**2).mean(axis=(-1,-2))
+            std = np.sqrt(std / img_cnt)
+            self.std = std
+            print('std = ', std)
 
     def norm_fn (self, patch):
         if self.normalization == 'mean':
