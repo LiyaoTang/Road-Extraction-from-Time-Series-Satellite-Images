@@ -1,29 +1,10 @@
 # encoding: utf-8
 
-import numpy as np
-import tensorflow as tf
-import sklearn.metrics as skmt
-import matplotlib
-matplotlib.use('agg') # so that plt works in command line
-import matplotlib.pyplot as plt
-import scipy.io as sio
-import skimage.io
-import h5py
+# setting environments
 import sys
 import os
-import gc
-import os
-import psutil
 
 from optparse import OptionParser
-
-sys.path.append('../Metric/')
-sys.path.append('../../Visualization/')
-sys.path.append('../../Data_Preprocessing/')
-from Metric import *
-from Visualization import *
-from Data_Extractor import *
-from Bilinear_Kernel import *
 
 parser = OptionParser()
 parser.add_option("--save", dest="save_path")
@@ -124,6 +105,26 @@ else:
 # concat_input = 0 => concat the raw input before the calculation of logits
 if concat_input:
     concat_input = [[int(x) for x in config.split('-')] for config in concat_input.split(';')]
+
+# import libraries
+import numpy as np
+import tensorflow as tf
+import sklearn.metrics as skmt
+import matplotlib
+matplotlib.use('agg') # so that plt works in command line
+import matplotlib.pyplot as plt
+import scipy.io as sio
+import skimage.io
+import h5py
+import gc
+import psutil
+sys.path.append('../Metric/')
+sys.path.append('../../Visualization/')
+sys.path.append('../../Data_Preprocessing/')
+from Metric import *
+from Visualization import *
+from Data_Extractor import *
+from Bilinear_Kernel import *
 
 # monitor mem usage
 process = psutil.Process(os.getpid())

@@ -1,29 +1,9 @@
 # encoding: utf-8
 
-import numpy as np
-import tensorflow as tf
-import sklearn.metrics as skmt
-import matplotlib
-matplotlib.use('agg') # so that plt works in command line
-import matplotlib.pyplot as plt
-import scipy.io as sio
-import skimage.io
-import h5py
+# setting environments
 import sys
 import os
-import gc
-import os
-import psutil
-
 from optparse import OptionParser
-
-sys.path.append('../Metric/')
-sys.path.append('../../Visualization/')
-sys.path.append('../../Data_Preprocessing/')
-from Metric import *
-from Visualization import *
-from Data_Extractor import *
-
 
 parser = OptionParser()
 parser.add_option("--save", dest="save_path")
@@ -129,10 +109,33 @@ else:
     print("conv_struct = ", conv_struct)
     assert len(conv_struct) <= 3
 
+# import libraries
+import numpy as np
+import tensorflow as tf
+import sklearn.metrics as skmt
+import matplotlib
+matplotlib.use('agg') # so that plt works in command line
+import matplotlib.pyplot as plt
+import scipy.io as sio
+import skimage.io
+import h5py
+import os
+import gc
+import psutil
+
+sys.path.append('../Metric/')
+sys.path.append('../../Visualization/')
+sys.path.append('../../Data_Preprocessing/')
+from Metric import *
+from Visualization import *
+from Data_Extractor import *
+
 # monitor mem usage
 process = psutil.Process(os.getpid())
 print('mem usage before data loaded:', process.memory_info().rss / 1024/1024, 'MB')
 print()
+
+
 
 
 
