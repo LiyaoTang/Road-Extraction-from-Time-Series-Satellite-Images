@@ -489,12 +489,12 @@ for coord, patch in CV_Data.iterate_raw_image_patches_with_coord(norm=True):
 
 # load test
 
-CV_set = h5py.File(path_cv_set, 'r')
-CV_pos_topleft_coord = np.array(CV_set['positive_example'])
-CV_neg_topleft_coord = np.array(CV_set['negative_example'])
-CV_raw_image = np.array(CV_set['raw_image'])
-CV_road_mask = np.array(CV_set['road_mask'])
-CV_set.close()
+test_set = h5py.File(path_test_set, 'r')
+test_pos_topleft_coord = np.array(test_set['positive_example'])
+test_neg_topleft_coord = np.array(test_set['negative_example'])
+test_raw_image = np.array(test_set['raw_image'])
+test_road_mask = np.array(test_set['road_mask'])
+test_set.close()
 
 Train_Data = FCN_Data_Extractor (train_raw_image, train_road_mask, size,
                                  pos_topleft_coord = train_pos_topleft_coord,

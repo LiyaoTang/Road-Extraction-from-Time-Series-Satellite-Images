@@ -109,12 +109,10 @@ def show_pred_road_against_raw(image, pred_road, true_road=None, light=3.0,
     plt.close()
     
     
-def show_pred_prob_with_raw(image, road_prob, true_road=None, light=3.0, pred_weight=0.3,
-                            figsize=(20,20), show_plot=True, save_path=None):
+def show_pred_prob_with_raw(image, road_prob, true_road=None, coord=(0,0), size=-1, light=3.0, pred_weight=0.3,
+                            figsize=None, show_plot=True, save_path=None):
 
     sub_image = image[[1,2,3]] # BGR
-    
-    assert (road_prob >= 0).all() and (road_prob <= 1).all()
     sub_image = sub_image/10000*light        
     
     for img in sub_image:
@@ -129,18 +127,25 @@ def show_pred_prob_with_raw(image, road_prob, true_road=None, light=3.0, pred_we
     if not (true_road is None):
         true_road_index = np.where(true_road == 1)
         sub_image[0][true_road_index] = 1
-    
+
+    if size > 0:
+        sub_image = sub_image[:,coord[0]:coord[0]+size, coord[1]:coord[1]+size]
+
     patch = np.array([sub_image[2], sub_image[1], sub_image[0]]).transpose(1,2,0)
-    plt.figure(figsize=figsize)
+
+    if figsize:
+        plt.figure(figsize=figsize)
+    
     plt.imshow(patch)
+    
     if not save_path is None:
         plt.savefig(save_path, bbox_inches='tight')
     if show_plot:
         plt.show()
         plt.clf()
-    plt.close()
+        plt.close()
 
-def show_log_pred_with_raw(raw_imgae, pred, road_mask=None, light=3.0, pred_weight=0.3, figsize=(20,20), show_plot=True, save_path=None):
+def show_log_pred_with_raw(raw_imgae, pred, road_mask=None, light=3.0, pred_weight=0.3, figsize=None, show_plot=True, save_path=None):
     log_pred = -np.log(-pred + 1 + 1e-9)
     norm_log_pred = (log_pred - log_pred.min()) / (log_pred.max()-log_pred.min())
     show_pred_prob_with_raw(raw_imgae, norm_log_pred, road_mask, light=light, pred_weight=pred_weight, 
