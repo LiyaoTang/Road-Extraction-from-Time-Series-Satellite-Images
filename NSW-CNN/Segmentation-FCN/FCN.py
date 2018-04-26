@@ -35,7 +35,9 @@ parser.add_option("--gpu_max_mem", type="float", default=0.9, dest="gpu_max_mem"
 (options, args) = parser.parse_args()
 
 path_train_set = options.path_train_set
-path_cv_set = options.path_cv_set
+path_cv_set    = options.path_cv_set
+path_test_set  = options.path_test_set
+
 save_path = options.save_path
 model_name = options.model_name
 record_summary = options.record_summary
