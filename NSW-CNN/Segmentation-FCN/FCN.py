@@ -13,7 +13,6 @@ parser.add_option("--record_summary", action="store_true", default=False, dest="
 
 parser.add_option("--train", dest="path_train_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_thr1_128_16_train")
 parser.add_option("--cv", dest="path_cv_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_thr1_128_16_cv")
-parser.add_option("--test", dest="path_test_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_thr1_128_16_cv")
 
 parser.add_option("--norm", default="mean", dest="norm")
 parser.add_option("--pos", type="int", default=0, dest="pos_num")
@@ -36,7 +35,6 @@ parser.add_option("--gpu_max_mem", type="float", default=0.9, dest="gpu_max_mem"
 
 path_train_set = options.path_train_set
 path_cv_set    = options.path_cv_set
-path_test_set  = options.path_test_set
 
 save_path = options.save_path
 model_name = options.model_name
@@ -100,7 +98,7 @@ if not conv_struct:
     sys.exit()
 else:
     conv_struct = [int(x) for x in conv_struct.split('-')]
-    assert len(conv_struct) == 4
+    assert len(conv_struct) == 3
 
 # parse concat_input options (if not None): e.g. 3-16;5-8;1-32 
 # => concat[ 3x3 out_channel=16, 5x5 out_channel=8, 1x1 out_channel=32] followed by 1x1 conv out_channel = classoutput
@@ -235,11 +233,11 @@ with tf.variable_scope('down_sampling'):
     conv2 = net
     net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool2')
     
-    # Convolutional Layer 3
-    net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_struct[2], kernel_size=3, 
-                                   stride=1, padding='SAME', normalizer_fn=normalizer_fn, normalizer_params=normalizer_params, scope='conv3')
-    conv3 = net
-    net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool3')
+    # # Convolutional Layer 3
+    # net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_struct[2], kernel_size=3, 
+    #                                stride=1, padding='SAME', normalizer_fn=normalizer_fn, normalizer_params=normalizer_params, scope='conv3')
+    # conv3 = net
+    # net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool3')
 
 
 net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_struct[3], kernel_size=3, 
@@ -248,11 +246,11 @@ net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_struct[3], kernel_si
 
 with tf.variable_scope('up_sampling'):
     kernel_size = get_kernel_size(2)
-    net = tf.contrib.layers.conv2d_transpose(inputs=net, num_outputs=conv_struct[2], kernel_size=kernel_size, stride=2, 
-                                             weights_initializer=tf.constant_initializer(get_bilinear_upsample_weights(2, conv_struct[3], conv_struct[2])), 
-                                             normalizer_fn=normalizer_fn, normalizer_params=normalizer_params, scope='conv3_T')
-    with tf.variable_scope('concat3'):
-        net = tf.concat([net, conv3], axis=-1)
+    # net = tf.contrib.layers.conv2d_transpose(inputs=net, num_outputs=conv_struct[2], kernel_size=kernel_size, stride=2, 
+    #                                          weights_initializer=tf.constant_initializer(get_bilinear_upsample_weights(2, conv_struct[3], conv_struct[2])), 
+    #                                          normalizer_fn=normalizer_fn, normalizer_params=normalizer_params, scope='conv3_T')
+    # with tf.variable_scope('concat3'):
+    #     net = tf.concat([net, conv3], axis=-1)
 
     net = tf.contrib.layers.conv2d_transpose(inputs=net, num_outputs=conv_struct[1], kernel_size=kernel_size, stride=2, 
                                              weights_initializer=tf.constant_initializer(get_bilinear_upsample_weights(2, conv_struct[2], conv_struct[1])), 
@@ -487,43 +485,11 @@ for coord, patch in CV_Data.iterate_raw_image_patches_with_coord(norm=True):
     patch = patch.transpose((0, 2, 3, 1))
     CV_pred_road[coord[0]:coord[0]+size, coord[1]:coord[1]+size, :] += logits.eval(feed_dict={x: patch, is_training: False})[0]
 
-# Predict road prob on test
-
-# load test
-
-test_set = h5py.File(path_test_set, 'r')
-test_pos_topleft_coord = np.array(test_set['positive_example'])
-test_neg_topleft_coord = np.array(test_set['negative_example'])
-test_raw_image = np.array(test_set['raw_image'])
-test_road_mask = np.array(test_set['road_mask'])
-test_set.close()
-
-Train_Data = FCN_Data_Extractor (train_raw_image, train_road_mask, size,
-                                 pos_topleft_coord = train_pos_topleft_coord,
-                                 neg_topleft_coord = train_neg_topleft_coord,
-                                 normalization = norm)
-
-CV_Data = FCN_Data_Extractor (CV_raw_image, CV_road_mask, size,
-                              pos_topleft_coord = CV_pos_topleft_coord,
-                              neg_topleft_coord = CV_neg_topleft_coord,
-                              normalization = norm)
-# run garbage collector
-
-Test_Data = FCN_Data_Extractor (test_raw_image, test_road_mask, size,
-                                pos_topleft_coord = test_pos_topleft_coord,
-                                neg_topleft_coord = test_neg_topleft_coord,
-                                normalization = norm)
-test_pred_road = np.zeros([x for x in test_road_mask.shape] + [2])
-for coord, patch in Test_Data.iterate_raw_image_patches_with_coord(norm=True):
-    patch = patch.transpose((0, 2, 3, 1))
-    test_pred_road[coord[0]:coord[0]+size, coord[1]:coord[1]+size, :] += logits.eval(feed_dict={x: patch, is_training: False})[0]
-
 # save prediction
 prediction_name = model_name + '_pred.h5'
 h5f_file = h5py.File(save_path + prediction_name, 'w')
 h5f_file.create_dataset (name='train_pred', data=train_pred_road)
 h5f_file.create_dataset (name='CV_pred', data=CV_pred_road)
-h5f_file.create_dataset (name='test_pred_road', data=test_pred_road)
 h5f_file.close()
 
 # monitor mem usage
