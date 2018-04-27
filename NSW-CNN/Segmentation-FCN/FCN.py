@@ -240,7 +240,7 @@ with tf.variable_scope('down_sampling'):
     # net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool3')
 
 
-net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_struct[3], kernel_size=3, 
+net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_struct[-1], kernel_size=3, 
                                stride=1, padding='SAME', normalizer_fn=normalizer_fn, normalizer_params=normalizer_params, scope='bridge')
 
 
