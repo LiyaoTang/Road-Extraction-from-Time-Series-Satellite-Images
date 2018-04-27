@@ -25,6 +25,7 @@ parser.add_option("--rand", type="int", dest="rand_seed")
 parser.add_option("--conv", dest="conv_struct")
 parser.add_option("--concat_input", dest="concat_input")
 parser.add_option("--not_weight", action="store_false", default=True, dest="use_weight")
+parser.add_option("--xavier_deconv", type="int", default=0, dest="xavier_deconv")
 parser.add_option("--use_batch_norm", action="store_true", default=False, dest="use_batch_norm")
 parser.add_option("--output_conv", type="int", default=3, dest="output_conv")
 
@@ -50,6 +51,7 @@ rand_seed = options.rand_seed
 
 conv_struct = options.conv_struct
 
+xavier_deconv = options.xavier_deconv
 use_weight = options.use_weight
 use_batch_norm = options.use_batch_norm
 concat_input = options.concat_input
@@ -61,6 +63,9 @@ gpu_max_mem = options.gpu_max_mem
 # restrict to single gpu
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 os.environ["CUDA_VISIBLE_DEVICES"] = gpu
+
+assert xavier_deconv in set([0,1])
+xavier_deconv = (xavier_deconv == 1)
 
 if norm.startswith('m'): norm = 'mean'
 elif norm.startswith('G'): norm = 'Gaussian'
@@ -75,6 +80,7 @@ if not model_name:
     if use_weight: model_name += "weight_"
     if use_batch_norm: model_name += "bn_"
     model_name += norm[0] + "_"
+    model_name += "x" + str(options.xavier_deconv) + "_"
     model_name += "p" + str(pos_num) + "_"
     model_name += "e" + str(epoch) + "_"
     model_name += "r" + str(rand_seed)
@@ -207,6 +213,11 @@ else:
     normalizer_fn=None
     normalizer_params=None
 
+if xavier_deconv:
+    deconv_init = lambda factor, in_channel, out_channel: tf.contrib.layers.xavier_initializer()
+else:
+    deconv_init = lambda factor, in_channel, out_channel: tf.constant_initializer(get_bilinear_upsample_weights(factor, in_channel, out_channel))
+
 with tf.variable_scope('input_bridge'):
     if concat_input:
         if concat_input == [[0]]:
@@ -217,7 +228,6 @@ with tf.variable_scope('input_bridge'):
                                    for cfg in concat_input], 
                                   axis=-1)
 
-        
 
 with tf.variable_scope('down_sampling'):
     # Convolutional Layer 1
@@ -253,13 +263,13 @@ with tf.variable_scope('up_sampling'):
     #     net = tf.concat([net, conv3], axis=-1)
 
     net = tf.contrib.layers.conv2d_transpose(inputs=net, num_outputs=conv_struct[1], kernel_size=kernel_size, stride=2, 
-                                             weights_initializer=tf.constant_initializer(get_bilinear_upsample_weights(2, conv_struct[2], conv_struct[1])), 
+                                             weights_initializer=deconv_init( 2, conv_struct[2], conv_struct[1]),
                                              normalizer_fn=normalizer_fn, normalizer_params=normalizer_params, scope='conv2_T')
     with tf.variable_scope('concat2'):
         net = tf.concat([net, conv2], axis=-1)
     
     net = tf.contrib.layers.conv2d_transpose(inputs=net, num_outputs=conv_struct[0], kernel_size=kernel_size, stride=2, 
-                                             weights_initializer=tf.constant_initializer(get_bilinear_upsample_weights(2, conv_struct[1], conv_struct[0])), 
+                                             weights_initializer=deconv_init(2, conv_struct[1], conv_struct[0]), 
                                              normalizer_fn=normalizer_fn, normalizer_params=normalizer_params, scope='conv1_T')
 
     with tf.variable_scope('concat1'):
