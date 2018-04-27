@@ -1,0 +1,82 @@
+Train set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_train
+CV set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_topleft_coord_split_8_cv
+will be saved as  sk-SGD_weight_G0_003_p0_e15_rNone
+will be saved into  ./Result/motor_trunk_pri_sec_tert_uncl_track/sklearn/
+mem usage before data loaded: 83.96875 MB
+
+mu =  [  144.71187809   191.4973748    363.63933132   368.9204473   2385.57259035
+  1362.40326606   728.31018062]
+std =  [ 125.65067662  147.07994057  235.16274288  262.88676276  927.00557037
+  842.7245097   545.23410243]
+mu =  [  150.8227309    198.28994142   365.46753706   373.66751856  2370.63525823
+  1356.64782764   731.00466191]
+std =  [ 126.38246319  147.99541069  225.10661372  260.4291769   792.72602026
+  819.12928051  548.31700647]
+train data:
+(7, 7650, 8091) (7650, 8091)
+pos =  304920 neg =  21258076
+cv data:
+(7, 2365, 8091) (2365, 8091)
+pos =  23150 neg =  782418
+mem usage after data loaded: 6359.64453125 MB
+
+SGDClassifier(alpha=0.003, average=False,
+       class_weight={0: 0.014140892109797729, 1: 0.9858591078902023},
+       epsilon=0.1, eta0=0.0, fit_intercept=True, l1_ratio=0.15,
+       learning_rate='optimal', loss='log', max_iter=1, n_iter=None,
+       n_jobs=1, penalty='l2', power_t=0.5, random_state=None,
+       shuffle=False, tol=None, verbose=0, warm_start=False)
+classes in classifier  [0 1] 1
+mem usage after model created: 6359.64453125 MB
+
+ balanced_acc =  0.653138014582 AUC =  0.728695881169 avg_precision =  0.0714341516736
+ balanced_acc =  0.647038714349 AUC =  0.72108324746 avg_precision =  0.0693324578883
+ balanced_acc =  0.648054551133 AUC =  0.722496114843 avg_precision =  0.0698161137576
+ balanced_acc =  0.646170195372 AUC =  0.720612943537 avg_precision =  0.0689300570273
+ balanced_acc =  0.649068399011 AUC =  0.723400198378 avg_precision =  0.0699685861308
+ balanced_acc =  0.647088401875 AUC =  0.721321818959 avg_precision =  0.0694309895012
+ balanced_acc =  0.645516912248 AUC =  0.719868779216 avg_precision =  0.0687654516651
+ balanced_acc =  0.648163533385 AUC =  0.722725594076 avg_precision =  0.0697686587482
+ balanced_acc =  0.646767781024 AUC =  0.721833181787 avg_precision =  0.0692534128744
+ balanced_acc =  0.647137680081 AUC =  0.7211814666 avg_precision =  0.0694194186759
+ balanced_acc =  0.647124159664 AUC =  0.721669253182 avg_precision =  0.0693804871991
+ balanced_acc =  0.647440422093 AUC =  0.721826616881 avg_precision =  0.0695706436748
+ balanced_acc =  0.64760030531 AUC =  0.721906094099 avg_precision =  0.0695417823053
+ balanced_acc =  0.647007264742 AUC =  0.721587358637 avg_precision =  0.0694230796926
+ balanced_acc =  0.647190124857 AUC =  0.721884153144 avg_precision =  0.0694441663429
+finish
+mem usage after model trained: 6504.1171875 MB
+
+coefficient info:
+shape =  (1, 448)
+0.215024876336 -0.15424611602 6.8404651933e-05 0.000549306889086
+On train set
+true_pos  = 185295
+false_pos = 6572075
+true_neg  = 14686001
+false_neg = 119625
+size = 21562996
+neg_recall    = 0.690843376418
+pos_recall    = 0.607683982684
+neg_F1        = 0.814447779099
+pos_precision = 0.0274211712545
+accuracy      = 0.689667428404
+pos_F1        = 0.0524744806571
+neg_precision = 0.991920301107
+balanced_accuracy = 0.649263679551
+On CV set
+true_pos  = 13353
+false_pos = 220973
+true_neg  = 561445
+false_neg = 9797
+size = 805568
+neg_recall    = 0.71757679399
+pos_recall    = 0.576803455724
+neg_F1        = 0.829521445562
+pos_precision = 0.0569847136041
+accuracy      = 0.713531321999
+pos_F1        = 0.103722288679
+neg_precision = 0.982849650411
+balanced_accuracy = 0.647190124857
+mem usage after prediction maps calculated: 9369.9921875 MB
+
