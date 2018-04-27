@@ -301,8 +301,8 @@ if record_summary:
         graph = tf.get_default_graph()
 
         # conv layers params
-        conv_scopes = ['down_sampling/conv1', 'down_sampling/conv2', 'down_sampling/conv3', 'bridge', 
-                       'up_sampling/conv3_T', 'up_sampling/conv2_T', 'up_sampling/conv1_T']
+        conv_scopes = ['down_sampling/conv1', 'down_sampling/conv2', 'bridge', # 'down_sampling/conv3'
+                       'up_sampling/conv2_T', 'up_sampling/conv1_T'] # 'up_sampling/conv3_T',
 
         for scope_name in conv_scopes:
             target_tensors = ['/weights:0']
