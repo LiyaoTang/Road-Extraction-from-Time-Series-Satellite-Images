@@ -1,45 +1,48 @@
-/localdata/u6142160/anaconda3/envs/tf_cpu/lib/python3.6/site-packages/h5py/__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
-  from ._conv import register_converters as _register_converters
-WARNING:tensorflow:From /localdata/u6142160/anaconda3/envs/tf_cpu/lib/python3.6/site-packages/tensorflow/contrib/learn/python/learn/datasets/base.py:198: retry (from tensorflow.contrib.learn.python.learn.datasets.base) is deprecated and will be removed in a future version.
-Instructions for updating:
-Use the retry module or similar alternatives.
 Train set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_thr1_128_16_train
 CV set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_thr1_128_16_cv
 will be saved as  FCN_16-32-64-128_3_cat0_weight_G_p0_e20_r0
 will be saved into  ./Result/FCN/FCN_16-32-64-128_3_cat0_weight_G_p0_e20_r0/
-mem usage before data loaded: 140.5078125 MB
+mem usage before data loaded: 146.22265625 MB
 
-mu =  [ 140.42133132  186.22724995  365.92096392  358.74944958 2449.2505917
- 1352.83568307  708.04858695]
+mu =  [  140.42133132   186.22724995   365.92096392   358.74944958  2449.2505917
+  1352.83568307   708.04858695]
 class weight [neg= 0.014629, pos= 0.985371]
-std =  [113.04792058 135.17366614 230.99671408 248.71498611 952.23666562
- 825.62200511 523.41884702]
-mu =  [ 145.02183288  190.77598344  361.33590698  366.91707464 2380.64990791
- 1375.52599508  734.46670819]
+std =  [ 113.04792058  135.17366614  230.99671408  248.71498611  952.23666562
+  825.62200511  523.41884702]
+mu =  [  145.02183288   190.77598344   361.33590698   366.91707464  2380.64990791
+  1375.52599508   734.46670819]
 class weight [neg= 0.025683, pos= 0.974317]
-std =  [120.35045017 142.82855956 224.8264348  259.40579968 811.03520645
- 842.84666761 560.72898821]
+std =  [ 120.35045017  142.82855956  224.8264348   259.40579968  811.03520645
+  842.84666761  560.72898821]
 train data: (7, 7650, 8091) (7650, 8091)
 cv data: (7, 2365, 8091) (2365, 8091)
-mem usage after data loaded: 5090.2734375 MB
+mem usage after data loaded: 5095.8671875 MB
 
 [0.13264859577316138, 0.8673514042268387] [neg, pos]
-mem usage after model created: 5142.95703125 MB
+mem usage after model created: 5142.75 MB
 
-mean_cross_entropy =  0.03468995910261382 balanced_acc =  0.5 AUC =  0.500003904703045 avg_precision =  0.025683350798456673
-mean_cross_entropy =  0.03468993762044946 balanced_acc =  0.5 AUC =  0.5000057161720102 avg_precision =  0.02568344145845579
-mean_cross_entropy =  0.03468994681533035 balanced_acc =  0.5 AUC =  0.5000007842807996 avg_precision =  0.02568319462710138
-mean_cross_entropy =  0.03468998497382877 balanced_acc =  0.5 AUC =  0.5000005191496122 avg_precision =  0.0256831813578886
-mean_cross_entropy =  0.03468989079190387 balanced_acc =  0.5 AUC =  0.5000070085197643 avg_precision =  0.025683506136561788
-mean_cross_entropy =  0.03468992899156572 balanced_acc =  0.5 AUC =  0.5000049319213156 avg_precision =  0.025683402206492685
-mean_cross_entropy =  0.034689959020286966 balanced_acc =  0.5 AUC =  0.5000032014226083 avg_precision =  0.025683315598744285
-mean_cross_entropy =  0.03469023421838962 balanced_acc =  0.5 AUC =  0.5000021686570446 avg_precision =  0.025683263912259533
-mean_cross_entropy =  0.034689970510029006 balanced_acc =  0.5 AUC =  0.5000015574488366 avg_precision =  0.025683233321924334
-mean_cross_entropy =  0.03468997955569246 balanced_acc =  0.5 AUC =  0.5000008652493536 avg_precision =  0.02568319867921048
-mean_cross_entropy =  0.0346898740949881 balanced_acc =  0.5 AUC =  0.5000070950446996 avg_precision =  0.025683510466999588
-mean_cross_entropy =  0.034689891373337306 balanced_acc =  0.5 AUC =  0.5000058892661866 avg_precision =  0.025683450120426367
-mean_cross_entropy =  0.0346899071749485 balanced_acc =  0.5 AUC =  0.5000057971706693 avg_precision =  0.025683445510585927
-mean_cross_entropy =  0.03468995030907636 balanced_acc =  0.5 AUC =  0.5000034609974144 avg_precision =  0.025683328589869308
-mean_cross_entropy =  0.034689854933412034 balanced_acc =  0.5 AUC =  0.5000085715124858 avg_precision =  0.02568358436386418
-mean_cross_entropy =  0.03469014226958073 balanced_acc =  0.5 AUC =  0.5000050406831372 avg_precision =  0.025683407652889328
-mean_cross_entropy =  0.034689932310367155 balanced_acc =  0.5 AUC =  0.5000044127717035 avg_precision =  0.025683376224106835
+2018-04-26 23:05:54.657748: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use AVX2 instructions, but these are available on your machine and could speed up CPU computations.
+2018-04-26 23:05:54.657874: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use FMA instructions, but these are available on your machine and could speed up CPU computations.
+2018-04-26 23:05:54.721918: E tensorflow/stream_executor/cuda/cuda_driver.cc:406] failed call to cuInit: CUDA_ERROR_NO_DEVICE
+2018-04-26 23:05:54.722098: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:158] retrieving CUDA diagnostic information for host: r3646
+2018-04-26 23:05:54.722129: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:165] hostname: r3646
+2018-04-26 23:05:54.722232: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:189] libcuda reported version is: 390.30.0
+2018-04-26 23:05:54.722291: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:369] driver version file contents: """NVRM version: NVIDIA UNIX x86_64 Kernel Module  390.30  Wed Jan 31 22:08:49 PST 2018
+GCC version:  gcc version 5.3.1 20160406 (Red Hat 5.3.1-6) (GCC) 
+"""
+2018-04-26 23:05:54.722337: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:193] kernel reported version is: 390.30.0
+2018-04-26 23:05:54.722364: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:300] kernel version seems to match DSO: 390.30.0
+2018-04-27 00:18:36.883909: I tensorflow/stream_executor/dso_loader.cc:139] successfully opened CUDA library libcupti.so.8.0 locally
+mean_cross_entropy =  0.031036064223 balanced_acc =  0.65004513545 AUC =  0.712341870186 avg_precision =  0.0691286081227
+mean_cross_entropy =  0.0282801668216 balanced_acc =  0.70202852156 AUC =  0.779044387308 avg_precision =  0.09614200898
+mean_cross_entropy =  0.027198070758 balanced_acc =  0.722311958815 AUC =  0.800649519445 avg_precision =  0.111226024442
+mean_cross_entropy =  0.0266723360491 balanced_acc =  0.730800802934 AUC =  0.813003082209 avg_precision =  0.119381636658
+mean_cross_entropy =  0.0264414045407 balanced_acc =  0.735062091253 AUC =  0.816506504053 avg_precision =  0.121980338451
+mean_cross_entropy =  0.0264834293849 balanced_acc =  0.730277575947 AUC =  0.813636961439 avg_precision =  0.124920876726
+mean_cross_entropy =  0.0260769160084 balanced_acc =  0.738633055793 AUC =  0.82175007758 avg_precision =  0.13028473336
+mean_cross_entropy =  0.0257470999421 balanced_acc =  0.742538749091 AUC =  0.825328468717 avg_precision =  0.135982593109
+mean_cross_entropy =  0.0257131710587 balanced_acc =  0.743823430572 AUC =  0.826883075161 avg_precision =  0.135738010359
+mean_cross_entropy =  0.0258635961025 balanced_acc =  0.742234471136 AUC =  0.826661257674 avg_precision =  0.138988875877
+mean_cross_entropy =  0.0256375848298 balanced_acc =  0.741683875701 AUC =  0.828315890238 avg_precision =  0.140056310531
+mean_cross_entropy =  0.0255177662771 balanced_acc =  0.747730675324 AUC =  0.831615599982 avg_precision =  0.143744070676
+mean_cross_entropy =  0.0255836829625 balanced_acc =  0.746368488969 AUC =  0.829353885934 avg_precision =  0.142192894094

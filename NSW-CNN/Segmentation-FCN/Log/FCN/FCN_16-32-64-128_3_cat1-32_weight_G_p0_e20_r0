@@ -1,0 +1,45 @@
+Train set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_thr1_128_16_train
+CV set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_thr1_128_16_cv
+will be saved as  FCN_16-32-64-128_3_cat1-32_weight_G_p0_e20_r0
+will be saved into  ./Result/FCN/FCN_16-32-64-128_3_cat1-32_weight_G_p0_e20_r0/
+mem usage before data loaded: 146.22265625 MB
+
+mu =  [  140.42133132   186.22724995   365.92096392   358.74944958  2449.2505917
+  1352.83568307   708.04858695]
+class weight [neg= 0.014629, pos= 0.985371]
+std =  [ 113.04792058  135.17366614  230.99671408  248.71498611  952.23666562
+  825.62200511  523.41884702]
+mu =  [  145.02183288   190.77598344   361.33590698   366.91707464  2380.64990791
+  1375.52599508   734.46670819]
+class weight [neg= 0.025683, pos= 0.974317]
+std =  [ 120.35045017  142.82855956  224.8264348   259.40579968  811.03520645
+  842.84666761  560.72898821]
+train data: (7, 7650, 8091) (7650, 8091)
+cv data: (7, 2365, 8091) (2365, 8091)
+mem usage after data loaded: 5095.86328125 MB
+
+[0.13264859577316138, 0.8673514042268387] [neg, pos]
+mem usage after model created: 5143.296875 MB
+
+2018-04-26 23:05:53.301992: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use AVX2 instructions, but these are available on your machine and could speed up CPU computations.
+2018-04-26 23:05:53.302121: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use FMA instructions, but these are available on your machine and could speed up CPU computations.
+2018-04-26 23:05:53.366186: E tensorflow/stream_executor/cuda/cuda_driver.cc:406] failed call to cuInit: CUDA_ERROR_NO_DEVICE
+2018-04-26 23:05:53.366348: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:158] retrieving CUDA diagnostic information for host: r3646
+2018-04-26 23:05:53.366375: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:165] hostname: r3646
+2018-04-26 23:05:53.366468: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:189] libcuda reported version is: 390.30.0
+2018-04-26 23:05:53.366524: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:369] driver version file contents: """NVRM version: NVIDIA UNIX x86_64 Kernel Module  390.30  Wed Jan 31 22:08:49 PST 2018
+GCC version:  gcc version 5.3.1 20160406 (Red Hat 5.3.1-6) (GCC) 
+"""
+2018-04-26 23:05:53.366562: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:193] kernel reported version is: 390.30.0
+2018-04-26 23:05:53.366584: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:300] kernel version seems to match DSO: 390.30.0
+2018-04-27 00:33:46.536611: I tensorflow/stream_executor/dso_loader.cc:139] successfully opened CUDA library libcupti.so.8.0 locally
+mean_cross_entropy =  0.034638157562 balanced_acc =  0.501927045302 AUC =  0.504214256261 avg_precision =  0.0268265331549
+mean_cross_entropy =  0.0300723182061 balanced_acc =  0.678100568005 AUC =  0.740868088622 avg_precision =  0.0867836382526
+mean_cross_entropy =  0.0283068785591 balanced_acc =  0.708651224672 AUC =  0.782037225597 avg_precision =  0.106751370879
+mean_cross_entropy =  0.0276273370615 balanced_acc =  0.719790720703 AUC =  0.797358760046 avg_precision =  0.117756612372
+mean_cross_entropy =  0.027215625454 balanced_acc =  0.73015558867 AUC =  0.804965532301 avg_precision =  0.124800691593
+mean_cross_entropy =  0.0269361360691 balanced_acc =  0.727771532631 AUC =  0.810229235817 avg_precision =  0.132370498206
+mean_cross_entropy =  0.0263097787119 balanced_acc =  0.740125828966 AUC =  0.820966067991 avg_precision =  0.139370591795
+mean_cross_entropy =  0.0258246058996 balanced_acc =  0.746616353309 AUC =  0.827041507887 avg_precision =  0.145891190012
+mean_cross_entropy =  0.0260238111597 balanced_acc =  0.744923635914 AUC =  0.825636400547 avg_precision =  0.144350560994
+mean_cross_entropy =  0.0260053863852 balanced_acc =  0.741431530734 AUC =  0.826795695731 avg_precision =  0.147892997077

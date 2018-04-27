@@ -1,0 +1,94 @@
+Train set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_thr1_128_16_train
+CV set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_thr1_128_16_cv
+will be saved as  FCN_16-32-64-128_1_cat1-32_weight_bn_m_p0_e20_r0
+will be saved into  ./Result/FCN/FCN_16-32-64-128_1_cat1-32_weight_bn_m_p0_e20_r0/
+mem usage before data loaded: 146.21484375 MB
+
+mu =  [  140.42133132   186.22724995   365.92096392   358.74944958  2449.2505917
+  1352.83568307   708.04858695]
+class weight [neg= 0.014629, pos= 0.985371]
+mu =  [  145.02183288   190.77598344   361.33590698   366.91707464  2380.64990791
+  1375.52599508   734.46670819]
+class weight [neg= 0.025683, pos= 0.974317]
+train data: (7, 7650, 8091) (7650, 8091)
+cv data: (7, 2365, 8091) (2365, 8091)
+mem usage after data loaded: 5095.84765625 MB
+
+[0.13264859577316138, 0.8673514042268387] [neg, pos]
+mem usage after model created: 5228.0 MB
+
+2018-04-26 21:25:17.910067: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use AVX2 instructions, but these are available on your machine and could speed up CPU computations.
+2018-04-26 21:25:17.910192: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use FMA instructions, but these are available on your machine and could speed up CPU computations.
+2018-04-26 21:25:18.622407: I tensorflow/core/common_runtime/gpu/gpu_device.cc:955] Found device 0 with properties: 
+name: Tesla K80
+major: 3 minor: 7 memoryClockRate (GHz) 0.8235
+pciBusID 0000:06:00.0
+Total memory: 11.17GiB
+Free memory: 11.10GiB
+2018-04-26 21:25:18.622486: I tensorflow/core/common_runtime/gpu/gpu_device.cc:976] DMA: 0 
+2018-04-26 21:25:18.622508: I tensorflow/core/common_runtime/gpu/gpu_device.cc:986] 0:   Y 
+2018-04-26 21:25:18.622530: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1045] Creating TensorFlow device (/gpu:0) -> (device: 0, name: Tesla K80, pci bus id: 0000:06:00.0)
+2018-04-26 21:37:09.907062: I tensorflow/stream_executor/dso_loader.cc:139] successfully opened CUDA library libcupti.so.8.0 locally
+mean_cross_entropy =  0.0619080315411 balanced_acc =  0.583856494115 AUC =  0.645087627419 avg_precision =  0.0605464841706
+mean_cross_entropy =  0.0562702978431 balanced_acc =  0.569716168189 AUC =  0.626930866641 avg_precision =  0.0509813393856
+mean_cross_entropy =  0.0527765324599 balanced_acc =  0.55478298726 AUC =  0.612002015421 avg_precision =  0.0452115243555
+mean_cross_entropy =  0.053266974395 balanced_acc =  0.550028111351 AUC =  0.610624833702 avg_precision =  0.0443372069437
+mean_cross_entropy =  0.0440691159511 balanced_acc =  0.552921077598 AUC =  0.618518327556 avg_precision =  0.048256422434
+mean_cross_entropy =  0.0520678659893 balanced_acc =  0.543678738354 AUC =  0.604601671984 avg_precision =  0.0429108271964
+mean_cross_entropy =  0.0531073004909 balanced_acc =  0.545352577193 AUC =  0.610186361384 avg_precision =  0.0436700398646
+mean_cross_entropy =  0.0548188775946 balanced_acc =  0.542507768992 AUC =  0.604679427151 avg_precision =  0.042601763046
+mean_cross_entropy =  0.0601461213494 balanced_acc =  0.538938188526 AUC =  0.600240935744 avg_precision =  0.0414946687447
+mean_cross_entropy =  0.0580840394922 balanced_acc =  0.537274221004 AUC =  0.596110324069 avg_precision =  0.0411045853367
+mean_cross_entropy =  0.0564886914535 balanced_acc =  0.541809018663 AUC =  0.603110834823 avg_precision =  0.0431598371712
+mean_cross_entropy =  0.0549228240637 balanced_acc =  0.543227110963 AUC =  0.605399104763 avg_precision =  0.0442058944023
+mean_cross_entropy =  0.0600998236814 balanced_acc =  0.539864264732 AUC =  0.599584536889 avg_precision =  0.04282868788
+mean_cross_entropy =  0.0529065932519 balanced_acc =  0.544835021969 AUC =  0.606423358195 avg_precision =  0.0458893176056
+mean_cross_entropy =  0.058323558856 balanced_acc =  0.542428286448 AUC =  0.600567872976 avg_precision =  0.0446798681882
+mean_cross_entropy =  0.071375460499 balanced_acc =  0.535422630732 AUC =  0.591338931463 avg_precision =  0.0409296232116
+mean_cross_entropy =  0.0577901786686 balanced_acc =  0.546240325333 AUC =  0.606790786334 avg_precision =  0.0463926534156
+mean_cross_entropy =  0.0664828748819 balanced_acc =  0.539539376095 AUC =  0.593766389994 avg_precision =  0.0431201106272
+mean_cross_entropy =  0.0721418676352 balanced_acc =  0.536995536902 AUC =  0.587848561344 avg_precision =  0.0420952084444
+mean_cross_entropy =  0.063913377472 balanced_acc =  0.544144423132 AUC =  0.599736551196 avg_precision =  0.0456070208256
+finish
+mem usage after model trained: 6221.08203125 MB
+
+On training set: 
+true_pos  = 22586
+false_pos = 346630
+true_neg  = 5432051
+false_neg = 129741
+size = 362
+pos_precision = 0.0611728635812
+pos_recall    = 0.148273122953
+accuracy      = 15068.058011
+neg_precision = 0.976672806175
+balanced_accuracy = 0.544144423132
+pos_F1        = 0.0866122256458
+neg_F1        = 0.957993727422
+neg_recall    = 0.940015723311
+mean_cross_entropy =  0.0639133777705 balanced_acc =  0.544144423132 AUC =  0.599736551286 avg_precision =  0.0456070185844
+On CV set:
+true_pos  = 22586
+false_pos = 346630
+true_neg  = 5432051
+false_neg = 129741
+size = 362
+pos_precision = 0.0611728635812
+pos_recall    = 0.148273122953
+accuracy      = 15068.058011
+neg_precision = 0.976672806175
+balanced_accuracy = 0.544144423132
+pos_F1        = 0.0866122256458
+neg_F1        = 0.957993727422
+neg_recall    = 0.940015723311
+mu =  [  140.42133132   186.22724995   365.92096392   358.74944958  2449.2505917
+  1352.83568307   708.04858695]
+class weight [neg= 0.014629, pos= 0.985371]
+mu =  [  145.02183288   190.77598344   361.33590698   366.91707464  2380.64990791
+  1375.52599508   734.46670819]
+class weight [neg= 0.025683, pos= 0.974317]
+mu =  [  145.02183288   190.77598344   361.33590698   366.91707464  2380.64990791
+  1375.52599508   734.46670819]
+class weight [neg= 0.025683, pos= 0.974317]
+mem usage after prediction maps calculated: 8074.890625 MB
+

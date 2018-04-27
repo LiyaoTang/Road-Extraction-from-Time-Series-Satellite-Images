@@ -1,0 +1,96 @@
+Train set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_thr1_128_16_train
+CV set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_thr1_128_16_cv
+will be saved as  FCN_16-32-64-128_3_cat1-32;3-32_weight_m_p0_e20_r0
+will be saved into  ./Result/FCN/FCN_16-32-64-128_3_cat1-32;3-32_weight_m_p0_e20_r0/
+mem usage before data loaded: 146.22265625 MB
+
+mu =  [  140.42133132   186.22724995   365.92096392   358.74944958  2449.2505917
+  1352.83568307   708.04858695]
+class weight [neg= 0.014629, pos= 0.985371]
+mu =  [  145.02183288   190.77598344   361.33590698   366.91707464  2380.64990791
+  1375.52599508   734.46670819]
+class weight [neg= 0.025683, pos= 0.974317]
+train data: (7, 7650, 8091) (7650, 8091)
+cv data: (7, 2365, 8091) (2365, 8091)
+mem usage after data loaded: 5095.85546875 MB
+
+[0.13264859577316138, 0.8673514042268387] [neg, pos]
+mem usage after model created: 5144.02734375 MB
+
+2018-04-27 03:57:34.350659: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use AVX2 instructions, but these are available on your machine and could speed up CPU computations.
+2018-04-27 03:57:34.350779: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use FMA instructions, but these are available on your machine and could speed up CPU computations.
+2018-04-27 03:57:35.107665: I tensorflow/core/common_runtime/gpu/gpu_device.cc:955] Found device 0 with properties: 
+name: Tesla K80
+major: 3 minor: 7 memoryClockRate (GHz) 0.8235
+pciBusID 0000:84:00.0
+Total memory: 11.17GiB
+Free memory: 11.10GiB
+2018-04-27 03:57:35.107744: I tensorflow/core/common_runtime/gpu/gpu_device.cc:976] DMA: 0 
+2018-04-27 03:57:35.107768: I tensorflow/core/common_runtime/gpu/gpu_device.cc:986] 0:   Y 
+2018-04-27 03:57:35.107793: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1045] Creating TensorFlow device (/gpu:0) -> (device: 0, name: Tesla K80, pci bus id: 0000:84:00.0)
+2018-04-27 04:07:52.619397: I tensorflow/stream_executor/dso_loader.cc:139] successfully opened CUDA library libcupti.so.8.0 locally
+mean_cross_entropy =  0.0346899789897 balanced_acc =  0.5 AUC =  0.500000086525 avg_precision =  0.0256831597063
+mean_cross_entropy =  0.0346899791286 balanced_acc =  0.5 AUC =  0.500000086525 avg_precision =  0.0256831597063
+mean_cross_entropy =  0.0346899820049 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.0256831553759
+mean_cross_entropy =  0.0346899789897 balanced_acc =  0.5 AUC =  0.500000086525 avg_precision =  0.0256831597063
+mean_cross_entropy =  0.0346899790463 balanced_acc =  0.5 AUC =  0.500000086525 avg_precision =  0.0256831597063
+mean_cross_entropy =  0.0346899609035 balanced_acc =  0.5 AUC =  0.500000605675 avg_precision =  0.0256831856882
+mean_cross_entropy =  0.0346899790875 balanced_acc =  0.5 AUC =  0.500000086525 avg_precision =  0.0256831597063
+mean_cross_entropy =  0.0346899793087 balanced_acc =  0.5 AUC =  0.500000086525 avg_precision =  0.0256831597063
+mean_cross_entropy =  0.034689982113 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.0256831553759
+mean_cross_entropy =  0.0346899819895 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.0256831553759
+mean_cross_entropy =  0.034689981974 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.0256831553759
+mean_cross_entropy =  0.0346899819689 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.0256831553759
+mean_cross_entropy =  0.0346899820409 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.0256831553759
+mean_cross_entropy =  0.0347031050192 balanced_acc =  0.5 AUC =  0.500003380021 avg_precision =  0.0256833245379
+mean_cross_entropy =  0.0346899819792 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.0256831553759
+mean_cross_entropy =  0.0346899819123 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.0256831553759
+mean_cross_entropy =  0.0346899818557 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.0256831553759
+mean_cross_entropy =  0.0346899819638 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.0256831553759
+mean_cross_entropy =  0.0346899819792 balanced_acc =  0.5 AUC =  0.5 avg_precision =  0.0256831553759
+mean_cross_entropy =  0.0346899730313 balanced_acc =  0.5 AUC =  0.500000259575 avg_precision =  0.0256831683669
+finish
+mem usage after model trained: 5975.34375 MB
+
+On training set: 
+true_pos  = 0
+false_pos = 0
+true_neg  = 5778681
+false_neg = 152327
+size = 362
+balanced_accuracy = 0.5
+pos_recall    = 0.0
+neg_F1        = 0.986991370992
+pos_F1        = nan
+pos_precision = nan
+neg_precision = 0.974316844624
+accuracy      = 15963.2071823
+neg_recall    = 1.0
+mean_cross_entropy =  0.0346899729593 balanced_acc =  0.5 AUC =  0.500000259575 avg_precision =  0.0256831683669
+On CV set:
+true_pos  = 0
+false_pos = 0
+true_neg  = 5778681
+false_neg = 152327
+size = 362
+balanced_accuracy = 0.5
+pos_recall    = 0.0
+neg_F1        = 0.986991370992
+pos_F1        = nan
+pos_precision = nan
+neg_precision = 0.974316844624
+accuracy      = 15963.2071823
+neg_recall    = 1.0
+../Metric/Metric.py:59: RuntimeWarning: invalid value encountered in long_scalars
+  pos_precision = true_pos / (true_pos + false_pos)
+mu =  [  140.42133132   186.22724995   365.92096392   358.74944958  2449.2505917
+  1352.83568307   708.04858695]
+class weight [neg= 0.014629, pos= 0.985371]
+mu =  [  145.02183288   190.77598344   361.33590698   366.91707464  2380.64990791
+  1375.52599508   734.46670819]
+class weight [neg= 0.025683, pos= 0.974317]
+mu =  [  145.02183288   190.77598344   361.33590698   366.91707464  2380.64990791
+  1375.52599508   734.46670819]
+class weight [neg= 0.025683, pos= 0.974317]
+mem usage after prediction maps calculated: 7717.8203125 MB
+
