@@ -195,7 +195,7 @@ for i in range(iteration):
     
     index = train_index[start:end]    
     batch = [((X[index]-mu)/sigma), np.matrix(Y[index]).astype(int).T]
-    break
+
     # snap shot
     if i%1000 == 0:
         train_accuracy = accuracy.eval(feed_dict={x:batch[0], y: batch[1]})
@@ -213,7 +213,7 @@ train_metric = Metric_Record()
 print('On training set')
 for i in train_index:
 
-    batch = [np.array((X[i]-mu)/sigma), np.array([[Y[i]]])]
+    batch = [np.array([(X[i]-mu)/sigma]), np.array([[Y[i]]])]
 
     # record metric   
     pred_prob = net_pred.eval(feed_dict={x:batch[0], y: batch[1]})[0][0]
@@ -222,8 +222,9 @@ for i in train_index:
 AUC_score = skmt.roc_auc_score(train_metric.y_true, train_metric.pred_prob)
 avg_precision_score = skmt.average_precision_score(train_metric.y_true, train_metric.pred_prob)
 
-print('AUC=', AUC_score, 'avg_precision=', avg_precision_score)
 train_metric.print_info()
+print('AUC=', AUC_score, 'avg_precision=', avg_precision_score)
+print()
 
 
 # In[ ]:
@@ -231,25 +232,26 @@ print('On test set')
 test_metric = Metric_Record()
 for i in test_index:
 
-    batch = [np.array((X[i]-mu)/sigma), np.array([[Y[i]]])]
+    batch = [np.array([(X[i]-mu)/sigma]), np.array([[Y[i]]])]
 
     # record metric   
     pred_prob = net_pred.eval(feed_dict={x:batch[0], y: batch[1]})[0][0]
-    train_metric.accumulate(int(pred_prob>0.5), batch[1][0][0], pred_prob)
+    test_metric.accumulate(int(pred_prob>0.5), batch[1][0][0], pred_prob)
 
-AUC_score = skmt.roc_auc_score(train_metric.y_true, train_metric.pred_prob)
-avg_precision_score = skmt.average_precision_score(train_metric.y_true, train_metric.pred_prob)
+AUC_score = skmt.roc_auc_score(test_metric.y_true, test_metric.pred_prob)
+avg_precision_score = skmt.average_precision_score(test_metric.y_true, test_metric.pred_prob)
 
-print('AUC=', AUC_score, 'avg_precision=', avg_precision_score)
 test_metric.print_info()
+print('AUC=', AUC_score, 'avg_precision=', avg_precision_score)
+print()
 
 
 pred_map = np.zeros(shape=combined_road_mask.shape)
 pred_map_cnt = np.zeros(shape=combined_road_mask.shape)
 for i in range(len(X)):
 
-    batch = [np.array((X[i]-mu)/sigma), np.array([Y[i]])]
-    coord = road_patch_coord[i]
+    batch = [np.array([(X[i]-mu)/sigma]), np.array([[Y[i]]])]
+    coord = road_patch_coord[i] 
 
     # record metric   
     pred_prob = net_pred.eval(feed_dict={x:batch[0], y: batch[1]})[0][0]
