@@ -4,7 +4,7 @@ import h5py
 
 # given raw_image & road_img (road mask), return: raw_img patches, road mask, road existence
 def create_labelled_patches(raw_image, road_img, 
-                            row_offset = 0, column_offset = 0, step = 28, minimum_road_mark = 5):
+                            row_offset = 0, column_offset = 0, step = 28, minimum_road_mark = 0.01):
     image_patch = []
     road_patch_coord = []
     road_existence = []
@@ -20,7 +20,7 @@ def create_labelled_patches(raw_image, road_img,
 
                 image_patch.append(cur_img_patch)
                 road_patch_coord.append((i,j))
-                road_existence.append(cur_road_patch.sum() >= minimum_road_mark)
+                road_existence.append(cur_road_patch.sum() >= minimum_road_mark*step*step)
             j += step
         i += step
     
