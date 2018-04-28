@@ -90,8 +90,8 @@ if not save_path:
     sys.exit()
 save_path = save_path.strip('/') + '/' + model_name + '/'
 
-os.makedirs(save_path, exist_ok=True)
-os.makedirs(save_path+'Analysis', exist_ok=True)
+os.makedirs(os.path.dirname(save_path), exist_ok=True)
+os.makedirs(os.path.dirname(save_path+'Analysis/'), exist_ok=True)
 
 print("Train set:", path_train_set)
 print("CV set:", path_cv_set)
