@@ -36,6 +36,7 @@ road_type_idx = [int(x) for x in options.road_type_idx.split('-')]
 process = psutil.Process(os.getpid())
 print('mem usage before data loaded:', process.memory_info().rss / 1024/1024, 'MB')
 print()
+np.random.seed(0)
 
 
 
@@ -109,15 +110,6 @@ np.random.shuffle(index_mask)
 train_index = index_mask[:int(index_mask.size*0.75)]
 test_index = index_mask[int(index_mask.size*0.75):]
 
-train_x = X[train_index].flatten().reshape((train_index.size, -1))
-train_y = Y[train_index]
-
-test_x = X[test_index].flatten().reshape((test_index.size, -1))
-test_y = Y[test_index]
-
-print(train_x.shape, train_y.shape)
-print(test_x.shape, test_y.shape)
-
 print(type((Y==1)))
 print((Y==1).shape)
 print('class balance: pos=', (Y == 1).sum() / Y.shape[0], (Y == 0).sum() / Y.shape[0])
@@ -127,10 +119,9 @@ width = 28
 height = 28
 band = 7
 
-L1_out = 512
+L1_out = 128
 L2_out = 256
-L3_out = 128
-L4_out = 64
+L3_out = 512
 class_output = 1 # number of possible classifications for the problem
 
 batch_size = 64
@@ -139,20 +130,23 @@ epoch = 10
 iteration = int(epoch*len(train_index)/batch_size) + 1
 
 # Normalize Parameters
-mu = train_x.mean(axis=0, keepdims=True)
-sigma = 0
-for img in train_x:
-    sigma += (img-mu)**2
-sigma /= train_x.shape[0]
+mu = X[train_index].mean(axis=(-1,-2,0))
+mu = np.repeat(mu, [width*height]*band).reshape((band, width, height))
 
+std = 0
+for idx in train_index:
+    patch = X[idx]
+    std += ((patch-mu)**2).mean(axis=(-1,-2))
+std = np.sqrt(std / len(train_index))
+std = np.repeat(std, [width*height]*band).reshape((band, width, height))
+sigma = std
 
-
-x = tf.placeholder(tf.float32, shape=[None, width*height*band], name='x')
+x = tf.placeholder(tf.float32, shape=[None, band, width, height], name='x')
 y = tf.placeholder(tf.float32, shape=[None, class_output], name='y')
 
 
 # Layer 1
-net = tf.contrib.layers.fully_connected(inputs=x, num_outputs=L1_out)
+net = tf.contrib.layers.fully_connected(inputs=tf.layers.flatten(x), num_outputs=L1_out)
 
 # Layer 2
 net = tf.contrib.layers.fully_connected(inputs=net, num_outputs=L2_out)
@@ -188,21 +182,19 @@ saver = tf.train.Saver()
 sess = tf.InteractiveSession()
 sess.run(tf.global_variables_initializer())
 
-train_mask = np.arange(train_x.shape[0]) # shuffle the dataset
-np.random.shuffle(train_mask)
-batch_num = int(train_mask.size/batch_size)
+batch_num = int(train_index.size/batch_size)
 
 learning_curve = []
 for i in range(iteration):
     start = i%batch_num * batch_size
     end = start + batch_size
 
-    if end > train_mask.size:
-        end = train_mask.size
-        np.random.shuffle(train_mask)
+    if end > train_index.size:
+        end = train_index.size
+        np.random.shuffle(train_index)
     
-    index = train_mask[start:end]    
-    batch = [((train_x[index]-mu)/sigma), np.matrix(train_y[index]).astype(int).T]
+    index = train_index[start:end]    
+    batch = [((X[index]-mu)/sigma), np.matrix(Y[index]).astype(int).T]
     break
     # snap shot
     if i%1000 == 0:
@@ -219,9 +211,9 @@ print(learning_curve)
 
 train_metric = Metric_Record()
 print('On training set')
-for i in range(len(train_x)):
+for i in train_index:
 
-    batch = [np.array((train_x[i]-mu)/sigma), np.array([[train_y[i]]])]
+    batch = [np.array((X[i]-mu)/sigma), np.array([[Y[i]]])]
 
     # record metric   
     pred_prob = net_pred.eval(feed_dict={x:batch[0], y: batch[1]})[0][0]
@@ -237,9 +229,9 @@ train_metric.print_info()
 # In[ ]:
 print('On test set')
 test_metric = Metric_Record()
-for i in range(len(test_x)):
+for i in test_index:
 
-    batch = [np.array((test_x[i]-mu)/sigma), np.array([[test_y[i]]])]
+    batch = [np.array((X[i]-mu)/sigma), np.array([[Y[i]]])]
 
     # record metric   
     pred_prob = net_pred.eval(feed_dict={x:batch[0], y: batch[1]})[0][0]

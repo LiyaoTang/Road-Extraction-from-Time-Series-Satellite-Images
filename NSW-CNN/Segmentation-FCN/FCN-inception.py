@@ -107,7 +107,6 @@ if not conv_struct:
 else:
     conv_struct = [[[int(x) for x in config.split('-')] for config in layer.split(';')] for layer in conv_struct.split('|')]
     print("conv_struct = ", conv_struct)
-    assert len(conv_struct) <= 3
 
 # import libraries
 import numpy as np

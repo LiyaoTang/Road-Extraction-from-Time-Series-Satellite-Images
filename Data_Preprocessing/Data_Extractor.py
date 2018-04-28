@@ -58,18 +58,18 @@ class Data_Extractor:
             mu += patch[0]
             assert (patch != -9999).all()
         mu = (mu / self.size).mean(axis=(1,2))
+        mu = np.repeat(mu, [np.prod(patch[0][0].shape)]*patch[0].shape[0]).reshape(patch[0].shape)
         self.mu = mu
-        print("mu = ", mu)
+        print("mu = ", mu[:,0,0], " in ", mu.shape)
 
         if self.normalization == 'Gaussian':
             std = 0
-            mu_ext = np.repeat(mu, [np.prod(patch[0][0].shape)]*patch[0].shape[0]).reshape(patch[0].shape)
-            
             for patch in self.iterate_raw_image_patches(norm = False):
-                std += ((patch[0]-mu_ext)**2).mean(axis=(-1,-2))
+                std += ((patch[0]-mu)**2).mean(axis=(-1,-2))
             std = np.sqrt(std / self.size)
+            mu = np.repeat(std, [np.prod(patch[0][0].shape)]*patch[0].shape[0]).reshape(patch[0].shape)
             self.std = std
-            print('std = ', std)
+            print('std = ', std[:,0,0], " in ", std.shape)
 
 
 
@@ -77,11 +77,9 @@ class Data_Extractor:
         patch  = self.raw_image[:, coord[0]:coord[0]+self.img_size, coord[1]:coord[1]+self.img_size].copy()
         if norm:
             if self.normalization == 'mean':
-                for channel_num in range(self.band):
-                    patch[channel_num] = patch[channel_num] - self.mu[channel_num]
+                patch = patch - self.mu
             else:
-                for channel_num in range(self.band):
-                    patch[channel_num] = (patch[channel_num] - self.mu[channel_num]) / self.std[channel_num]
+                patch = (patch - self.mu) / self.std
         return patch
 
     def _get_patch_label(self, coord):
@@ -223,19 +221,19 @@ class FCN_Data_Extractor (Data_Extractor):
                 neg_cnt += -(rd_map[valid_rd_mask]-1).sum()
     
         mu = mu.sum(axis=(1,2)) / pixel_cnt.sum(axis=(1,2))
+        mu = np.repeat(mu, [np.prod(patch[0].shape)]*patch.shape[0]).reshape(patch.shape)
+
         self.mu = mu
         self.neg_weight = pos_cnt / (pos_cnt+neg_cnt)
         self.pos_weight = neg_cnt / (pos_cnt+neg_cnt)
 
         assert (pos_cnt+neg_cnt) == pixel_cnt[0].sum()
 
-        print("mu = ", mu)
+        print("mu = ", mu[:,0,0], " in ", mu.shape)
         print("class weight [neg= %f, pos= %f]"%(self.neg_weight, self.pos_weight))
 
         if self.normalization == 'Gaussian':
             std = np.zeros((self.band, img_size, img_size))
-            mu_ext = np.repeat(mu, [np.prod(patch[0].shape)]*patch.shape[0]).reshape(patch.shape)
-
             for patch in self.iterate_raw_image_patches(norm = False):
                 patch = patch[0]
                 valid_mask = np.where(patch != -9999)
@@ -243,8 +241,9 @@ class FCN_Data_Extractor (Data_Extractor):
                 std[valid_mask] = std[valid_mask] + ((patch-mu_ext)**2)[valid_mask]
             
             std = np.sqrt(std.sum(axis=(1,2)) / pixel_cnt.sum(axis=(1,2)))
+            std = np.repeat(std, [np.prod(patch[0].shape)]*patch.shape[0]).reshape(patch.shape)
             self.std = std
-            print('std = ', std)
+            print('std = ', std[:,0,0], " in ", std.shape)
 
 
     def _get_raw_patch(self, coord, norm):
@@ -253,12 +252,12 @@ class FCN_Data_Extractor (Data_Extractor):
 
         if norm:
             if self.normalization == 'mean':
-                for channel_num in range(self.band):
-                    patch[channel_num] = patch[channel_num] - self.mu[channel_num]
+                patch = patch - self.mu
             elif self.normalization == 'Gaussian':
-                for channel_num in range(self.band):
-                    patch[channel_num] = (patch[channel_num] - self.mu[channel_num]) / self.std[channel_num]
+                patch = (patch - self.mu) / self.std
+
         patch[invalid_mask] = 0
+        
         return patch
 
 
@@ -374,26 +373,26 @@ class Pred_Data_Extractor ():
             mu += patch[0]
             img_cnt += 1
         mu = (mu / img_cnt).mean(axis=(1,2))
+        mu = np.repeat(mu, [np.prod(patch[0][0].shape)]*patch[0].shape[0]).reshape(patch[0].shape)
         self.mu = mu
-        print("mu = ", mu)
+        print("mu = ", mu[:,0,0], " in ", mu.shape)
 
         if self.normalization == 'Gaussian':
             std = 0
-            mu_ext = np.repeat(mu, [np.prod(patch[0][0].shape)]*patch[0].shape[0]).reshape(patch[0].shape)
             
             for patch in self.iterate_raw_image_patches(norm = False):
-                std += ((patch[0]-mu_ext)**2).mean(axis=(-1,-2))
+                std += ((patch[0]-mu)**2).mean(axis=(-1,-2))
             std = np.sqrt(std / img_cnt)
+            std = np.repeat(std, [np.prod(patch[0][0].shape)]*patch[0].shape[0]).reshape(patch[0].shape)
+
             self.std = std
-            print('std = ', std)
+            print('std = ', std[:,0,0], " in ", std.shape)
 
     def norm_fn (self, patch):
         if self.normalization == 'mean':
-            for channel_num in range(self.band):
-                patch[channel_num] = patch[channel_num] - self.mu[channel_num]
+            patch = patch - self.mu
         else:
-            for channel_num in range(self.band):
-                patch[channel_num] = (patch[channel_num] - self.mu[channel_num]) / self.std[channel_num]
+            patch = (patch - self.mu) / self.std
         return patch
 
     def iterate_raw_image_patches (self, norm=True):
