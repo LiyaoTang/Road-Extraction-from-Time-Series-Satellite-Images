@@ -110,11 +110,11 @@ if analyze_train:
     train_set.close()
 
     show_pred_prob_with_raw(train_raw_image, norm_train_pred, train_road_mask, pred_weight=pred_weight, figsize=(150,150), 
-                            show_plot=False, save_path=save_path + save_name + '_train_' + str(pred_weight).replace('.', '_') + '.png')
+                            show_plot=False, save_path=save_path + save_name + '_train_' + str(pred_weight).replace('.', '_') + norm + '.png')
 
     if print_log:
         show_log_pred_with_raw(train_raw_image, norm_train_pred, train_road_mask, pred_weight=pred_weight, figsize=(150,150), 
-                            show_plot=False, save_path=save_path + save_name + '_train_' + str(pred_weight).replace('.', '_') + '_log.png')
+                            show_plot=False, save_path=save_path + save_name + '_train_' + str(pred_weight).replace('.', '_') + norm + '_log.png')
     plt.close()
 
 if analyze_CV:
@@ -126,11 +126,11 @@ if analyze_CV:
     gc.collect()
 
     show_pred_prob_with_raw(CV_raw_image, norm_CV_pred, CV_road_mask, pred_weight=pred_weight, figsize=(150,150), 
-                            show_plot=False, save_path=save_path + save_name + '_CV_' + str(pred_weight).replace('.', '_') + '.png')
+                            show_plot=False, save_path=save_path + save_name + '_CV_' + str(pred_weight).replace('.', '_') + norm + '.png')
 
     if print_log:
         show_log_pred_with_raw(CV_raw_image, norm_CV_pred, CV_road_mask, pred_weight=pred_weight, figsize=(150,150), 
-                            show_plot=False, save_path=save_path + save_name + '_train_' + str(pred_weight).replace('.', '_') + '_log.png')
+                            show_plot=False, save_path=save_path + save_name + '_train_' + str(pred_weight).replace('.', '_') + norm + '_log.png')
     plt.close()
 
 

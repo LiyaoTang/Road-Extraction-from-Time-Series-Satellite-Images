@@ -6,7 +6,7 @@ import h5py
 def create_labelled_patches(raw_image, road_img, 
                             row_offset = 0, column_offset = 0, step = 28, minimum_road_mark = 5):
     image_patch = []
-    road_patch = []
+    road_patch_coord = []
     road_existence = []
 
     i = row_offset
@@ -16,16 +16,15 @@ def create_labelled_patches(raw_image, road_img,
             cur_img_patch = raw_image[:,i:i+step, j:j+step]
             cur_road_patch = road_img[i:i+step, j:j+step]
 
-            if (cur_img_patch != -9999).all() and (
-                cur_road_patch.sum() >= minimum_road_mark or cur_road_patch.sum() == 0):
+            if (cur_img_patch != -9999).all():
 
                 image_patch.append(cur_img_patch)
-                road_patch.append(cur_road_patch)
-                road_existence.append(not cur_road_patch.sum() == 0)
+                road_patch_coord.append((i,j))
+                road_existence.append(cur_road_patch.sum() >= minimum_road_mark)
             j += step
         i += step
     
-    return image_patch, road_patch, road_existence
+    return image_patch, road_patch_coord, road_existence
 
 
 def create_set_with_name(raw_image, combined_road_mask, step, divide, save_dir_path=None, name=None, save_img=True, h5f=None):
