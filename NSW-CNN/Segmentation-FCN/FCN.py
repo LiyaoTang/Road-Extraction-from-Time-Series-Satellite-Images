@@ -104,7 +104,7 @@ if not conv_struct:
     sys.exit()
 else:
     conv_struct = [int(x) for x in conv_struct.split('-')]
-    assert len(conv_struct) == 3
+    assert len(conv_struct) == 3 or len(conv_struct) == 4
 
 # parse concat_input options (if not None): e.g. 3-16;5-8;1-32 
 # => concat[ 3x3 out_channel=16, 5x5 out_channel=8, 1x1 out_channel=32] followed by 1x1 conv out_channel = classoutput
@@ -243,11 +243,12 @@ with tf.variable_scope('down_sampling'):
     conv2 = net
     net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool2')
     
-    # # Convolutional Layer 3
-    # net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_struct[2], kernel_size=3, 
-    #                                stride=1, padding='SAME', normalizer_fn=normalizer_fn, normalizer_params=normalizer_params, scope='conv3')
-    # conv3 = net
-    # net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool3')
+    # Convolutional Layer 3
+    if len(conv_struct) == 4
+        net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_struct[2], kernel_size=3, 
+                                       stride=1, padding='SAME', normalizer_fn=normalizer_fn, normalizer_params=normalizer_params, scope='conv3')
+        conv3 = net
+        net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool3')
 
 
 net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_struct[-1], kernel_size=3, 
@@ -256,11 +257,12 @@ net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_struct[-1], kernel_s
 
 with tf.variable_scope('up_sampling'):
     kernel_size = get_kernel_size(2)
-    # net = tf.contrib.layers.conv2d_transpose(inputs=net, num_outputs=conv_struct[2], kernel_size=kernel_size, stride=2, 
-    #                                          weights_initializer=tf.constant_initializer(get_bilinear_upsample_weights(2, conv_struct[3], conv_struct[2])), 
-    #                                          normalizer_fn=normalizer_fn, normalizer_params=normalizer_params, scope='conv3_T')
-    # with tf.variable_scope('concat3'):
-    #     net = tf.concat([net, conv3], axis=-1)
+    if len(conv_struct) == 4:
+        net = tf.contrib.layers.conv2d_transpose(inputs=net, num_outputs=conv_struct[2], kernel_size=kernel_size, stride=2, 
+                                                 weights_initializer=deconv_init(2, conv_struct[3], conv_struct[2]), 
+                                                 normalizer_fn=normalizer_fn, normalizer_params=normalizer_params, scope='conv3_T')
+        with tf.variable_scope('concat3'):
+            net = tf.concat([net, conv3], axis=-1)
 
     net = tf.contrib.layers.conv2d_transpose(inputs=net, num_outputs=conv_struct[1], kernel_size=kernel_size, stride=2, 
                                              weights_initializer=deconv_init( 2, conv_struct[2], conv_struct[1]),
