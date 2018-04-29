@@ -371,6 +371,7 @@ for epoch_num in range(epoch):
 
         train_step.run(feed_dict={x: batch_x, y: batch_y, weight: batch_w, is_training: True})
 
+    train_cross_entropy = cross_entropy.eval(feed_dict={x: batch_x, y: batch_y, weight: batch_w, is_training: True})[0]
     if record_summary:
         # tensor board
         run_options = tf.RunOptions(trace_level=tf.RunOptions.FULL_TRACE)
@@ -404,7 +405,8 @@ for epoch_num in range(epoch):
     avg_precision_curve.append(avg_precision_score)
     cross_entropy_curve.append(mean_cross_entropy)
 
-    print("mean_cross_entropy = ", mean_cross_entropy, "balanced_acc = ", balanced_acc, "AUC = ", AUC_score, "avg_precision = ", avg_precision_score)
+    print("train_xen =", train_cross_entropy, "val_xen =", mean_cross_entropy, "balanced_acc =", balanced_acc,
+          "AUC =", AUC_score, "avg_precision =", avg_precision_score)
     sys.stdout.flush()
 print("finish")
 
