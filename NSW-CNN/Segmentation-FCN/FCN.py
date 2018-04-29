@@ -244,7 +244,7 @@ with tf.variable_scope('down_sampling'):
     net = tf.contrib.layers.max_pool2d(inputs=net, kernel_size=2, stride=2, padding='VALID', scope='pool2')
     
     # Convolutional Layer 3
-    if len(conv_struct) == 4
+    if len(conv_struct) == 4:
         net = tf.contrib.layers.conv2d(inputs=net, num_outputs=conv_struct[2], kernel_size=3, 
                                        stride=1, padding='SAME', normalizer_fn=normalizer_fn, normalizer_params=normalizer_params, scope='conv3')
         conv3 = net
