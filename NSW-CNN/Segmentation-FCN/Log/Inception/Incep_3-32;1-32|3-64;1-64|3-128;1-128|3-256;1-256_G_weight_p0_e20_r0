@@ -1,0 +1,20 @@
+Train set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_thr1_128_16_train
+CV set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_thr1_128_16_cv
+will be saved as  Incep_3-32;1-32|3-64;1-64|3-128;1-128|3-256;1-256_G_weight_p0_e20_r0
+will be saved into  ../../../../../../g/data1a/v89/lt8626/Result/FCN/Incep_3-32;1-32|3-64;1-64|3-128;1-128|3-256;1-256_G_weight_p0_e20_r0/
+conv_struct =  [[[3, 32], [1, 32]], [[3, 64], [1, 64]], [[3, 128], [1, 128]], [[3, 256], [1, 256]]]
+mem usage before data loaded: 146.1484375 MB
+
+mu =  [  140.42133132   186.22724995   365.92096392   358.74944958  2449.2505917
+  1352.83568307   708.04858695]  in  (7, 128, 128)
+class weight [neg= 0.014629, pos= 0.985371]
+Traceback (most recent call last):
+  File "FCN-inception.py", line 167, in <module>
+    normalization = norm)
+  File "../../Data_Preprocessing/Data_Extractor.py", line 197, in __init__
+    super(FCN_Data_Extractor, self).__init__(raw_image, road_mask, img_size, pos_topleft_coord, neg_topleft_coord, normalization, encoding)
+  File "../../Data_Preprocessing/Data_Extractor.py", line 51, in __init__
+    self._cal_norm_param()
+  File "../../Data_Preprocessing/Data_Extractor.py", line 241, in _cal_norm_param
+    std[valid_mask] = std[valid_mask] + ((patch-mu_ext)**2)[valid_mask]
+NameError: name 'mu_ext' is not defined
