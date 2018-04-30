@@ -67,7 +67,7 @@ class Data_Extractor:
             for patch in self.iterate_raw_image_patches(norm = False):
                 std += ((patch[0]-mu)**2).mean(axis=(-1,-2))
             std = np.sqrt(std / self.size)
-            mu = np.repeat(std, [np.prod(patch[0][0].shape)]*patch[0].shape[0]).reshape(patch[0].shape)
+            std = np.repeat(std, [np.prod(patch[0][0].shape)]*patch[0].shape[0]).reshape(patch[0].shape)
             self.std = std
             print('std = ', std[:,0,0], " in ", std.shape)
 
@@ -238,7 +238,7 @@ class FCN_Data_Extractor (Data_Extractor):
                 patch = patch[0]
                 valid_mask = np.where(patch != -9999)
                 
-                std[valid_mask] = std[valid_mask] + ((patch-mu_ext)**2)[valid_mask]
+                std[valid_mask] = std[valid_mask] + ((patch-mu)**2)[valid_mask]
             
             std = np.sqrt(std.sum(axis=(1,2)) / pixel_cnt.sum(axis=(1,2)))
             std = np.repeat(std, [np.prod(patch[0].shape)]*patch.shape[0]).reshape(patch.shape)
