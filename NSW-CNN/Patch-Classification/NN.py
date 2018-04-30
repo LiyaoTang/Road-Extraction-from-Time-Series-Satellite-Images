@@ -140,6 +140,8 @@ for idx in train_index:
 std = np.sqrt(std / len(train_index))
 std = np.repeat(std, [width*height]*band).reshape((band, width, height))
 sigma = std
+gc.collect()
+
 
 x = tf.placeholder(tf.float32, shape=[None, band, width, height], name='x')
 y = tf.placeholder(tf.float32, shape=[None, class_output], name='y')
@@ -200,7 +202,7 @@ for i in range(iteration):
     if i%1000 == 0:
         train_accuracy = accuracy.eval(feed_dict={x:batch[0], y: batch[1]})
         learning_curve.append(train_accuracy)
-        
+
     train_step.run(feed_dict={x: batch[0], y: batch[1]})
 print("finish")
 
@@ -260,6 +262,12 @@ for i in range(len(X)):
 
 # take average
 pred_map = pred_map / pred_map_cnt
+pred_map[np.where(pred_map != pred_map)] = 0
+assert (pred_map <= 1).all() and (pred_map >= 0).all()
 
+gc.collect()
+print('plotting')
 show_pred_prob_with_raw(raw_image, pred_map, combined_road_mask, figsize=(150,150), 
                         show_plot=False, save_path='./Result/' + options.road_type_idx + '_rst.png')
+plt.close('all')
+print('finish')

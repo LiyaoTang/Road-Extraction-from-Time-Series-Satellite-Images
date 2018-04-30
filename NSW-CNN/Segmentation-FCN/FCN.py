@@ -371,7 +371,7 @@ for epoch_num in range(epoch):
 
         train_step.run(feed_dict={x: batch_x, y: batch_y, weight: batch_w, is_training: True})
 
-    train_cross_entropy = cross_entropy.eval(feed_dict={x: batch_x, y: batch_y, weight: batch_w, is_training: True})[0]
+    train_cross_entropy = cross_entropy.eval(feed_dict={x: batch_x, y: batch_y, weight: batch_w, is_training: True})
     if record_summary:
         # tensor board
         run_options = tf.RunOptions(trace_level=tf.RunOptions.FULL_TRACE)

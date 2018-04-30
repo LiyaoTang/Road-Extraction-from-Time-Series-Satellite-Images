@@ -24,8 +24,8 @@
 # 10. motorway, trunk, primary, residential, service, road, living street 0.94 0.15 \\
 # 11. motorway, trunk, primary, secondary, residential, service, road, living street 0.91 0.13 \\
 
-for RT in 0-1-2  0-1-2-3 0-1-2-3-4  0-1-2-3-4-5  0-1-2-3-4-5-6  0-1-2-3-4-5-6-7-8-9-10  3-4-5-6  4-5-6  7-8-9-10  0-1-2-7-8-9-10  0-1-2-3-7-8-9-10 ; do
-
+for RT in "0-1-2" "0-1-2-3" "0-1-2-3-4" "0-1-2-3-4-5" "0-1-2-3-4-5-6" "0-1-2-3-4-5-6-7-8-9-10" "3-4-5-6" "4-5-6" "7-8-9-10" "0-1-2-7-8-9-10" "0-1-2-3-7-8-9-10"; do
+	echo $RT
 	python NN.py --road_type ${RT} > ./Result/${RT}_rst 2>&1
 done
 
