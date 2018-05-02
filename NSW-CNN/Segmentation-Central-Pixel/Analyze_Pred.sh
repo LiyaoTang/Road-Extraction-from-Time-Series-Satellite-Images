@@ -14,7 +14,7 @@ for file in `cd ${pred_dir} && ls *.h5`; do
 		echo ${pred_dir}${file} # test
 
 		# path + name => get the h5 file; save => save the pred in png (name inherit the --name opt)
-		python Analyze_Pred.py --path ${pred_dir} --name ${file} --pred_weight ${weight} --save ${save_dir} --analyze_train
+		# python Analyze_Pred.py --path ${pred_dir} --name ${file} --pred_weight ${weight} --save ${save_dir} --analyze_train
 		# python Analyze_Pred.py --path ${pred_dir} --name ${file} --pred_weight ${weight} --save ${save_dir} --analyze_train --print_log --pred_weight 0.5
 
 		# python Analyze_Pred.py --path ${pred_dir} --name ${file} --pred_weight ${weight} --save ${save_dir} --analyze_CV

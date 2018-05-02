@@ -51,8 +51,9 @@ class Data_Extractor:
             self._cal_norm_param()
 
     def _cal_norm_param(self):
-        mu = 0
         img_size = self.img_size
+        mu = np.zeros((self.band, img_size, img_size))
+
         # Careful! norm params not yet calculated
         for patch in self.iterate_raw_image_patches(norm = False):
             mu += patch[0]
@@ -63,7 +64,7 @@ class Data_Extractor:
         print("mu = ", mu[:,0,0], " in ", mu.shape)
 
         if self.normalization == 'Gaussian':
-            std = 0
+            std = np.zeros(self.band)
             for patch in self.iterate_raw_image_patches(norm = False):
                 std += ((patch[0]-mu)**2).mean(axis=(-1,-2))
             std = np.sqrt(std / self.size)
@@ -347,13 +348,11 @@ class FCN_Data_Extractor (Data_Extractor):
 
 class Pred_Data_Extractor ():
 
-    def __init__(self, raw_image, step, size, normalization='mean', is_valid=lambda patch: (patch != -9999).all()):
+    def __init__(self, raw_image, step, size, normalization, classifier_type):
         self.raw_image = raw_image
         self.band = raw_image.shape[0]
         self.step = step
         self.size = size
-
-        self.is_valid = is_valid
 
         self.mu = None
         self.std  = None
@@ -361,28 +360,40 @@ class Pred_Data_Extractor ():
 
         assert self.band == 7
         assert self.normalization in set(['mean', 'Gaussian', None])
+    
+        if classifier_type == 'LR':
+            self.is_valid=lambda patch: (patch != -9999).all()
+        else:
+            assert classifier_type == 'FCN'
+            self.is_valid = lambda patch: ((patch==-9999).sum() / np.prod(np.array(patch.shape))) < 1/100
+        self.classifier_type = classifier_type
 
         if normalization:
             self._cal_norm_param()
 
     def _cal_norm_param(self):
-        mu = 0
-        img_cnt = 0
+        img_size = self.size
+        mu = np.zeros((self.band, img_size, img_size))
+        pixel_cnt = np.zeros((self.band, img_size, img_size))
+
         # Careful! norm params not yet calculated
-        for patch in self.iterate_raw_image_patches(norm = False):
-            mu += patch[0]
-            img_cnt += 1
-        mu = (mu / img_cnt).mean(axis=(1,2))
+
+        for valid_mask, patch in self.iterate_raw_image_patches_with_valid_mask(norm = False):
+            mu[valid_mask] = mu[valid_mask] + patch[0][valid_mask]
+            pixel_cnt[valid_mask] = pixel_cnt[valid_mask] + 1
+        
+        mu = (mu / pixel_cnt).mean(axis=(1,2))
         mu = np.repeat(mu, [np.prod(patch[0][0].shape)]*patch[0].shape[0]).reshape(patch[0].shape)
         self.mu = mu
+
         print("mu = ", mu[:,0,0], " in ", mu.shape)
 
         if self.normalization == 'Gaussian':
-            std = 0
-            
-            for patch in self.iterate_raw_image_patches(norm = False):
-                std += ((patch[0]-mu)**2).mean(axis=(-1,-2))
-            std = np.sqrt(std / img_cnt)
+            std = np.zeros((self.band, img_size, img_size))
+
+            for valid_mask, patch in self.iterate_raw_image_patches_with_valid_mask(norm = False):
+                std[valid_mask] = std[valid_mask] + ((patch[0]-mu)**2)[valid_mask]
+            std = np.sqrt((std / pixel_cnt).mean(axis=(1,2)))
             std = np.repeat(std, [np.prod(patch[0][0].shape)]*patch[0].shape[0]).reshape(patch[0].shape)
 
             self.std = std
@@ -410,6 +421,27 @@ class Pred_Data_Extractor ():
                         patch = self.norm_fn(patch)
 
                     yield np.array([patch])
+
+                col_idx += step
+            row_idx += step
+
+    def iterate_raw_image_patches_with_valid_mask (self, norm=True):
+        raw_image = self.raw_image
+        size = self.size
+        step = self.step
+
+        row_idx = 0
+        while(row_idx+size <= raw_image.shape[1]):
+            col_idx = 0
+            while(col_idx+size <= raw_image.shape[2]):
+                patch = raw_image[:, row_idx:row_idx+size, col_idx:col_idx+size].copy()                
+                if self.is_valid(patch):
+                    if norm:
+                        patch = self.norm_fn(patch)
+                    
+                    valid_mask = np.where(patch!=-9999) # 3D mask
+
+                    yield valid_mask, np.array([patch])
 
                 col_idx += step
             row_idx += step
