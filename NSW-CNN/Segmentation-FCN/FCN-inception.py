@@ -12,6 +12,7 @@ parser.add_option("--record_summary", action="store_true", default=False, dest="
 
 parser.add_option("--train", dest="path_train_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_thr1_128_16_train")
 parser.add_option("--cv", dest="path_cv_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_thr1_128_16_cv")
+parser.add_option("--test", dest="path_test_set", default="../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_thr1_128_16_test")
 
 parser.add_option("--norm", default="mean", dest="norm")
 parser.add_option("--pos", type="int", default=0, dest="pos_num")
@@ -34,6 +35,8 @@ parser.add_option("--gpu_max_mem", type="float", default=0.9, dest="gpu_max_mem"
 
 path_train_set = options.path_train_set
 path_cv_set = options.path_cv_set
+path_test_set = options.path_test_set
+
 save_path = options.save_path
 model_name = options.model_name
 record_summary = options.record_summary
@@ -400,10 +403,10 @@ gc.collect()
 
 
 # train set eva
-print("On training set: ")
+print("On training set:")
 train_metric = Metric_Record()
 train_cross_entropy_list = []
-for batch_x, batch_y, batch_w in CV_Data.iterate_data(norm=True, weighted=use_weight):
+for batch_x, batch_y, batch_w in Train_Data.iterate_data(norm=True, weighted=use_weight):
     batch_x = batch_x.transpose((0, 2, 3, 1))
 
     [pred_prob, cross_entropy_cost] = sess.run([prob_out, cross_entropy], feed_dict={x: batch_x, y: batch_y, weight: batch_w, is_training: False})
@@ -420,49 +423,83 @@ mean_cross_entropy = sum(train_cross_entropy_list)/len(train_cross_entropy_list)
 print("mean_cross_entropy = ", mean_cross_entropy, "balanced_acc = ", balanced_acc, "AUC = ", AUC_score, "avg_precision = ", avg_precision_score)
 
 # plot ROC curve
-fpr, tpr, thr = skmt.roc_curve(np.array(train_metric.y_true).flatten(), np.array(train_metric.pred_prob).flatten())
-plt.plot(fpr, tpr)
-plt.savefig(save_path+'Analysis/'+'train_ROC_curve.png', bbox_inches='tight')
-plt.close()
+# fpr, tpr, thr = skmt.roc_curve(np.array(train_metric.y_true).flatten(), np.array(train_metric.pred_prob).flatten())
+# plt.plot(fpr, tpr)
+# plt.savefig(save_path+'Analysis/'+'train_ROC_curve.png', bbox_inches='tight')
+# plt.close()
 
 # cross validation eva
 print("On CV set:")
 cv_metric.print_info()
 
 # plot ROC curve
-fpr, tpr, thr = skmt.roc_curve(np.array(cv_metric.y_true).flatten(), np.array(cv_metric.pred_prob).flatten())
-plt.plot(fpr, tpr)
-plt.savefig(save_path+'Analysis/'+'cv_ROC_curve.png', bbox_inches='tight')
-plt.close()
-sys.stdout.flush()
+# fpr, tpr, thr = skmt.roc_curve(np.array(cv_metric.y_true).flatten(), np.array(cv_metric.pred_prob).flatten())
+# plt.plot(fpr, tpr)
+# plt.savefig(save_path+'Analysis/'+'cv_ROC_curve.png', bbox_inches='tight')
+# plt.close()
+# sys.stdout.flush()
 
-# run garbage collection
-train_metric = 0
-cv_metric = 0
-gc.collect()
+print("On test set:")
+# Load training set
+test_set = h5py.File(path_test_set, 'r')
+test_pos_topleft_coord = np.array(test_set['positive_example'])
+test_neg_topleft_coord = np.array(test_set['negative_example'])
+test_raw_image = np.array(test_set['raw_image'])
+test_road_mask = np.array(test_set['road_mask'])
+test_set.close()
+
+Test_Data = FCN_Data_Extractor (test_raw_image, test_road_mask, size,
+                                pos_topleft_coord = test_pos_topleft_coord,
+                                neg_topleft_coord = test_neg_topleft_coord,
+                                normalization = norm)
+
+test_metric = Metric_Record()
+test_cross_entropy_list = []
+for batch_x, batch_y, batch_w in Test_Data.iterate_data(norm=True, weighted=use_weight):
+    batch_x = batch_x.transpose((0, 2, 3, 1))
+
+    [pred_prob, cross_entropy_cost] = sess.run([prob_out, cross_entropy], feed_dict={x: batch_x, y: batch_y, weight: batch_w, is_training: False})
+
+    test_metric.accumulate(Y         = np.array(batch_y.reshape(-1,class_output)[:,1]>0.5, dtype=int),
+                            pred      = np.array(pred_prob.reshape(-1,class_output)[:,1]>0.5, dtype=int), 
+                            pred_prob = pred_prob.reshape(-1,class_output)[:,1])    
+    test_cross_entropy_list.append(cross_entropy_cost)
+
+test_metric.print_info()
+AUC_score = skmt.roc_auc_score(np.array(test_metric.y_true).flatten(), np.array(test_metric.pred_prob).flatten())
+avg_precision_score = skmt.average_precision_score(np.array(test_metric.y_true).flatten(), np.array(test_metric.pred_prob).flatten())
+mean_cross_entropy = sum(test_cross_entropy_list)/len(test_cross_entropy_list)
+print("mean_cross_entropy = ", mean_cross_entropy, "balanced_acc = ", balanced_acc, "AUC = ", AUC_score, "avg_precision = ", avg_precision_score)
+
+print("end of scripts")
+# # run garbage collection
+# train_metric = 0
+# cv_metric = 0
+# test_metric = 0
+# gc.collect()
 
 
-# Predict road mask
-# Predict road prob masks on train
-train_pred_road = np.zeros([x for x in train_road_mask.shape] + [2])
-for coord, patch in Train_Data.iterate_raw_image_patches_with_coord(norm=True):
-    patch = patch.transpose((0, 2, 3, 1))
-    train_pred_road[coord[0]:coord[0]+size, coord[1]:coord[1]+size, :] += logits.eval(feed_dict={x: patch, is_training: False})[0]
+# # Predict road mask
+# # Predict road prob masks on train
+# train_pred_road = np.zeros([x for x in train_road_mask.shape] + [2])
+# for coord, patch in Train_Data.iterate_raw_image_patches_with_coord(norm=True):
+#     patch = patch.transpose((0, 2, 3, 1))
+#     train_pred_road[coord[0]:coord[0]+size, coord[1]:coord[1]+size, :] += logits.eval(feed_dict={x: patch, is_training: False})[0]
 
-# Predict road prob on CV
-CV_pred_road = np.zeros([x for x in CV_road_mask.shape] + [2])
-for coord, patch in CV_Data.iterate_raw_image_patches_with_coord(norm=True):
-    patch = patch.transpose((0, 2, 3, 1))
-    CV_pred_road[coord[0]:coord[0]+size, coord[1]:coord[1]+size, :] += logits.eval(feed_dict={x: patch, is_training: False})[0]
+# # Predict road prob on CV
+# CV_pred_road = np.zeros([x for x in CV_road_mask.shape] + [2])
+# for coord, patch in CV_Data.iterate_raw_image_patches_with_coord(norm=True):
+#     patch = patch.transpose((0, 2, 3, 1))
+#     CV_pred_road[coord[0]:coord[0]+size, coord[1]:coord[1]+size, :] += logits.eval(feed_dict={x: patch, is_training: False})[0]
 
-# save prediction
-prediction_name = model_name + '_pred.h5'
-h5f_file = h5py.File(save_path + prediction_name, 'w')
-h5f_file.create_dataset (name='train_pred', data=train_pred_road)
-h5f_file.create_dataset (name='CV_pred', data=CV_pred_road)
-h5f_file.close()
+# # save prediction
+# prediction_name = model_name + '_pred.h5'
+# h5f_file = h5py.File(save_path + prediction_name, 'w')
+# h5f_file.create_dataset (name='train_pred', data=train_pred_road)
+# h5f_file.create_dataset (name='CV_pred', data=CV_pred_road)
+# h5f_file.close()
 
-# monitor mem usage
-process = psutil.Process(os.getpid())
-print('mem usage after prediction maps calculated:', process.memory_info().rss / 1024/1024, 'MB')
-print()
+# # monitor mem usage
+# process = psutil.Process(os.getpid())
+# print('mem usage after prediction maps calculated:', process.memory_info().rss / 1024/1024, 'MB')
+# print()
