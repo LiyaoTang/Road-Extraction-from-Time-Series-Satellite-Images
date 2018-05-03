@@ -16,6 +16,26 @@
 # sk-SGD_G0_001_p8_e15_r0 
 # sk-SGD_G0_001_p0_e15_r0   
 
+import os
+from optparse import OptionParser
+
+parser = OptionParser()
+parser.add_option("--model_dir", dest="path_model_dir")
+parser.add_option("--model_name", dest="model_name")
+parser.add_option("--gpu", default="", dest="gpu")
+(options, args) = parser.parse_args()
+
+path_model_dir = options.path_model_dir
+model_name     = options.model_name
+gpu            = options.gpu
+
+if not path_model_dir.endswith('/'): path_model_dir.append('/')
+
+# restrict to single gpu
+os.environ["CUDA_DEVICE_ORDER"]    = "PCI_BUS_ID"
+os.environ["CUDA_VISIBLE_DEVICES"] = gpu
+
+
 import numpy as np
 import tensorflow as tf
 import sklearn as sk
@@ -26,7 +46,6 @@ import scipy.io as sio
 import skimage.io
 import h5py
 import sys
-import os
 import gc
 
 sys.path.append('../Metric/')
@@ -38,16 +57,7 @@ from Data_Extractor import *
 from Restored_Classifier import *
 from sklearn.externals import joblib
 
-from optparse import OptionParser
 
-parser = OptionParser()
-parser.add_option("--model_dir", dest="path_model_dir")
-parser.add_option("--model_name", dest="model_name")
-parser.add_option("--save", dest="save_path")
-(options, args) = parser.parse_args()
-
-path_model_dir = options.path_model_dir
-model_name    = options.model_name
 
 if 'sk-SGD' in model_name:
     classifier_type = 'LR'
