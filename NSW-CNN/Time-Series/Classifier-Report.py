@@ -123,19 +123,19 @@ def evaluate_on_set(classifier, data_extractor, use_norm):
         print("balanced_acc = ", balanced_acc, "AUC = ", AUC_score, "avg_precision = ", avg_precision_score)
         sys.stdout.flush()
 
-
+    metric = 0
+    gc.collect()
 
 for path_data_set in [path_train_set, path_cv_set, path_test_set]:
 
     print("On", path_data_set.split('_')[-1], 'set')
 
-    data_set = h5py.File(path_train_set, 'r')
+    data_set = h5py.File(path_data_set, 'r')
     pos_topleft_coord = np.array(data_set['positive_example'])
     neg_topleft_coord = np.array(data_set['negative_example'])
     raw_image = np.array(data_set['raw_image'])
     road_mask = np.array(data_set['road_mask'])
     data_set.close()
-    gc.collect()
 
     if classifier.classifier_type == 'LR':
 
@@ -151,5 +151,7 @@ for path_data_set in [path_train_set, path_cv_set, path_test_set]:
                                              pos_topleft_coord = pos_topleft_coord,
                                              neg_topleft_coord = neg_topleft_coord,
                                              normalization = norm)
+    gc.collect()
 
     evaluate_on_set(classifier=classifier, data_extractor=data_extractor, use_norm=use_norm)
+    gc.collect()
