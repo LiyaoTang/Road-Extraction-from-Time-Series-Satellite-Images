@@ -6,7 +6,7 @@ import numpy as np
 from sklearn.externals import joblib
 
 class Classifier ():
-    def __init__(self, path, name, classifier_type):
+    def __init__(self, path, name, classifier_type, gpu_max_mem=0.9):
         assert classifier_type in set(['LR', 'FCN'])
         if not path.endswith('/'): path = path + '/'
 
@@ -19,7 +19,12 @@ class Classifier ():
         else: # FCN
             tf.reset_default_graph()
             tf.train.import_meta_graph(path+name+'.meta')
-            sess = tf.InteractiveSession()
+
+            config = tf.ConfigProto()
+            config.gpu_options.per_process_gpu_memory_fraction = gpu_max_mem
+            config.gpu_options.allow_growth = True
+            sess = tf.InteractiveSession(config=config)
+
             saver = tf.train.Saver()
             saver.restore(sess, path+name)
             
