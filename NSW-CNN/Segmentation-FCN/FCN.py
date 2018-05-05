@@ -357,7 +357,7 @@ sys.stdout.flush()
 
 
 
-saver = tf.train.Saver()
+saver = tf.train.Saver(max_to_keep=None)
 
 config = tf.ConfigProto()
 config.gpu_options.per_process_gpu_memory_fraction = gpu_max_mem
