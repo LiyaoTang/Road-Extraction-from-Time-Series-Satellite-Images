@@ -19,7 +19,7 @@ parser.add_option("--norm", default="mean", dest="norm")
 parser.add_option("--pos", type="int", default=0, dest="pos_num")
 parser.add_option("--size", type="int", default=128, dest="size")
 parser.add_option("-e", "--epoch", type="int", default=15, dest="epoch")
-parser.add_option("--learning_rate", type="float", default=1e-6, dest="learning_rate")
+parser.add_option("--learning_rate", type="float", default=6e-6, dest="learning_rate")
 parser.add_option("--batch", type="int", default=1, dest="batch_size")
 parser.add_option("--rand", type="int", dest="rand_seed")
 
