@@ -30,6 +30,7 @@ model_name     = options.model_name
 gpu            = options.gpu
 
 if not path_model_dir.endswith('/'): path_model_dir = path_model_dir + '/'
+model_name = model_name.replace('.', '_')
 
 # restrict to single gpu
 os.environ["CUDA_DEVICE_ORDER"]    = "PCI_BUS_ID"
@@ -114,6 +115,7 @@ def evaluate_on_set(classifier, data_extractor, use_norm):
 
     else:
         assert classifier.classifier_type == 'FCN'
+        class_output = 2
 
         metric = Metric_Record()
         for batch_x, batch_y, _ in data_extractor.iterate_data(norm=use_norm):
