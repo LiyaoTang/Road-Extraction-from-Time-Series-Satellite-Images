@@ -8,8 +8,8 @@ from sklearn.externals import joblib
 class Classifier ():
     def __init__(self, path, name, classifier_type):
         assert classifier_type in set(['LR', 'FCN'])
-        if not path_model_dir.path('/'): path = path + '/'
-        
+        if not path.endswith('/'): path = path + '/'
+
         self.classifier_type = classifier_type
         if classifier_type == 'LR':
             self.classifier = joblib.load(path+name)
