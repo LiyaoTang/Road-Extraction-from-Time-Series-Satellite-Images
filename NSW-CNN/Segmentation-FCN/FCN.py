@@ -92,8 +92,8 @@ if not save_path:
     sys.exit()
 save_path = save_path.strip('/') + '/' + model_name + '/'
 
-os.makedirs(os.path.dirname(save_path), exist_ok=True)
-os.makedirs(os.path.dirname(save_path+'Analysis/'), exist_ok=True)
+os.makedirs(save_path, exist_ok=True)
+os.makedirs(save_path+'Analysis/', exist_ok=True)
 
 print("Train set:", path_train_set)
 print("CV set:", path_cv_set)
@@ -112,7 +112,7 @@ else:
 # => concat[ 3x3 out_channel=16, 5x5 out_channel=8, 1x1 out_channel=32] followed by 1x1 conv out_channel = classoutput
 # concat_input = 0 => concat the raw input before the calculation of logits
 if concat_input:
-    concat_input = [[int(x) for x in config.split('-')] for config in concat_input.split(';')]
+    concat_input = [[[int(x) for x in config.split('-')] for config in  layer.split(';')] for layer in conv_struct.split('|')]
 
 # import libraries
 import numpy as np
@@ -222,13 +222,18 @@ else:
 
 with tf.variable_scope('input_bridge'):
     if concat_input:
-        if concat_input == [[0]]:
+        if concat_input == [[[0]]]:
             input_map = x
         else:
             input_map = tf.concat([tf.contrib.layers.conv2d(inputs=x, num_outputs=cfg[1], kernel_size=cfg[0], 
                                                             stride=1, padding='SAME', scope=str(cfg[0])+'-'+str(cfg[1])) 
-                                   for cfg in concat_input], 
-                                  axis=-1)
+                                   for cfg in concat_input[0]], axis=-1)
+            if len(concat_input) > 1:
+                for layer_cfg in concat_input[1:]:
+                    net = tf.concat([tf.contrib.layers.conv2d(inputs=net, num_outputs=cfg[1], kernel_size=cfg[0], stride=1, padding='SAME',
+                                                              normalizer_fn=normalizer_fn, normalizer_params=normalizer_params,biases_initializer=biases_initializer,
+                                                              scope=str(cfg[0])+'-'+str(cfg[1])) 
+                                     for cfg in layer_cfg], axis=-1)
 
 
 with tf.variable_scope('down_sampling'):

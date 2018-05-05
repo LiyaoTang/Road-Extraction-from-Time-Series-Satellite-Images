@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 # pass in whole image (only raw) => display a subset of it
 def show_raw_image(image, x = 0, y = 0, light=3.0, size=500, x_size=0, y_size=0, figsize=(20,20),
-                   show_plot = True, save_path=None):
+                   show_plot = True, save_path=None, close_plot=True):
     if x_size == 0 and y_size == 0:
         x_size = size
         y_size = size
@@ -26,7 +26,8 @@ def show_raw_image(image, x = 0, y = 0, light=3.0, size=500, x_size=0, y_size=0,
         plt.savefig(save_path, bbox_inches='tight')
     if show_plot:
         plt.show()
-    plt.close()
+    if close_plot:
+        plt.close()
 
 # pass in whole image (raw & road) => display a subset of it (size = -1 to show the whole)
 def show_image_against_road(image, road, x = 0,y = 0, light=3.0, size=500, figsize=(20,20), BGR_axis=[1,2,3],

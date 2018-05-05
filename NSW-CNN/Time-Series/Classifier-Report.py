@@ -29,7 +29,7 @@ path_model_dir = options.path_model_dir
 model_name     = options.model_name
 gpu            = options.gpu
 
-if not path_model_dir.endswith('/'): path_model_dir.append('/')
+if not path_model_dir.endswith('/'): path_model_dir = path_model_dir + '/'
 
 # restrict to single gpu
 os.environ["CUDA_DEVICE_ORDER"]    = "PCI_BUS_ID"
