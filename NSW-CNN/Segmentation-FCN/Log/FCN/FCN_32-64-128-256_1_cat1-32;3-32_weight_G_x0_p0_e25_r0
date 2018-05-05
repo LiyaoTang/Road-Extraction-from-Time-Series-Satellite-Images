@@ -1,0 +1,63 @@
+Train set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_thr1_128_16_train
+CV set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_thr1_128_16_cv
+will be saved as  FCN_32-64-128-256_1_cat1-32;3-32_weight_G_x0_p0_e25_r0
+will be saved into  ../../../../../../g/data1a/v89/lt8626/Result/FCN/FCN_32-64-128-256_1_cat1-32;3-32_weight_G_x0_p0_e25_r0/
+mem usage before data loaded: 146.16796875 MB
+
+mu =  [  140.42133132   186.22724995   365.92096392   358.74944958  2449.2505917
+  1352.83568307   708.04858695]  in  (7, 128, 128)
+class weight [neg= 0.014629, pos= 0.985371]
+std =  [ 113.04792058  135.17366614  230.99671408  248.71498611  952.23666562
+  825.62200511  523.41884702]  in  (7, 128, 128)
+mu =  [  145.02183288   190.77598344   361.33590698   366.91707464  2380.64990791
+  1375.52599508   734.46670819]  in  (7, 128, 128)
+class weight [neg= 0.025683, pos= 0.974317]
+std =  [ 120.35045017  142.82855956  224.8264348   259.40579968  811.03520645
+  842.84666761  560.72898821]  in  (7, 128, 128)
+train data: (7, 7650, 8091) (7650, 8091)
+cv data: (7, 2365, 8091) (2365, 8091)
+mem usage after data loaded: 5100.44140625 MB
+
+[0.13264859577316138, 0.8673514042268387] [neg, pos]
+mem usage after model created: 5146.69921875 MB
+
+2018-05-04 20:28:42.151148: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use AVX2 instructions, but these are available on your machine and could speed up CPU computations.
+2018-05-04 20:28:42.151231: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use FMA instructions, but these are available on your machine and could speed up CPU computations.
+2018-05-04 20:28:42.402676: I tensorflow/core/common_runtime/gpu/gpu_device.cc:955] Found device 0 with properties: 
+name: Tesla K80
+major: 3 minor: 7 memoryClockRate (GHz) 0.8235
+pciBusID 0000:05:00.0
+Total memory: 11.17GiB
+Free memory: 11.10GiB
+2018-05-04 20:28:42.402750: I tensorflow/core/common_runtime/gpu/gpu_device.cc:976] DMA: 0 
+2018-05-04 20:28:42.402773: I tensorflow/core/common_runtime/gpu/gpu_device.cc:986] 0:   Y 
+2018-05-04 20:28:42.402804: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1045] Creating TensorFlow device (/gpu:0) -> (device: 0, name: Tesla K80, pci bus id: 0000:05:00.0)
+2018-05-04 20:41:07.702232: I tensorflow/stream_executor/dso_loader.cc:139] successfully opened CUDA library libcupti.so.8.0 locally
+train_xen = 7.0034611372 val_xen = 0.0361080505005 balanced_acc = 0.533078554228 AUC = 0.555674319211 avg_precision = 0.0321067627733
+train_xen = 0.019215148266 val_xen = 0.0330589546318 balanced_acc = 0.59962223568 AUC = 0.650641297349 avg_precision = 0.0506480515992
+train_xen = 0.0180112061799 val_xen = 0.0321107679343 balanced_acc = 0.631074243114 AUC = 0.68531673281 avg_precision = 0.059257065
+train_xen = 0.0174053041185 val_xen = 0.0312184533863 balanced_acc = 0.651371631601 AUC = 0.710348658793 avg_precision = 0.0677666050008
+train_xen = 0.0169841350239 val_xen = 0.0308222090671 balanced_acc = 0.660229064342 AUC = 0.720785318394 avg_precision = 0.0719548991364
+train_xen = 0.0166671153129 val_xen = 0.0304533758057 balanced_acc = 0.666073706705 AUC = 0.729319810919 avg_precision = 0.0758018384107
+train_xen = 0.0164114204395 val_xen = 0.0296883185044 balanced_acc = 0.682431678622 AUC = 0.748611371809 avg_precision = 0.0842038398035
+train_xen = 0.0161921791137 val_xen = 0.029537091069 balanced_acc = 0.685159837304 AUC = 0.752253483535 avg_precision = 0.0874245503453
+train_xen = 0.0160030598885 val_xen = 0.0292095264422 balanced_acc = 0.690463193561 AUC = 0.759529530032 avg_precision = 0.0921808647771
+train_xen = 0.0158382996249 val_xen = 0.029090881273 balanced_acc = 0.691789358263 AUC = 0.763583593974 avg_precision = 0.0952313959696
+train_xen = 0.0156937707773 val_xen = 0.0285589788431 balanced_acc = 0.701106425442 AUC = 0.773616896252 avg_precision = 0.101016759897
+train_xen = 0.0155670589926 val_xen = 0.0284487098386 balanced_acc = 0.702753929936 AUC = 0.777657522669 avg_precision = 0.103376256215
+train_xen = 0.0154468983065 val_xen = 0.0285479804779 balanced_acc = 0.702612622108 AUC = 0.7748085053 avg_precision = 0.103446852804
+train_xen = 0.0153410383639 val_xen = 0.0280463663817 balanced_acc = 0.709196469617 AUC = 0.785081141905 avg_precision = 0.109331177027
+train_xen = 0.0152395235546 val_xen = 0.0280269829489 balanced_acc = 0.70966540734 AUC = 0.785645802623 avg_precision = 0.110398092808
+train_xen = 0.015143955924 val_xen = 0.0282707519325 balanced_acc = 0.707254147356 AUC = 0.78179062854 avg_precision = 0.109434188142
+train_xen = 0.015057182548 val_xen = 0.0277601441237 balanced_acc = 0.714910751791 AUC = 0.791638939741 avg_precision = 0.115237355947
+train_xen = 0.0149709141007 val_xen = 0.0278945596624 balanced_acc = 0.713469289856 AUC = 0.790571300238 avg_precision = 0.114870644159
+train_xen = 0.0148893274585 val_xen = 0.0276848730948 balanced_acc = 0.717153962143 AUC = 0.793944364823 avg_precision = 0.117188525761
+train_xen = 0.0148119622664 val_xen = 0.0274542836107 balanced_acc = 0.719413531742 AUC = 0.798893970599 avg_precision = 0.120291321684
+train_xen = 0.0147363318595 val_xen = 0.0274547714822 balanced_acc = 0.719026578913 AUC = 0.80047918517 avg_precision = 0.12179364902
+train_xen = 0.0146664503878 val_xen = 0.0271461967453 balanced_acc = 0.724485079812 AUC = 0.804063246987 avg_precision = 0.124452589834
+train_xen = 0.0145984477313 val_xen = 0.0273384375405 balanced_acc = 0.724022253077 AUC = 0.799188445857 avg_precision = 0.122450188739
+train_xen = 0.0145334789746 val_xen = 0.0273834357504 balanced_acc = 0.721327748362 AUC = 0.799287222333 avg_precision = 0.122793049024
+train_xen = 0.0144633909408 val_xen = 0.0270356584523 balanced_acc = 0.728476285116 AUC = 0.806961939055 avg_precision = 0.127847362239
+finish
+mem usage after model trained: 5997.36328125 MB
+
