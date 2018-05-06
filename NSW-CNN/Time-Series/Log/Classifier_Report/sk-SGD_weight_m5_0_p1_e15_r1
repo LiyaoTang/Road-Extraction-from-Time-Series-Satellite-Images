@@ -1,0 +1,52 @@
+mean 8 LR from sk-SGD_weight_m5_0_p1_e15_r1
+On train set
+mu =  [  144.71187809   191.4973748    363.63933132   368.9204473   2385.57259035
+  1362.40326606   728.31018062]  in  (7, 8, 8)
+true_pos  = 286849
+false_pos = 15365768
+true_neg  = 5892308
+false_neg = 18071
+size = 21562996
+pos_precision = 0.0183259451119
+balanced_accuracy = 0.608957507917
+neg_recall    = 0.277179741008
+neg_F1        = 0.433760992298
+neg_precision = 0.996942497258
+pos_recall    = 0.940735274826
+accuracy      = 0.28656300822
+pos_F1        = 0.0359515381352
+balanced_acc =  0.608957507917 AUC =  0.755062903886 avg_precision =  0.0534451374243
+On cv set
+mu =  [  150.8227309    198.28994142   365.46753706   373.66751856  2370.63525823
+  1356.64782764   731.00466191]  in  (7, 8, 8)
+true_pos  = 21971
+false_pos = 550957
+true_neg  = 231461
+false_neg = 1179
+size = 805568
+pos_precision = 0.0383486232127
+balanced_accuracy = 0.622449539948
+neg_recall    = 0.295827805598
+neg_F1        = 0.456054727907
+neg_precision = 0.994932083906
+pos_recall    = 0.949071274298
+accuracy      = 0.314600381346
+pos_F1        = 0.073718540191
+balanced_acc =  0.622449539948 AUC =  0.756769938152 avg_precision =  0.0930331135001
+On test set
+mu =  [  187.71059516   241.17685028   432.1189087    445.35419263  2449.03433567
+  1617.91561837   904.85205398]  in  (7, 8, 8)
+true_pos  = 41589
+false_pos = 1992433
+true_neg  = 1010102
+false_neg = 2154
+size = 3046278
+pos_precision = 0.020446681501
+balanced_accuracy = 0.643587115176
+neg_recall    = 0.336416394813
+neg_F1        = 0.503190327965
+neg_precision = 0.99787207979
+pos_recall    = 0.950757835539
+accuracy      = 0.345238024895
+pos_F1        = 0.0400324387022
+balanced_acc =  0.643587115176 AUC =  0.813783265157 avg_precision =  0.0651439662159

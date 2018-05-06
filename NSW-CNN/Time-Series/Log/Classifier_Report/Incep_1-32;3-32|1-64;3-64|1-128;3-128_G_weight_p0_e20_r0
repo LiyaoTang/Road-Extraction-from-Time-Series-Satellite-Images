@@ -1,0 +1,74 @@
+2018-05-06 04:44:53.597230: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use AVX2 instructions, but these are available on your machine and could speed up CPU computations.
+2018-05-06 04:44:53.597763: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use FMA instructions, but these are available on your machine and could speed up CPU computations.
+2018-05-06 04:44:53.989528: I tensorflow/core/common_runtime/gpu/gpu_device.cc:955] Found device 0 with properties: 
+name: Tesla K80
+major: 3 minor: 7 memoryClockRate (GHz) 0.8235
+pciBusID 0000:05:00.0
+Total memory: 11.17GiB
+Free memory: 11.10GiB
+2018-05-06 04:44:53.989679: I tensorflow/core/common_runtime/gpu/gpu_device.cc:976] DMA: 0 
+2018-05-06 04:44:53.989733: I tensorflow/core/common_runtime/gpu/gpu_device.cc:986] 0:   Y 
+2018-05-06 04:44:53.989807: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1045] Creating TensorFlow device (/gpu:0) -> (device: 0, name: Tesla K80, pci bus id: 0000:05:00.0)
+2018-05-06 05:07:33.284648: E tensorflow/stream_executor/cuda/cuda_driver.cc:955] failed to alloc 4294967296 bytes on host: CUDA_ERROR_INVALID_VALUE
+2018-05-06 05:07:33.358556: W ./tensorflow/core/common_runtime/gpu/pool_allocator.h:195] could not allocate pinned host memory of size: 4294967296
+Gaussian 128 FCN from Incep_1-32;3-32|1-64;3-64|1-128;3-128_G_weight_p0_e20_r0
+On train set
+mu =  [  140.42133132   186.22724995   365.92096392   358.74944958  2449.2505917
+  1352.83568307   708.04858695]  in  (7, 128, 128)
+class weight [neg= 0.014629, pos= 0.985371]
+std =  [ 113.04792058  135.17366614  230.99671408  248.71498611  952.23666562
+  825.62200511  523.41884702]  in  (7, 128, 128)
+true_pos  = 7084038
+false_pos = 101984140
+true_neg  = 525174108
+false_neg = 2226962
+size = 38847
+balanced_accuracy = 0.799105763522
+neg_F1        = 0.909739499413
+neg_recall    = 0.837386910999
+accuracy      = 13701.3964013
+neg_precision = 0.995777479177
+pos_precision = 0.0649505486376
+pos_recall    = 0.760824616046
+pos_F1        = 0.119683851834
+balanced_acc =  0.799105763522 AUC =  0.887395038841 avg_precision =  0.221942362963
+On cv set
+mu =  [  145.02183288   190.77598344   361.33590698   366.91707464  2380.64990791
+  1375.52599508   734.46670819]  in  (7, 128, 128)
+class weight [neg= 0.025683, pos= 0.974317]
+std =  [ 120.35045017  142.82855956  224.8264348   259.40579968  811.03520645
+  842.84666761  560.72898821]  in  (7, 128, 128)
+true_pos  = 121101
+false_pos = 1223655
+true_neg  = 4555026
+false_neg = 31226
+size = 362
+balanced_accuracy = 0.791626727517
+neg_F1        = 0.878930138767
+neg_recall    = 0.78824666044
+accuracy      = 12917.4779006
+neg_precision = 0.993191390268
+pos_precision = 0.0900542551957
+pos_recall    = 0.795006794593
+pos_F1        = 0.161782613255
+balanced_acc =  0.791626727517 AUC =  0.8777221842 avg_precision =  0.239194778425
+On test set
+mu =  [  185.232605     238.7054643    430.14717078   446.99416135  2409.52013496
+  1646.65212952   922.71874759]  in  (7, 128, 128)
+class weight [neg= 0.012677, pos= 0.987323]
+std =  [ 120.14719703  144.63647815  226.45236114  262.10519119  820.82781844
+  841.09542711  571.9831284 ]  in  (7, 128, 128)
+true_pos  = 1327141
+false_pos = 30116647
+true_neg  = 89248224
+false_neg = 205524
+size = 7379
+balanced_accuracy = 0.80679835194
+neg_F1        = 0.854791822946
+neg_recall    = 0.747692543479
+accuracy      = 12274.7479333
+neg_precision = 0.997702455128
+pos_precision = 0.0422067786489
+pos_recall    = 0.8659041604
+pos_F1        = 0.0804902213103
+balanced_acc =  0.80679835194 AUC =  0.892551335581 avg_precision =  0.168574325577

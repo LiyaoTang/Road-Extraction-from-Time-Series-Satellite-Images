@@ -1,0 +1,72 @@
+2018-05-06 04:44:54.328461: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use AVX2 instructions, but these are available on your machine and could speed up CPU computations.
+2018-05-06 04:44:54.328925: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use FMA instructions, but these are available on your machine and could speed up CPU computations.
+2018-05-06 04:44:54.786808: I tensorflow/core/common_runtime/gpu/gpu_device.cc:955] Found device 0 with properties: 
+name: Tesla K80
+major: 3 minor: 7 memoryClockRate (GHz) 0.8235
+pciBusID 0000:88:00.0
+Total memory: 11.17GiB
+Free memory: 11.10GiB
+2018-05-06 04:44:54.786941: I tensorflow/core/common_runtime/gpu/gpu_device.cc:976] DMA: 0 
+2018-05-06 04:44:54.787001: I tensorflow/core/common_runtime/gpu/gpu_device.cc:986] 0:   Y 
+2018-05-06 04:44:54.787051: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1045] Creating TensorFlow device (/gpu:0) -> (device: 0, name: Tesla K80, pci bus id: 0000:88:00.0)
+Gaussian 128 FCN from Incep_3-32|3-64|3-128_G_weight_p0_e20_r0
+On train set
+mu =  [  140.42133132   186.22724995   365.92096392   358.74944958  2449.2505917
+  1352.83568307   708.04858695]  in  (7, 128, 128)
+class weight [neg= 0.014629, pos= 0.985371]
+std =  [ 113.04792058  135.17366614  230.99671408  248.71498611  952.23666562
+  825.62200511  523.41884702]  in  (7, 128, 128)
+true_pos  = 7045875
+false_pos = 111314458
+true_neg  = 515843790
+false_neg = 2265125
+size = 38847
+pos_precision = 0.059529023123
+pos_F1        = 0.110375208505
+pos_recall    = 0.756725915584
+neg_precision = 0.995628091055
+accuracy      = 13460.2328365
+balanced_accuracy = 0.789617845729
+neg_recall    = 0.822509775874
+neg_F1        = 0.900826997692
+balanced_acc =  0.789617845729 AUC =  0.877115253773 avg_precision =  0.202071045386
+On cv set
+mu =  [  145.02183288   190.77598344   361.33590698   366.91707464  2380.64990791
+  1375.52599508   734.46670819]  in  (7, 128, 128)
+class weight [neg= 0.025683, pos= 0.974317]
+std =  [ 120.35045017  142.82855956  224.8264348   259.40579968  811.03520645
+  842.84666761  560.72898821]  in  (7, 128, 128)
+true_pos  = 121920
+false_pos = 1325245
+true_neg  = 4453436
+false_neg = 30407
+size = 362
+pos_precision = 0.0842474769636
+pos_F1        = 0.152448402368
+pos_recall    = 0.800383385743
+neg_precision = 0.993218540435
+accuracy      = 12639.1049724
+balanced_accuracy = 0.785524954908
+neg_recall    = 0.770666524074
+neg_F1        = 0.867902671896
+balanced_acc =  0.785524954908 AUC =  0.871575725979 avg_precision =  0.231694296023
+On test set
+mu =  [  185.232605     238.7054643    430.14717078   446.99416135  2409.52013496
+  1646.65212952   922.71874759]  in  (7, 128, 128)
+class weight [neg= 0.012677, pos= 0.987323]
+std =  [ 120.14719703  144.63647815  226.45236114  262.10519119  820.82781844
+  841.09542711  571.9831284 ]  in  (7, 128, 128)
+true_pos  = 1345886
+false_pos = 32834583
+true_neg  = 86530288
+false_neg = 186779
+size = 7379
+pos_precision = 0.0393758786633
+pos_F1        = 0.0753720465978
+pos_recall    = 0.878134491229
+neg_precision = 0.99784611027
+accuracy      = 11908.9543299
+balanced_accuracy = 0.801528526204
+neg_recall    = 0.724922561178
+neg_F1        = 0.839765860509
+balanced_acc =  0.801528526204 AUC =  0.888987828559 avg_precision =  0.153369101547

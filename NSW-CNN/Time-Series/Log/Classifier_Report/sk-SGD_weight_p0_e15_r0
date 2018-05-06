@@ -1,0 +1,48 @@
+None 8 LR from sk-SGD_weight_p0_e15_r0
+On train set
+true_pos  = 112584
+false_pos = 2293228
+true_neg  = 18964848
+false_neg = 192336
+size = 21562996
+pos_precision = 0.0467966740543
+neg_recall    = 0.892124386045
+pos_recall    = 0.369224714679
+pos_F1        = 0.0830653860286
+neg_precision = 0.989960111048
+neg_F1        = 0.938499368803
+accuracy      = 0.884730118208
+balanced_accuracy = 0.630674550362
+balanced_acc =  0.630674550362 AUC =  0.647143435845 avg_precision =  0.0284832038411
+On cv set
+true_pos  = 9336
+false_pos = 79400
+true_neg  = 703018
+false_neg = 13814
+size = 805568
+pos_precision = 0.105210962856
+neg_recall    = 0.898519717082
+pos_recall    = 0.403282937365
+pos_F1        = 0.166884149938
+neg_precision = 0.980729096915
+neg_F1        = 0.937826246457
+accuracy      = 0.884287856519
+balanced_accuracy = 0.650901327224
+balanced_acc =  0.650901327224 AUC =  0.669318679905 avg_precision =  0.0645023085626
+On test set
+true_pos  = 20990
+false_pos = 317107
+true_neg  = 2685428
+false_neg = 22753
+size = 3046278
+pos_precision = 0.0620827750616
+neg_recall    = 0.894386909728
+pos_recall    = 0.479848204284
+pos_F1        = 0.109941336686
+neg_precision = 0.991598419751
+neg_F1        = 0.94048732243
+accuracy      = 0.888434345125
+balanced_accuracy = 0.687117557006
+balanced_acc =  0.687117557006 AUC =  0.705759925512 avg_precision =  0.0402166784475
+/home/659/lt8626/.local/lib/python3.5/site-packages/sklearn/linear_model/base.py:340: RuntimeWarning: overflow encountered in exp
+  np.exp(prob, prob)
