@@ -1,11 +1,66 @@
-2018-05-06 04:44:55.381094: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use AVX2 instructions, but these are available on your machine and could speed up CPU computations.
-2018-05-06 04:44:55.381615: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use FMA instructions, but these are available on your machine and could speed up CPU computations.
-2018-05-06 04:44:55.722797: I tensorflow/core/common_runtime/gpu/gpu_device.cc:955] Found device 0 with properties: 
+2018-05-07 14:14:23.461665: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use AVX2 instructions, but these are available on your machine and could speed up CPU computations.
+2018-05-07 14:14:23.461797: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use FMA instructions, but these are available on your machine and could speed up CPU computations.
+2018-05-07 14:14:23.797037: I tensorflow/core/common_runtime/gpu/gpu_device.cc:955] Found device 0 with properties: 
 name: Tesla K80
 major: 3 minor: 7 memoryClockRate (GHz) 0.8235
-pciBusID 0000:89:00.0
+pciBusID 0000:0a:00.0
 Total memory: 11.17GiB
 Free memory: 11.10GiB
-2018-05-06 04:44:55.722901: I tensorflow/core/common_runtime/gpu/gpu_device.cc:976] DMA: 0 
-2018-05-06 04:44:55.722953: I tensorflow/core/common_runtime/gpu/gpu_device.cc:986] 0:   Y 
-2018-05-06 04:44:55.723017: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1045] Creating TensorFlow device (/gpu:0) -> (device: 0, name: Tesla K80, pci bus id: 0000:89:00.0)
+2018-05-07 14:14:23.797135: I tensorflow/core/common_runtime/gpu/gpu_device.cc:976] DMA: 0 
+2018-05-07 14:14:23.797213: I tensorflow/core/common_runtime/gpu/gpu_device.cc:986] 0:   Y 
+2018-05-07 14:14:23.797266: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1045] Creating TensorFlow device (/gpu:0) -> (device: 0, name: Tesla K80, pci bus id: 0000:0a:00.0)
+mean 128 FCN from Incep_3-32;1-32|3-64;1-64_m_weight_bn_p0_e20_r0
+On train set
+mu =  [  140.42133132   186.22724995   365.92096392   358.74944958  2449.2505917
+  1352.83568307   708.04858695]  in  (7, 128, 128)
+class weight [neg= 0.014629, pos= 0.985371]
+true_pos  = 5093667
+false_pos = 72945032
+true_neg  = 554213216
+false_neg = 4217333
+size = 38847
+pos_recall    = 0.547059069917
+neg_precision = 0.992447882718
+accuracy      = 14397.6853554
+neg_F1        = 0.93491641858
+pos_F1        = 0.116627007495
+pos_precision = 0.0652710394365
+balanced_accuracy = 0.715374330724
+neg_recall    = 0.88368959153
+balanced_acc =  0.715374330724 AUC =  0.81506840291 avg_precision =  0.147351086983
+On cv set
+mu =  [  145.02183288   190.77598344   361.33590698   366.91707464  2380.64990791
+  1375.52599508   734.46670819]  in  (7, 128, 128)
+class weight [neg= 0.025683, pos= 0.974317]
+true_pos  = 86729
+false_pos = 630018
+true_neg  = 5148663
+false_neg = 65598
+size = 362
+pos_recall    = 0.569360651756
+neg_precision = 0.987419502016
+accuracy      = 14462.4088398
+neg_F1        = 0.936721580083
+pos_F1        = 0.199589448079
+pos_precision = 0.121003645638
+balanced_accuracy = 0.730168059151
+neg_recall    = 0.890975466547
+balanced_acc =  0.730168059151 AUC =  0.839728398913 avg_precision =  0.188773153263
+On test set
+mu =  [  185.232605     238.7054643    430.14717078   446.99416135  2409.52013496
+  1646.65212952   922.71874759]  in  (7, 128, 128)
+class weight [neg= 0.012677, pos= 0.987323]
+true_pos  = 1048496
+false_pos = 18535523
+true_neg  = 100829348
+false_neg = 484169
+size = 7379
+pos_recall    = 0.684099917464
+neg_precision = 0.995221081902
+accuracy      = 13806.4567015
+neg_F1        = 0.913812620382
+pos_F1        = 0.0993049855744
+pos_precision = 0.053538346751
+balanced_accuracy = 0.764407672334
+neg_recall    = 0.844715427205
+balanced_acc =  0.764407672334 AUC =  0.838235271398 avg_precision =  0.11930085883
