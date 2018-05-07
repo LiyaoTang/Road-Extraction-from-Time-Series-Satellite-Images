@@ -19,7 +19,7 @@ parser.add_option("--norm", default="mean", dest="norm")
 parser.add_option("--pos", type="int", default=0, dest="pos_num")
 parser.add_option("--size", type="int", default=128, dest="size")
 parser.add_option("-e", "--epoch", type="int", default=15, dest="epoch")
-parser.add_option("--learning_rate", type="float", default=6e-6, dest="learning_rate")
+parser.add_option("--learning_rate", type="float", default=4e-6, dest="learning_rate")
 parser.add_option("--batch", type="int", default=1, dest="batch_size")
 parser.add_option("--rand", type="int", dest="rand_seed")
 
@@ -112,7 +112,7 @@ else:
 # => concat[ 3x3 out_channel=16, 5x5 out_channel=8, 1x1 out_channel=32] followed by 1x1 conv out_channel = classoutput
 # concat_input = 0 => concat the raw input before the calculation of logits
 if concat_input:
-    concat_input = [[[int(x) for x in config.split('-')] for config in  layer.split(';')] for layer in conv_struct.split('|')]
+    concat_input = [[[int(x) for x in config.split('-')] for config in  layer.split(';')] for layer in concat_input.split('|')]
 
 # import libraries
 import numpy as np
@@ -230,7 +230,7 @@ with tf.variable_scope('input_bridge'):
                                    for cfg in concat_input[0]], axis=-1)
             if len(concat_input) > 1:
                 for layer_cfg in concat_input[1:]:
-                    net = tf.concat([tf.contrib.layers.conv2d(inputs=net, num_outputs=cfg[1], kernel_size=cfg[0], stride=1, padding='SAME',
+                    input_map = tf.concat([tf.contrib.layers.conv2d(inputs=input_map, num_outputs=cfg[1], kernel_size=cfg[0], stride=1, padding='SAME',
                                                               normalizer_fn=normalizer_fn, normalizer_params=normalizer_params,biases_initializer=biases_initializer,
                                                               scope=str(cfg[0])+'-'+str(cfg[1])) 
                                      for cfg in layer_cfg], axis=-1)
