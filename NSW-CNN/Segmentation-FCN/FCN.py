@@ -229,9 +229,10 @@ with tf.variable_scope('input_bridge'):
                                                             stride=1, padding='SAME', scope=str(cfg[0])+'-'+str(cfg[1])) 
                                    for cfg in concat_input[0]], axis=-1)
             if len(concat_input) > 1:
-                for layer_cfg in concat_input[1:]:
+                for layer_cnt in range(len(concat_input)-1):
+                    layer_cfg = concat_input[layer_cnt + 1]
                     input_map = tf.concat([tf.contrib.layers.conv2d(inputs=input_map, num_outputs=cfg[1], kernel_size=cfg[0], stride=1, padding='SAME',
-                                                              scope=str(cfg[0])+'-'+str(cfg[1]))
+                                                              scope=str(layer_cnt)+'_'+str(cfg[0])+'-'+str(cfg[1]))
                                      for cfg in layer_cfg], axis=-1)
 
 

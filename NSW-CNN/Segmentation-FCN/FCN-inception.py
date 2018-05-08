@@ -230,10 +230,11 @@ with tf.variable_scope('inception'):
                          for cfg in conv_struct[0]], axis=-1)
 
         if len(conv_struct) > 1:
-            for layer_cfg in conv_struct[1:]:
+            for layer_cnt in range(len(conv_struct)-1):
+                layer_cfg = conv_struct[layer_cnt+1]
                 net = tf.concat([tf.contrib.layers.conv2d(inputs=net, num_outputs=cfg[1], kernel_size=cfg[0], stride=1, padding='SAME',
                                                           normalizer_fn=normalizer_fn, normalizer_params=normalizer_params,biases_initializer=biases_initializer,
-                                                          scope=str(cfg[0])+'-'+str(cfg[1])) 
+                                                          scope=str(layer_cnt)+'_'+str(cfg[0])+'-'+str(cfg[1])) 
                                  for cfg in layer_cfg], axis=-1)
 
     else:
