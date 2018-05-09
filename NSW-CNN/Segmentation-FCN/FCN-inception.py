@@ -226,12 +226,12 @@ with tf.variable_scope('inception'):
     if conv_struct != [[[0]]]:
         net = tf.concat([tf.contrib.layers.conv2d(inputs=x, num_outputs=cfg[1], kernel_size=cfg[0], stride=1, padding='SAME',
                                                   normalizer_fn=normalizer_fn, normalizer_params=normalizer_params,biases_initializer=biases_initializer,
-                                                  scope=str(cfg[0])+'-'+str(cfg[1])) 
+                                                  scope='0_'+str(cfg[0])+'-'+str(cfg[1])) 
                          for cfg in conv_struct[0]], axis=-1)
 
         if len(conv_struct) > 1:
-            for layer_cnt in range(len(conv_struct)-1):
-                layer_cfg = conv_struct[layer_cnt+1]
+            for layer_cnt in range(1,len(conv_struct)):
+                layer_cfg = conv_struct[layer_cnt]
                 net = tf.concat([tf.contrib.layers.conv2d(inputs=net, num_outputs=cfg[1], kernel_size=cfg[0], stride=1, padding='SAME',
                                                           normalizer_fn=normalizer_fn, normalizer_params=normalizer_params,biases_initializer=biases_initializer,
                                                           scope=str(layer_cnt)+'_'+str(cfg[0])+'-'+str(cfg[1])) 
@@ -266,9 +266,11 @@ if record_summary:
         # conv layers params
         conv_scopes = []
         if conv_struct != [[[0]]]:
-            for layer_cfg in conv_struct:
+            for layer_cnt in range(len(conv_struct)):
+                layer_cfg = conv_struct[layer_cnt]
+
                 for cfg in layer_cfg:
-                    conv_scopes.append('inception/' + str(cfg[0])+'-'+str(cfg[1]))
+                    conv_scopes.append('inception/' + str(layer_cnt) +'_'+ str(cfg[0])+'-'+str(cfg[1]))
         for scope_name in conv_scopes:
             target_tensors = ['/weights:0']
             if use_batch_norm: target_tensors.extend(['/BatchNorm/gamma:0', '/BatchNorm/beta:0'])
