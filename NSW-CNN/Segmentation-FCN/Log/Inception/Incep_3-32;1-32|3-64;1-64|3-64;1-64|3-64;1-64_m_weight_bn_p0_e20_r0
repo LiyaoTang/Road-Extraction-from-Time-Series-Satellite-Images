@@ -1,0 +1,32 @@
+Train set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_thr1_128_16_train
+CV set: ../../Data/090085/Road_Data/motor_trunk_pri_sec_tert_uncl_track/posneg_seg_coord_split_thr1_128_16_cv
+will be saved as  Incep_3-32;1-32|3-64;1-64|3-64;1-64|3-64;1-64_m_weight_bn_p0_e20_r0
+will be saved into  ../../../../../../g/data1a/v89/lt8626/Result/FCN/Incep_3-32;1-32|3-64;1-64|3-64;1-64|3-64;1-64_m_weight_bn_p0_e20_r0/
+conv_struct =  [[[3, 32], [1, 32]], [[3, 64], [1, 64]], [[3, 64], [1, 64]], [[3, 64], [1, 64]]]
+mem usage before data loaded: 146.15234375 MB
+
+mu =  [  140.42133132   186.22724995   365.92096392   358.74944958  2449.2505917
+  1352.83568307   708.04858695]  in  (7, 128, 128)
+class weight [neg= 0.014629, pos= 0.985371]
+mu =  [  145.02183288   190.77598344   361.33590698   366.91707464  2380.64990791
+  1375.52599508   734.46670819]  in  (7, 128, 128)
+class weight [neg= 0.025683, pos= 0.974317]
+train data:
+(7, 7650, 8091) (7650, 8091)
+pos =  5153 neg =  33694
+cv data:
+(7, 2365, 8091) (2365, 8091)
+pos =  87 neg =  275
+mem usage after data loaded: 5097.56640625 MB
+
+[0.13264859577316138, 0.8673514042268387] [neg, pos]
+Traceback (most recent call last):
+  File "FCN-inception.py", line 278, in <module>
+    cur_tensor = graph.get_tensor_by_name(tensor_name)
+  File "/apps/tensorflow/1.3.1-python3.5/lib/python3.5/site-packages/tensorflow/python/framework/ops.py", line 2880, in get_tensor_by_name
+    return self.as_graph_element(name, allow_tensor=True, allow_operation=False)
+  File "/apps/tensorflow/1.3.1-python3.5/lib/python3.5/site-packages/tensorflow/python/framework/ops.py", line 2708, in as_graph_element
+    return self._as_graph_element_locked(obj, allow_tensor, allow_operation)
+  File "/apps/tensorflow/1.3.1-python3.5/lib/python3.5/site-packages/tensorflow/python/framework/ops.py", line 2750, in _as_graph_element_locked
+    "graph." % (repr(name), repr(op_name)))
+KeyError: "The name 'inception/3-64/weights:0' refers to a Tensor which does not exist. The operation, 'inception/3-64/weights', does not exist in the graph."
