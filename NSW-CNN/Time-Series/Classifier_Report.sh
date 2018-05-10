@@ -28,17 +28,17 @@ gpu_cnt=0
 
 # wait
 
-# root_dir='/g/data1a/v89/lt8626/Result/FCN/'
-root_dir='../Segmentation-FCN/Result/FCN/'
+root_dir='/g/data1a/v89/lt8626/Result/FCN/'
+# root_dir='../Segmentation-FCN/Result/FCN/'
 md_name_list=( 'FCN_32-64-128_1_cat1-32;3-32_weight_G_x1_p0_e25_r0' 'FCN_32-64-128_1_cat1-32;3-32|1-32;3-32_weight_G_x1_p0_e25_r0' 'FCN_64-128-256_1_cat1-32;3-32_weight_G_x1_p0_e25_r0' 'FCN_64-128-256_1_cat1-32;3-32|1-32;3-32_weight_G_x1_p0_e25_r0' )
 md_idx_list=( '24' '21' '13' '13')
 
 for ((i=0;i<${#md_name_list[@]};++i)); do
-	md_name=${md_name_list[i]}
-	md_idx=${md_idx_list[i]}
+    md_name=${md_name_list[i]}
+    md_idx=${md_idx_list[i]}
+    
     echo ${md_name} - ${md_idx}
 
-
-    python Classifier-Report.py --model_dir ${root_dir}${md_name}/ --model_name ${md_name}-${md_idx} --gpu ${gpu_cnt} > ./Log/Classifier_Report/${md_name}-${md_idx} 2>&1
-	gpu_cnt=$((gpu_cnt+1))
+    python3 Classifier-Report.py --model_dir ${root_dir}${md_name}/ --model_name ${md_name}-${md_idx} --gpu ${gpu_cnt} > ./Log/Classifier_Report/${md_name}-${md_idx} 2>&1 &
+    gpu_cnt=$((gpu_cnt+1))
 done
