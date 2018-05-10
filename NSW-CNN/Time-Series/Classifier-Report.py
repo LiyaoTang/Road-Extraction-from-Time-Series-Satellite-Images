@@ -117,14 +117,17 @@ def evaluate_on_set(classifier, data_extractor, use_norm):
         assert classifier.classifier_type == 'FCN'
         class_output = 2
 
+        xen_list = []
         metric = Metric_Record()
-        for batch_x, batch_y, _ in data_extractor.iterate_data(norm=use_norm):
+        for batch_x, batch_y, batch_w in data_extractor.iterate_data(norm=use_norm):
 
             pred_prob = classifier.predict(batch_x)
+            xen_list.append(classifier.get_mean_cross_xen(batch_x, batch_y, batch_w))
 
             metric.accumulate(Y         = np.array(batch_y.reshape(-1,class_output)[:,1]>0.5, dtype=int), 
                               pred      = np.array(pred_prob.reshape(-1,class_output)[:,1]>0.5, dtype=int), 
                               pred_prob = pred_prob.reshape(-1,class_output)[:,1])
+        # print(np.array(metric.y_true).flatten().shape, np.array(metric.pred_prob).flatten().shape)
 
         # calculate value
         metric.print_info()
@@ -133,6 +136,7 @@ def evaluate_on_set(classifier, data_extractor, use_norm):
         avg_precision_score = skmt.average_precision_score(np.array(metric.y_true).flatten(), np.array(metric.pred_prob).flatten())
 
         print("balanced_acc = ", balanced_acc, "AUC = ", AUC_score, "avg_precision = ", avg_precision_score)
+        print("xen = ", sum(xen_list)/len(xen_list))
         sys.stdout.flush()
 
     metric = 0
@@ -166,4 +170,12 @@ for path_data_set in [path_train_set, path_cv_set, path_test_set]:
     gc.collect()
 
     evaluate_on_set(classifier=classifier, data_extractor=data_extractor, use_norm=use_norm)
+
+
+    # free
+    pos_topleft_coord = 0
+    neg_topleft_coord = 0
+    data_extractor = 0
+    raw_image = 0
+    road_mask = 0
     gc.collect()

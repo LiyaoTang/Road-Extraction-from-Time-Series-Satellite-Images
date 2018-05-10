@@ -29,9 +29,17 @@ class Classifier ():
             saver.restore(sess, path+name)
             
             graph = tf.get_default_graph()
+
             self.x = graph.get_tensor_by_name("input/x:0")
-            self.is_training = graph.get_tensor_by_name("input/is_training:0")
+            self.y = graph.get_tensor_by_name("input/y:0")
+            self.weight      = graph.get_tensor_by_name("input/weight:0")
+            self.is_training = graph.get_tensor_by_name("input/is_training:0")            
             self.prob_out = graph.get_tensor_by_name("prob_out/prob_out:0")
-            
+            self.mean_cross_xen = graph.get_tensor_by_name("cross_entropy/softmax_cross_entropy_loss/value:0")
+
             self.predict = lambda patch: self.prob_out.eval(feed_dict={self.x: patch.transpose((0, 2, 3, 1)), 
                                                                        self.is_training: False})[0,:,:]
+            self.get_mean_cross_xen = lambda patch, road, weight: self.mean_cross_xen.eval(feed_dict={self.x: patch.transpose((0, 2, 3, 1)),
+                                                                                                      self.y: road,
+                                                                                                      self.weight: weight,
+                                                                                                      self.is_training: False})
