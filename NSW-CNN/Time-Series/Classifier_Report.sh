@@ -42,3 +42,5 @@ for ((i=0;i<${#md_name_list[@]};++i)); do
     python3 Classifier-Report.py --model_dir ${root_dir}${md_name}/ --model_name ${md_name}-${md_idx} --gpu ${gpu_cnt} > ./Log/Classifier_Report/${md_name}-${md_idx} 2>&1 &
     gpu_cnt=$((gpu_cnt+1))
 done
+
+wait
