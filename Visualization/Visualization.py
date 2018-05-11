@@ -69,8 +69,8 @@ def show_image_against_road(image, road, x = 0,y = 0, light=3.0, size=500, figsi
         plt.close()
     
 # pass in whole image (raw & road) => display a subset of it
-def show_pred_road_against_raw(image, pred_road, true_road=None, light=3.0,
-                               figsize=(20,20), show_plot=True, show_raw=False, threshold = 0, save_path=None):
+def show_pred_road_against_raw(image, pred_road, true_road=None, light=3.0, figsize=(20,20), 
+                               show_plot=True, show_raw=False, threshold = 0, save_path=None, close_plot=True):
 
     sub_road = pred_road
     sub_image = image[[1,2,3]]
@@ -103,15 +103,17 @@ def show_pred_road_against_raw(image, pred_road, true_road=None, light=3.0,
     patch = np.array([sub_image[2].T, sub_image[1].T, sub_image[0].T]).T
     plt.figure(figsize=figsize)
     plt.imshow(patch)
+    plt.axis('off')
     if not save_path is None:
-        plt.savefig(save_path, bbox_inches='tight')
+        plt.savefig(save_path, bbox_inches='tight', transparent=True)
     if show_plot:
         plt.show()
-    plt.close()
+    if close_plot:
+        plt.close()
     
     
 def show_pred_prob_with_raw(image, road_prob, true_road=None, coord=(0,0), size=-1, light=3.0, pred_weight=0.3,
-                            figsize=None, show_plot=True, save_path=None):
+                            figsize=None, show_plot=True, save_path=None, close_plot=True):
 
     sub_image = image[[1,2,3]] # BGR
     sub_image = sub_image/10000*light        
@@ -138,12 +140,14 @@ def show_pred_prob_with_raw(image, road_prob, true_road=None, coord=(0,0), size=
         plt.figure(figsize=figsize)
     
     plt.imshow(patch)
-    
+    plt.axis('off')
+
     if not save_path is None:
-        plt.savefig(save_path, bbox_inches='tight')
+        plt.savefig(save_path, bbox_inches='tight', transparent=True)
     if show_plot:
         plt.show()
         plt.clf()
+    if close_plot:
         plt.close()
 
 def show_log_pred_with_raw(raw_imgae, pred, road_mask=None, light=3.0, pred_weight=0.3, figsize=None, show_plot=True, save_path=None):

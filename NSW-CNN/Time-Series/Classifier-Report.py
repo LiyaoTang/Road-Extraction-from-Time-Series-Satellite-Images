@@ -140,6 +140,7 @@ def evaluate_on_set(classifier, data_extractor, use_norm):
         sys.stdout.flush()
 
     metric = 0
+    xen_list = []
     gc.collect()
 
 for path_data_set in [path_train_set, path_cv_set, path_test_set]:
