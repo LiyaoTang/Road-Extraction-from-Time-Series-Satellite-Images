@@ -1,22 +1,14 @@
-2018-05-10 22:21:33.520051: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use AVX2 instructions, but these are available on your machine and could speed up CPU computations.
-2018-05-10 22:21:33.520181: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use FMA instructions, but these are available on your machine and could speed up CPU computations.
-2018-05-10 22:21:34.891016: I tensorflow/core/common_runtime/gpu/gpu_device.cc:955] Found device 0 with properties: 
+2018-05-12 20:05:25.135042: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use AVX2 instructions, but these are available on your machine and could speed up CPU computations.
+2018-05-12 20:05:25.135149: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use FMA instructions, but these are available on your machine and could speed up CPU computations.
+2018-05-12 20:05:26.235898: I tensorflow/core/common_runtime/gpu/gpu_device.cc:955] Found device 0 with properties: 
 name: Tesla K80
 major: 3 minor: 7 memoryClockRate (GHz) 0.8235
 pciBusID 0000:0a:00.0
 Total memory: 11.17GiB
 Free memory: 11.10GiB
-2018-05-10 22:21:34.891116: I tensorflow/core/common_runtime/gpu/gpu_device.cc:976] DMA: 0 
-2018-05-10 22:21:34.891171: I tensorflow/core/common_runtime/gpu/gpu_device.cc:986] 0:   Y 
-2018-05-10 22:21:34.891227: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1045] Creating TensorFlow device (/gpu:0) -> (device: 0, name: Tesla K80, pci bus id: 0000:0a:00.0)
-2018-05-10 22:46:41.865627: E tensorflow/stream_executor/cuda/cuda_driver.cc:955] failed to alloc 4294967296 bytes on host: CUDA_ERROR_INVALID_VALUE
-2018-05-10 22:46:41.894838: W ./tensorflow/core/common_runtime/gpu/pool_allocator.h:195] could not allocate pinned host memory of size: 4294967296
-2018-05-10 22:46:44.512220: E tensorflow/stream_executor/cuda/cuda_driver.cc:955] failed to alloc 3865470464 bytes on host: CUDA_ERROR_INVALID_VALUE
-2018-05-10 22:46:44.512929: W ./tensorflow/core/common_runtime/gpu/pool_allocator.h:195] could not allocate pinned host memory of size: 3865470464
-2018-05-10 22:46:49.796669: E tensorflow/stream_executor/cuda/cuda_driver.cc:955] failed to alloc 3478923264 bytes on host: CUDA_ERROR_INVALID_VALUE
-2018-05-10 22:46:49.797417: W ./tensorflow/core/common_runtime/gpu/pool_allocator.h:195] could not allocate pinned host memory of size: 3478923264
-2018-05-10 22:46:54.187566: E tensorflow/stream_executor/cuda/cuda_driver.cc:955] failed to alloc 3131030784 bytes on host: CUDA_ERROR_INVALID_VALUE
-2018-05-10 22:46:54.188310: W ./tensorflow/core/common_runtime/gpu/pool_allocator.h:195] could not allocate pinned host memory of size: 3131030784
+2018-05-12 20:05:26.235994: I tensorflow/core/common_runtime/gpu/gpu_device.cc:976] DMA: 0 
+2018-05-12 20:05:26.236047: I tensorflow/core/common_runtime/gpu/gpu_device.cc:986] 0:   Y 
+2018-05-12 20:05:26.236102: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1045] Creating TensorFlow device (/gpu:0) -> (device: 0, name: Tesla K80, pci bus id: 0000:0a:00.0)
 Gaussian 128 FCN from FCN_64-128-256_1_cat1-32;3-32|1-32;3-32_weight_G_x1_p0_e25_r0-13
 On train set
 mu =  [  140.42133132   186.22724995   365.92096392   358.74944958  2449.2505917
@@ -29,16 +21,16 @@ false_pos = 107163497
 true_neg  = 519994751
 false_neg = 1807466
 size = 38847
-pos_precision = 0.0654375885951
-pos_recall    = 0.80587842337
-neg_F1        = 0.905156908075
+balanced_accuracy = 0.817503440616
 neg_recall    = 0.829128457863
 accuracy      = 13578.867995
+neg_F1        = 0.905156908075
+pos_recall    = 0.80587842337
+pos_precision = 0.0654375885951
 pos_F1        = 0.12104618761
-balanced_accuracy = 0.817503440616
 neg_precision = 0.996536109006
-balanced_acc =  0.817503440616 AUC =  0.901832690808 avg_precision =  0.170074374928
-xen =  0.0114045126551
+balanced_acc =  0.817503440616 AUC =  0.90183269081 avg_precision =  0.170074375073
+xen =  0.0114045126511
 On cv set
 mu =  [  145.02183288   190.77598344   361.33590698   366.91707464  2380.64990791
   1375.52599508   734.46670819]  in  (7, 128, 128)
@@ -50,16 +42,16 @@ false_pos = 1259116
 true_neg  = 4519565
 false_neg = 33315
 size = 362
-pos_precision = 0.0863577258426
-pos_recall    = 0.781292876509
-neg_F1        = 0.874904576375
+balanced_accuracy = 0.781701507742
 neg_recall    = 0.782110138975
 accuracy      = 12813.7486188
+neg_F1        = 0.874904576375
+pos_recall    = 0.781292876509
+pos_precision = 0.0863577258426
 pos_F1        = 0.155524990934
-balanced_accuracy = 0.781701507742
 neg_precision = 0.992682653617
-balanced_acc =  0.781701507742 AUC =  0.867585144409 avg_precision =  0.198353086053
-xen =  0.022884759075
+balanced_acc =  0.781701507742 AUC =  0.867585144564 avg_precision =  0.198353070531
+xen =  0.0228847589885
 On test set
 mu =  [  185.232605     238.7054643    430.14717078   446.99416135  2409.52013496
   1646.65212952   922.71874759]  in  (7, 128, 128)
@@ -71,13 +63,13 @@ false_pos = 28851302
 true_neg  = 90513569
 false_neg = 254871
 size = 7379
-pos_precision = 0.0424106319021
-pos_recall    = 0.833707300682
-neg_F1        = 0.861487106154
+balanced_accuracy = 0.79600024616
 neg_recall    = 0.758293191638
 accuracy      = 12439.5396395
+neg_F1        = 0.861487106154
+pos_recall    = 0.833707300682
+pos_precision = 0.0424106319021
 pos_F1        = 0.0807152830192
-balanced_accuracy = 0.79600024616
 neg_precision = 0.99719207469
-balanced_acc =  0.79600024616 AUC =  0.87693695354 avg_precision =  0.109556861757
-xen =  0.0112320546832
+balanced_acc =  0.79600024616 AUC =  0.876936953517 avg_precision =  0.109556867332
+xen =  0.0112320546896

@@ -1,11 +1,75 @@
-2018-05-10 22:21:33.423919: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use AVX2 instructions, but these are available on your machine and could speed up CPU computations.
-2018-05-10 22:21:33.424080: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use FMA instructions, but these are available on your machine and could speed up CPU computations.
-2018-05-10 22:21:34.891011: I tensorflow/core/common_runtime/gpu/gpu_device.cc:955] Found device 0 with properties: 
+2018-05-12 20:05:25.027926: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use AVX2 instructions, but these are available on your machine and could speed up CPU computations.
+2018-05-12 20:05:25.028089: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use FMA instructions, but these are available on your machine and could speed up CPU computations.
+2018-05-12 20:05:26.061289: I tensorflow/core/common_runtime/gpu/gpu_device.cc:955] Found device 0 with properties: 
 name: Tesla K80
 major: 3 minor: 7 memoryClockRate (GHz) 0.8235
 pciBusID 0000:05:00.0
 Total memory: 11.17GiB
 Free memory: 11.10GiB
-2018-05-10 22:21:34.891117: I tensorflow/core/common_runtime/gpu/gpu_device.cc:976] DMA: 0 
-2018-05-10 22:21:34.891177: I tensorflow/core/common_runtime/gpu/gpu_device.cc:986] 0:   Y 
-2018-05-10 22:21:34.891234: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1045] Creating TensorFlow device (/gpu:0) -> (device: 0, name: Tesla K80, pci bus id: 0000:05:00.0)
+2018-05-12 20:05:26.061442: I tensorflow/core/common_runtime/gpu/gpu_device.cc:976] DMA: 0 
+2018-05-12 20:05:26.061491: I tensorflow/core/common_runtime/gpu/gpu_device.cc:986] 0:   Y 
+2018-05-12 20:05:26.061544: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1045] Creating TensorFlow device (/gpu:0) -> (device: 0, name: Tesla K80, pci bus id: 0000:05:00.0)
+Gaussian 128 FCN from FCN_32-64-128_1_cat1-32;3-32_weight_G_x1_p0_e25_r0-24
+On train set
+mu =  [  140.42133132   186.22724995   365.92096392   358.74944958  2449.2505917
+  1352.83568307   708.04858695]  in  (7, 128, 128)
+class weight [neg= 0.014629, pos= 0.985371]
+std =  [ 113.04792058  135.17366614  230.99671408  248.71498611  952.23666562
+  825.62200511  523.41884702]  in  (7, 128, 128)
+true_pos  = 7337254
+false_pos = 133817941
+true_neg  = 493340307
+false_neg = 1973746
+size = 38847
+neg_F1        = 0.879024465121
+balanced_accuracy = 0.787324042951
+pos_recall    = 0.788019976372
+accuracy      = 12888.4485546
+pos_precision = 0.0519800493351
+pos_F1        = 0.0975269428459
+neg_precision = 0.996015162526
+neg_recall    = 0.786628109529
+balanced_acc =  0.787324042951 AUC =  0.871903504933 avg_precision =  0.133147461927
+xen =  0.0128828294802
+On cv set
+mu =  [  145.02183288   190.77598344   361.33590698   366.91707464  2380.64990791
+  1375.52599508   734.46670819]  in  (7, 128, 128)
+class weight [neg= 0.025683, pos= 0.974317]
+std =  [ 120.35045017  142.82855956  224.8264348   259.40579968  811.03520645
+  842.84666761  560.72898821]  in  (7, 128, 128)
+true_pos  = 122346
+false_pos = 1593088
+true_neg  = 4185593
+false_neg = 29981
+size = 362
+neg_F1        = 0.837599801086
+balanced_accuracy = 0.763748164234
+pos_recall    = 0.803180000919
+accuracy      = 11900.3839779
+pos_precision = 0.0713207269997
+pos_F1        = 0.131008196445
+neg_precision = 0.992888038497
+neg_recall    = 0.724316327549
+balanced_acc =  0.763748164234 AUC =  0.849859852931 avg_precision =  0.175718838865
+xen =  0.0241237188276
+On test set
+mu =  [  185.232605     238.7054643    430.14717078   446.99416135  2409.52013496
+  1646.65212952   922.71874759]  in  (7, 128, 128)
+class weight [neg= 0.012677, pos= 0.987323]
+std =  [ 120.14719703  144.63647815  226.45236114  262.10519119  820.82781844
+  841.09542711  571.9831284 ]  in  (7, 128, 128)
+true_pos  = 1336193
+false_pos = 37337987
+true_neg  = 82026884
+false_neg = 196472
+size = 7379
+neg_F1        = 0.813806294353
+balanced_accuracy = 0.779502361305
+pos_recall    = 0.87181021293
+accuracy      = 11297.3406966
+pos_precision = 0.0345500020944
+pos_F1        = 0.0664659462835
+neg_precision = 0.997610508625
+neg_recall    = 0.687194509681
+balanced_acc =  0.779502361305 AUC =  0.869660446455 avg_precision =  0.0955969395221
+xen =  0.0117251887199
