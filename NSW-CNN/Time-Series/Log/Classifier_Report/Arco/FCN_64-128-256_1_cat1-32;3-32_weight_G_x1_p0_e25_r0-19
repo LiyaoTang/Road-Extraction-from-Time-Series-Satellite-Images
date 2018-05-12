@@ -1,0 +1,78 @@
+2018-05-12 13:32:37.271065: I tensorflow/core/platform/cpu_feature_guard.cc:137] Your CPU supports instructions that this TensorFlow binary was not compiled to use: SSE4.1 SSE4.2 AVX
+2018-05-12 13:32:37.288267: E tensorflow/stream_executor/cuda/cuda_driver.cc:406] failed call to cuInit: CUDA_ERROR_UNKNOWN
+2018-05-12 13:32:37.288372: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:158] retrieving CUDA diagnostic information for host: arco
+2018-05-12 13:32:37.288399: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:165] hostname: arco
+2018-05-12 13:32:37.288482: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:189] libcuda reported version is: 367.57.0
+2018-05-12 13:32:37.288557: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:369] driver version file contents: """NVRM version: NVIDIA UNIX x86_64 Kernel Module  367.57  Mon Oct  3 20:37:01 PDT 2016
+GCC version:  gcc version 4.8.4 (Ubuntu 4.8.4-2ubuntu1~14.04) 
+"""
+2018-05-12 13:32:37.288617: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:193] kernel reported version is: 367.57.0
+2018-05-12 13:32:37.288641: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:300] kernel version seems to match DSO: 367.57.0
+Gaussian 128 FCN from FCN_64-128-256_1_cat1-32;3-32_weight_G_x1_p0_e25_r0-19
+On train set
+mu =  [ 140.42133132  186.22724995  365.92096392  358.74944958 2449.2505917
+ 1352.83568307  708.04858695]  in  (7, 128, 128)
+class weight [neg= 0.014629, pos= 0.985371]
+std =  [113.04792058 135.17366614 230.99671408 248.71498611 952.23666562
+ 825.62200511 523.41884702]  in  (7, 128, 128)
+true_pos  = 7935867
+false_pos = 110786851
+true_neg  = 516371397
+false_neg = 1375133
+size = 38847
+pos_recall    = 0.8523109225647084
+pos_precision = 0.06684371056936213
+pos_F1        = 0.12396526671200783
+neg_recall    = 0.8233510420164322
+neg_precision = 0.9973440034450834
+neg_F1        = 0.9020337881758757
+accuracy      = 13496.724689165187
+balanced_accuracy = 0.8378309822905703
+balanced_acc =  0.8378309822905703 AUC =  0.9170045206323112 avg_precision =  0.19047475636563924
+xen =  0.010440526214753587
+On cv set
+mu =  [ 145.02183288  190.77598344  361.33590698  366.91707464 2380.64990791
+ 1375.52599508  734.46670819]  in  (7, 128, 128)
+class weight [neg= 0.025683, pos= 0.974317]
+std =  [120.35045017 142.82855956 224.8264348  259.40579968 811.03520645
+ 842.84666761 560.72898821]  in  (7, 128, 128)
+true_pos  = 121598
+false_pos = 1400347
+true_neg  = 4378334
+false_neg = 30729
+size = 362
+pos_recall    = 0.7982695122991984
+pos_precision = 0.0798964482947807
+pos_F1        = 0.14525477341793924
+neg_recall    = 0.7576701326825274
+neg_precision = 0.9930304919662069
+neg_F1        = 0.85952964660282
+accuracy      = 12430.75138121547
+balanced_accuracy = 0.7779698224908629
+balanced_acc =  0.7779698224908629 AUC =  0.8625248668859201 avg_precision =  0.19007395884672088
+xen =  0.023643544165016208
+On test set
+mu =  [ 185.232605    238.7054643   430.14717078  446.99416135 2409.52013496
+ 1646.65212952  922.71874759]  in  (7, 128, 128)
+class weight [neg= 0.012677, pos= 0.987323]
+std =  [120.14719703 144.63647815 226.45236114 262.10519119 820.82781844
+ 841.09542711 571.9831284 ]  in  (7, 128, 128)
+true_pos  = 1285303
+false_pos = 32072113
+true_neg  = 87292758
+false_neg = 247362
+size = 7379
+pos_recall    = 0.8386066100550349
+pos_precision = 0.0385312519410976
+pos_F1        = 0.07367727234568473
+neg_recall    = 0.7313102864242194
+neg_precision = 0.9971743013374896
+neg_F1        = 0.843795575719099
+accuracy      = 12004.073858246375
+balanced_accuracy = 0.7849584482396271
+balanced_acc =  0.7849584482396271 AUC =  0.8670888323155356 avg_precision =  0.10358357351107293
+xen =  0.011928844216953283
+/localdata/u6142160/anaconda3/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: compiletime version 3.5 of module 'tensorflow.python.framework.fast_tensor_util' does not match runtime version 3.6
+  return f(*args, **kwds)
+/localdata/u6142160/anaconda3/lib/python3.6/site-packages/h5py/__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
