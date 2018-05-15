@@ -1,0 +1,68 @@
+2018-05-14 20:59:34.522963: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use AVX2 instructions, but these are available on your machine and could speed up CPU computations.
+2018-05-14 20:59:34.523377: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use FMA instructions, but these are available on your machine and could speed up CPU computations.
+2018-05-14 20:59:34.597062: E tensorflow/stream_executor/cuda/cuda_driver.cc:406] failed call to cuInit: CUDA_ERROR_UNKNOWN
+2018-05-14 20:59:34.597168: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:145] kernel driver does not appear to be running on this host (r4514): /proc/driver/nvidia/version does not exist
+Gaussian 128 FCN from FCN_64-128-256_1_cat1-32|1-32|1-32_weight_G_x1_p0_e25_r0-9
+On train set
+mu =  [  140.42133132   186.22724995   365.92096392   358.74944958  2449.2505917
+  1352.83568307   708.04858695]  in  (7, 128, 128)
+class weight [neg= 0.014629, pos= 0.985371]
+std =  [ 113.04792058  135.17366614  230.99671408  248.71498611  952.23666562
+  825.62200511  523.41884702]  in  (7, 128, 128)
+true_pos  = 7716455
+false_pos = 146335067
+true_neg  = 480823181
+false_neg = 1594545
+size = 38847
+accuracy      = 12575.9939249
+pos_recall    = 0.828746106755
+neg_precision = 0.996694679913
+balanced_accuracy = 0.797707867624
+neg_F1        = 0.866679149994
+pos_F1        = 0.0944703216568
+pos_precision = 0.050090092586
+neg_recall    = 0.766669628492
+balanced_acc =  0.797707867624 AUC =  0.882964979319 avg_precision =  0.148582364482
+xen =  0.0123696193647
+On cv set
+mu =  [  145.02183288   190.77598344   361.33590698   366.91707464  2380.64990791
+  1375.52599508   734.46670819]  in  (7, 128, 128)
+class weight [neg= 0.025683, pos= 0.974317]
+std =  [ 120.35045017  142.82855956  224.8264348   259.40579968  811.03520645
+  842.84666761  560.72898821]  in  (7, 128, 128)
+true_pos  = 124109
+false_pos = 1693948
+true_neg  = 4084733
+false_neg = 28218
+size = 362
+accuracy      = 11626.6353591
+pos_recall    = 0.814753786262
+neg_precision = 0.993139232634
+balanced_accuracy = 0.760808151925
+neg_F1        = 0.825896677111
+pos_F1        = 0.12597442935
+pos_precision = 0.0682646363673
+neg_recall    = 0.706862517588
+balanced_acc =  0.760808151925 AUC =  0.849853221477 avg_precision =  0.175304901485
+xen =  0.0242075292189
+On test set
+mu =  [  185.232605     238.7054643    430.14717078   446.99416135  2409.52013496
+  1646.65212952   922.71874759]  in  (7, 128, 128)
+class weight [neg= 0.012677, pos= 0.987323]
+std =  [ 120.14719703  144.63647815  226.45236114  262.10519119  820.82781844
+  841.09542711  571.9831284 ]  in  (7, 128, 128)
+true_pos  = 1359447
+false_pos = 39984985
+true_neg  = 79379886
+false_neg = 173218
+size = 7379
+accuracy      = 10941.7716493
+pos_recall    = 0.886982478232
+neg_precision = 0.997822611673
+balanced_accuracy = 0.776000650533
+neg_F1        = 0.798116771498
+pos_F1        = 0.0634113358934
+pos_precision = 0.0328810176906
+neg_recall    = 0.665018822833
+balanced_acc =  0.776000650533 AUC =  0.872360272967 avg_precision =  0.102735708487
+xen =  0.011832358794
