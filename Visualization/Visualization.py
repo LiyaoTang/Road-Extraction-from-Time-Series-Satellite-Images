@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # pass in whole image (only raw) => display a subset of it
-def show_raw_image(image, x = 0, y = 0, light=3.0, size=500, x_size=0, y_size=0, figsize=(20,20),
+def show_raw_image(image, x = 0, y = 0, light=5.0, size=500, x_size=0, y_size=0, figsize=(20,20),
                    show_plot = True, save_path=None, close_plot=True):
     if x_size == 0 and y_size == 0:
         x_size = size
@@ -22,15 +22,16 @@ def show_raw_image(image, x = 0, y = 0, light=3.0, size=500, x_size=0, y_size=0,
     patch = np.array([sub_image[2].T, sub_image[1].T, sub_image[0].T]).T
     plt.figure(figsize=figsize)
     plt.imshow(patch)
+    plt.axis('off')
     if not save_path is None:
-        plt.savefig(save_path, bbox_inches='tight')
+        plt.savefig(save_path, bbox_inches='tight', transparent=True)
     if show_plot:
         plt.show()
     if close_plot:
         plt.close()
 
 # pass in whole image (raw & road) => display a subset of it (size = -1 to show the whole)
-def show_image_against_road(image, road, x = 0,y = 0, light=3.0, size=500, figsize=(20,20), BGR_axis=[1,2,3],
+def show_image_against_road(image, road, x = 0,y = 0, light=5.0, size=500, figsize=(20,20), BGR_axis=[1,2,3],
                             show_plot = True, show_raw=True, threshold = 0, save_path=None, close_plot=True):
 
     if size > 0:
@@ -61,15 +62,16 @@ def show_image_against_road(image, road, x = 0,y = 0, light=3.0, size=500, figsi
     patch = np.array([sub_image[2].T, sub_image[1].T, sub_image[0].T]).T
     plt.figure(figsize=figsize)
     plt.imshow(patch)
+    plt.axis('off')
     if not save_path is None:
-        plt.savefig(save_path, bbox_inches='tight')
+        plt.savefig(save_path, bbox_inches='tight', transparent=True)
     if show_plot:
         plt.show()
     if close_plot:
         plt.close()
     
 # pass in whole image (raw & road) => display a subset of it
-def show_pred_road_against_raw(image, pred_road, true_road=None, light=3.0, figsize=(20,20), 
+def show_pred_road_against_raw(image, pred_road, true_road=None, light=5.0, figsize=(20,20), 
                                show_plot=True, show_raw=False, threshold = 0, save_path=None, close_plot=True):
 
     sub_road = pred_road
@@ -112,7 +114,7 @@ def show_pred_road_against_raw(image, pred_road, true_road=None, light=3.0, figs
         plt.close()
     
     
-def show_pred_prob_with_raw(image, road_prob, true_road=None, coord=(0,0), size=-1, light=3.0, pred_weight=0.3,
+def show_pred_prob_with_raw(image, road_prob, true_road=None, coord=(0,0), size=-1, light=5.0, pred_weight=0.3,
                             figsize=None, show_plot=True, save_path=None, close_plot=True):
 
     sub_image = image[[1,2,3]] # BGR
@@ -150,7 +152,7 @@ def show_pred_prob_with_raw(image, road_prob, true_road=None, coord=(0,0), size=
     if close_plot:
         plt.close()
 
-def show_log_pred_with_raw(raw_imgae, pred, road_mask=None, light=3.0, pred_weight=0.3, figsize=None, show_plot=True, save_path=None):
+def show_log_pred_with_raw(raw_imgae, pred, road_mask=None, light=5.0, pred_weight=0.3, figsize=None, show_plot=True, save_path=None):
     log_pred = -np.log(-pred + 1 + 1e-9)
     norm_log_pred = (log_pred - log_pred.min()) / (log_pred.max()-log_pred.min())
     show_pred_prob_with_raw(raw_imgae, norm_log_pred, road_mask, light=light, pred_weight=pred_weight, 
