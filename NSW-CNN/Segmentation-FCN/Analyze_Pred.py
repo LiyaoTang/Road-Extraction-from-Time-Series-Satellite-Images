@@ -102,6 +102,31 @@ elif norm == 'std':
     norm_CV_pred    = pred_normalization(CV_pred)
 
 
+if analyze_all:
+
+    h5f = h5py.File(path_raw, 'r')
+    raw_image = np.array(h5f['scene'])
+    h5f.close()
+    
+    if use_road_mask:
+        road_mask = skimage.io.imread(path_road)
+        name_postfix = ''
+    else:
+        road_mask = None
+        name_postfix = '_noR'
+
+    h5f = h5py.File(pred_dir + pred_name, 'r')
+    pred_road = np.array(h5f['20170531'])
+    h5f.close()
+
+    if print_log:
+        show_log_pred_with_raw(raw_image, pred_road, road_mask, pred_weight=pred_weight, figsize=(150,150), 
+                               show_plot=False, save_path=save_path + save_name + '_all_' + str(pred_weight).replace('.', '_') + name_postfix + '_log.png')
+    else:
+        show_pred_prob_with_raw(raw_image, pred_road, road_mask, pred_weight=pred_weight, figsize=(150,150), 
+                                show_plot=False, save_path=save_path + save_name + '_all_' + str(pred_weight).replace('.', '_') + name_postfix + '.png')    
+
+
 if analyze_train:
     # Load training set
     train_set = h5py.File(path_train_set, 'r')
