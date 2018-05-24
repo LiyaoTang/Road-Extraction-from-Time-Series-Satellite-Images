@@ -1,4 +1,68 @@
-2018-05-22 19:34:20.882690: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use AVX2 instructions, but these are available on your machine and could speed up CPU computations.
-2018-05-22 19:34:20.883280: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use FMA instructions, but these are available on your machine and could speed up CPU computations.
-2018-05-22 19:34:20.922436: E tensorflow/stream_executor/cuda/cuda_driver.cc:406] failed call to cuInit: CUDA_ERROR_UNKNOWN
-2018-05-22 19:34:20.922596: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:145] kernel driver does not appear to be running on this host (r3704): /proc/driver/nvidia/version does not exist
+2018-05-23 22:42:18.315675: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use AVX2 instructions, but these are available on your machine and could speed up CPU computations.
+2018-05-23 22:42:18.342903: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use FMA instructions, but these are available on your machine and could speed up CPU computations.
+2018-05-23 22:42:18.385465: E tensorflow/stream_executor/cuda/cuda_driver.cc:406] failed call to cuInit: CUDA_ERROR_UNKNOWN
+2018-05-23 22:42:18.403866: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:145] kernel driver does not appear to be running on this host (r3702): /proc/driver/nvidia/version does not exist
+Gaussian 128 FCN from FCN_32-64-128_1_cat1-32|1-64|1-128_weight_G_x1_p0_e100_r0-90
+On train set
+mu =  [  140.42133132   186.22724995   365.92096392   358.74944958  2449.2505917
+  1352.83568307   708.04858695]  in  (7, 128, 128)
+class weight [neg= 0.014629, pos= 0.985371]
+std =  [ 113.04792058  135.17366614  230.99671408  248.71498611  952.23666562
+  825.62200511  523.41884702]  in  (7, 128, 128)
+true_pos  = 8014489
+false_pos = 92654400
+true_neg  = 534503848
+false_neg = 1296511
+size = 38847
+neg_precision = 0.997580234917
+pos_recall    = 0.860754913543
+pos_F1        = 0.145744627911
+pos_precision = 0.0796123716037
+neg_recall    = 0.852263124506
+neg_F1        = 0.919213882219
+accuracy      = 13965.5143769
+balanced_accuracy = 0.856509019024
+balanced_acc =  0.856509019024 AUC =  0.931880327512 avg_precision =  0.224709525688
+xen =  0.00946045143857
+On cv set
+mu =  [  145.02183288   190.77598344   361.33590698   366.91707464  2380.64990791
+  1375.52599508   734.46670819]  in  (7, 128, 128)
+class weight [neg= 0.025683, pos= 0.974317]
+std =  [ 120.35045017  142.82855956  224.8264348   259.40579968  811.03520645
+  842.84666761  560.72898821]  in  (7, 128, 128)
+true_pos  = 115624
+false_pos = 1216527
+true_neg  = 4562154
+false_neg = 36703
+size = 362
+neg_precision = 0.992019103877
+pos_recall    = 0.759051251584
+pos_F1        = 0.15577731701
+pos_precision = 0.0867949654356
+neg_recall    = 0.789480159919
+neg_F1        = 0.879236288993
+accuracy      = 12922.038674
+balanced_accuracy = 0.774265705751
+balanced_acc =  0.774265705751 AUC =  0.857181578282 avg_precision =  0.206278951086
+xen =  0.025696007265
+On test set
+mu =  [  185.232605     238.7054643    430.14717078   446.99416135  2409.52013496
+  1646.65212952   922.71874759]  in  (7, 128, 128)
+class weight [neg= 0.012677, pos= 0.987323]
+std =  [ 120.14719703  144.63647815  226.45236114  262.10519119  820.82781844
+  841.09542711  571.9831284 ]  in  (7, 128, 128)
+true_pos  = 1230069
+false_pos = 27151569
+true_neg  = 92213302
+false_neg = 302596
+size = 7379
+neg_precision = 0.996729254036
+pos_recall    = 0.802568728326
+pos_F1        = 0.0822395226792
+pos_precision = 0.0433403103795
+neg_recall    = 0.772533000936
+neg_F1        = 0.870426348132
+accuracy      = 12663.419298
+balanced_accuracy = 0.787550864631
+balanced_acc =  0.787550864631 AUC =  0.866813003655 avg_precision =  0.117243851032
+xen =  0.0124176663028
